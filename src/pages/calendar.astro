@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+// 取得方式：Google 日曆 → 設定 → 該日曆「整合日曆」→ 複製「嵌入程式碼」中的 src。
+const CALENDAR_EMBED_SRC =
+  'https://calendar.google.com/calendar/embed?src=REPLACE_WITH_CALENDAR_ID&ctz=Asia%2FTaipei';
+const configured = !CALENDAR_EMBED_SRC.includes('REPLACE_WITH_CALENDAR_ID');
+---
+<Layout title="行事曆">
+  <h1>行事曆</h1>
+  <p class="muted">練習、活動、比賽、演出時間，即時同步自社團 Google 日曆。</p>
+  {configured ? (
+    <div class="cal-wrap card">
+      <iframe src={CALENDAR_EMBED_SRC} width="100%" height="600" style="border:0" frameborder="0" scrolling="no" title="社團行事曆"></iframe>
+    </div>
+  ) : (
+    <div class="card"><p>⚠️ 行事曆尚未設定。請將 <code>calendar.astro</code> 中的 <code>CALENDAR_EMBED_SRC</code> 換成社團 Google 日曆的嵌入網址。</p></div>
+  )}
+</Layout>
+<style>
+  .cal-wrap{padding:.5rem}
+  .cal-wrap iframe{display:block;border-radius:8px}
+</style>
