@@ -1,7 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const sections = [
+  { href: '/calendar', icon: '📅', title: '行事曆', desc: '練習、活動、比賽、演出時間' },
+  { href: '/announcements', icon: '📢', title: '最新公告', desc: '通知、提醒、臨時異動' },
+  { href: '/about', icon: 'ℹ️', title: '認識我們', desc: '社團簡介、指導老師、幹部' },
+  { href: '/documents', icon: '📄', title: '文件下載', desc: '通知單、樂譜、報名表' },
+];
 ---
 <Layout title="首頁">
-  <h1>版型測試</h1>
-  <p>確認導覽列、配色、頁尾正常。</p>
+  <section class="hero card">
+    <p class="label">集美國小・學生家長社團</p>
+    <h1>集美國小國樂社</h1>
+    <p class="muted">這裡是社團的資訊家：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
+    <a class="btn" href="/calendar">看近期行事曆</a>
+  </section>
+
+  <h2 style="margin-top:2rem">最新公告</h2>
+  <div id="home-announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
+
+  <h2 style="margin-top:2rem">快速前往</h2>
+  <div class="grid cols-2">
+    {sections.map((s) => (
+      <a class="card section-link" href={s.href}>
+        <div class="section-icon">{s.icon}</div>
+        <div><strong>{s.title}</strong><p class="muted">{s.desc}</p></div>
+      </a>
+    ))}
+  </div>
 </Layout>
+<style>
+  .hero h1{margin:.3rem 0 .5rem}
+  .section-link{display:flex;gap:.8rem;align-items:flex-start;text-decoration:none;color:inherit}
+  .section-link:hover{border-color:var(--gold)}
+  .section-icon{font-size:1.6rem;line-height:1}
+  .section-link p{margin:.2rem 0 0}
+</style>
