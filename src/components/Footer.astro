@@ -1,0 +1,21 @@
+---
+const club = {
+  name: '集美國小國樂社',
+  school: '（學校全名，例：○○市○○國民小學）',
+  contact: '（社團聯絡窗口姓名 / 電話）',
+  email: '（社團 Gmail）@gmail.com',
+};
+---
+<footer class="site-footer">
+  <div class="container">
+    <strong>{club.name}</strong>
+    <p class="muted">{club.school}</p>
+    <p>聯絡：{club.contact}</p>
+    <p>Email：<a href={`mailto:${club.email}`}>{club.email}</a></p>
+  </div>
+</footer>
+<style>
+  .site-footer{background:var(--ink);color:#d8d2c4;font-size:.9rem;padding:1.4rem 0;margin-top:1.5rem}
+  .site-footer a{color:var(--gold)}
+  .site-footer p{margin:.15rem 0}
+</style>
