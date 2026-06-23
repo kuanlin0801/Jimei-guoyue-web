@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="最新公告">
+  <h1>最新公告</h1>
+  <p class="muted">資料即時同步自社團公告試算表；幹部更新後重整頁面即可看到。</p>
+  <div id="announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
+</Layout>
+<script>
+  import { fetchAnnouncements } from '../lib/announcements.js';
+  const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV;
+  const el = document.getElementById('announcements');
+  function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  try {
+    const items = await fetchAnnouncements(url);
+    el.innerHTML = items.length
+      ? items.map((a) => `<article class="card"><time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
+      : '<p class="muted">目前沒有公告。</p>';
+  } catch (e) {
+    el.innerHTML = '<p class="muted">公告載入失敗，請稍後再試。</p>';
+  }
+</script>
