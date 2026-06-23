@@ -6,7 +6,7 @@ const nav = [
   { href: '/about', label: '認識我們' },
   { href: '/documents', label: '文件下載' },
 ];
-const path = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <header class="site-header">
   <div class="container header-inner">

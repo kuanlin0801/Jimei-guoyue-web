@@ -8,15 +8,17 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 <script>
   import { fetchAnnouncements } from '../lib/announcements.js';
-  const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV;
   const el = document.getElementById('announcements');
-  function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-  try {
-    const items = await fetchAnnouncements(url);
-    el.innerHTML = items.length
-      ? items.map((a) => `<article class="card"><time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
-      : '<p class="muted">目前沒有公告。</p>';
-  } catch (e) {
-    el.innerHTML = '<p class="muted">公告載入失敗，請稍後再試。</p>';
+  if (el) {
+    const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV;
+    const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+    try {
+      const items = await fetchAnnouncements(url);
+      el.innerHTML = items.length
+        ? items.map((a) => `<article class="card"><time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
+        : '<p class="muted">目前沒有公告。</p>';
+    } catch (e) {
+      el.innerHTML = '<p class="muted">公告載入失敗，請稍後再試。</p>';
+    }
   }
 </script>
