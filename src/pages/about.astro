@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { club } from '../data/club.js';
+import { teachers } from '../data/teachers.js';
+import { officers } from '../data/officers.js';
+---
+<Layout title="認識我們">
+  <h1>認識我們</h1>
+
+  <section class="card">
+    <h2>社團簡介</h2>
+    <p>{club.intro}</p>
+    <ul>{club.features.map((f) => <li>{f}</li>)}</ul>
+    <p class="muted">{club.ensemble}</p>
+  </section>
+
+  <h2 style="margin-top:2rem">指導老師</h2>
+  <div class="grid cols-2">
+    {teachers.map((t) => (
+      <article class="card person">
+        <div class="avatar">{t.photo ? <img src={t.photo} alt={t.name} /> : '🎵'}</div>
+        <div>
+          <strong>{t.name}</strong>
+          <p class="label">{t.subject}</p>
+          <p>{t.bio}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <h2 style="margin-top:2rem">幹部介紹</h2>
+  <div class="grid cols-3">
+    {officers.map((o) => (
+      <article class="card">
+        <p class="label">{o.role}</p>
+        <strong>{o.name}</strong>
+        {o.note && <p class="muted">{o.note}</p>}
+      </article>
+    ))}
+  </div>
+</Layout>
+<style>
+  .person{display:flex;gap:.9rem;align-items:flex-start}
+  .avatar{width:64px;height:64px;border-radius:50%;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden;flex-shrink:0}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .person ul{margin:.3rem 0}
+</style>
