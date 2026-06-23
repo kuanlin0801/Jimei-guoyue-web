@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { documents } from '../data/documents.js';
+---
+<Layout title="文件下載">
+  <h1>文件下載</h1>
+  <p class="muted">通知單、樂譜、報名與繳費表單。點擊在 Google 雲端硬碟開啟／下載。</p>
+  <div class="grid cols-2">
+    {documents.map((d) => (
+      <a class="card doc" href={d.url} target="_blank" rel="noopener">
+        <span class="doc-type">{d.type}</span>
+        <span>
+          <strong>{d.title}</strong>
+          {d.note && <p class="muted">{d.note}</p>}
+        </span>
+      </a>
+    ))}
+  </div>
+</Layout>
+<style>
+  .doc{display:flex;gap:.8rem;align-items:center;text-decoration:none;color:inherit}
+  .doc:hover{border-color:var(--gold)}
+  .doc-type{background:var(--vermilion);color:#fff;font-size:.7rem;padding:.2rem .5rem;border-radius:6px;flex-shrink:0}
+  .doc p{margin:.15rem 0 0}
+</style>
