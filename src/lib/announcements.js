@@ -1,25 +1,6 @@
-// 解析「Google 試算表發布的 CSV」公告。欄位：日期, 標題, 內容
-export function splitCsvLine(line) {
-  const out = [];
-  let cur = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (inQuotes) {
-      if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
-      else if (c === '"') { inQuotes = false; }
-      else { cur += c; }
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ',') {
-      out.push(cur); cur = '';
-    } else {
-      cur += c;
-    }
-  }
-  out.push(cur);
-  return out;
-}
+// splitCsvLine 已抽到共用的 csv.js；此處 re-export 以維持既有匯入點。
+import { splitCsvLine } from './csv.js';
+export { splitCsvLine };
 
 // 置頂判定：任何非空白且非明確否定的記號（V、是、★、1…）都視為置頂。
 const PINNED_NEGATIVES = new Set(['', '否', 'n', 'no', '0', 'false']);
