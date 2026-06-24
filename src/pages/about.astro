@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { club } from '../data/club.js';
-import { teachers } from '../data/teachers.js';
+import { core, sections, groups } from '../data/teachers.js';
 import { officers } from '../data/officers.js';
 ---
 <Layout title="認識我們">
@@ -14,21 +14,43 @@ import { officers } from '../data/officers.js';
     <p class="muted">{club.ensemble}</p>
   </section>
 
-  <h2 style="margin-top:2rem">指導老師</h2>
+  <h2 style="margin-top:2rem">核心團隊</h2>
+  <div class="grid cols-3">
+    {core.map((p) => (
+      <article class="card">
+        <p class="label">{p.role}</p>
+        <strong>{p.name}</strong>
+        <p class="muted">{p.desc}</p>
+      </article>
+    ))}
+  </div>
+
+  <h2 style="margin-top:2rem">各分部師資</h2>
   <div class="grid cols-2">
-    {teachers.map((t) => (
-      <article class="card person">
-        <div class="avatar">{t.photo ? <img src={t.photo} alt={t.name} /> : '🎵'}</div>
+    {sections.map((s) => (
+      <article class="card part">
+        <div class="part-name">{s.part}</div>
         <div>
-          <strong>{t.name}</strong>
-          <p class="label">{t.subject}</p>
-          <p>{t.bio}</p>
+          <strong>{s.teacher}</strong>
+          {s.note && <p class="muted">{s.note}</p>}
         </div>
       </article>
     ))}
   </div>
 
-  <h2 style="margin-top:2rem">幹部介紹</h2>
+  <h2 style="margin-top:2rem">國樂三團（階梯式）</h2>
+  <div class="grid cols-3">
+    {groups.map((g) => (
+      <article class="card">
+        <p class="label">{g.tier}</p>
+        <strong>{g.name}</strong>
+        <p class="muted">任課：{g.teacher}</p>
+        <p>{g.focus}</p>
+      </article>
+    ))}
+  </div>
+
+  <h2 style="margin-top:2rem">家長幹部</h2>
   <div class="grid cols-3">
     {officers.map((o) => (
       <article class="card">
@@ -40,8 +62,8 @@ import { officers } from '../data/officers.js';
   </div>
 </Layout>
 <style>
-  .person{display:flex;gap:.9rem;align-items:flex-start}
-  .avatar{width:64px;height:64px;border-radius:50%;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden;flex-shrink:0}
-  .avatar img{width:100%;height:100%;object-fit:cover}
-  .person ul{margin:.3rem 0}
+  .part{display:flex;gap:.9rem;align-items:center}
+  .part-name{background:var(--brand);color:#fff;font-weight:700;border-radius:8px;padding:.3rem .7rem;flex-shrink:0;min-width:5.5rem;text-align:center}
+  .part p{margin:.15rem 0 0}
+  section.card ul{margin:.4rem 0 .4rem 1.25rem}
 </style>
