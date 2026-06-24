@@ -21,6 +21,12 @@ export function splitCsvLine(line) {
   return out;
 }
 
+// 置頂判定：任何非空白且非明確否定的記號（V、是、★、1…）都視為置頂。
+const PINNED_NEGATIVES = new Set(['', '否', 'n', 'no', '0', 'false']);
+export function isPinnedMark(mark) {
+  return !PINNED_NEGATIVES.has(String(mark ?? '').trim().toLowerCase());
+}
+
 export function parseAnnouncementsCsv(csvText) {
   const lines = csvText.split(/\r?\n/);
   const items = [];
@@ -32,9 +38,14 @@ export function parseAnnouncementsCsv(csvText) {
     const title = (cols[1] ?? '').trim();
     const body = (cols[2] ?? '').trim();
     if (!date && !title && !body) continue;
-    items.push({ date, title, body });
+    items.push({ date, title, body, pinned: isPinnedMark(cols[3]) });
   }
   return items;
+}
+
+// 置頂公告排到最前面，組內維持原順序（穩定）。
+export function pinnedFirst(items) {
+  return [...items.filter((i) => i.pinned), ...items.filter((i) => !i.pinned)];
 }
 
 export async function fetchAnnouncements(csvUrl, { fetchImpl = fetch } = {}) {

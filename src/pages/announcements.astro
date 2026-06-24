@@ -7,15 +7,15 @@ import Layout from '../layouts/Layout.astro';
   <div id="announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
 </Layout>
 <script>
-  import { fetchAnnouncements } from '../lib/announcements.js';
+  import { fetchAnnouncements, pinnedFirst } from '../lib/announcements.js';
   const el = document.getElementById('announcements');
   if (el) {
     const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV;
     const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
     try {
-      const items = await fetchAnnouncements(url);
+      const items = pinnedFirst(await fetchAnnouncements(url));
       el.innerHTML = items.length
-        ? items.map((a) => `<article class="card"><time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
+        ? items.map((a) => `<article class="card">${a.pinned ? '<span class="pin">📌 置頂</span> ' : ''}<time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
         : '<p class="muted">目前沒有公告。</p>';
     } catch (e) {
       el.innerHTML = '<p class="muted">公告載入失敗，請稍後再試。</p>';
