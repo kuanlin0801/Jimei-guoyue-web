@@ -1,7 +1,7 @@
-# 集美國小國樂社 社團資訊網站
+# 集美國小國樂團 社團資訊網站
 
 ## 專案概述
-集美國小國樂社（學生家長社團）的**對內資訊網站**，定位為「長期資訊倉庫」——行事曆、公告、文件、師資、活動支援集中於此；LINE 繼續做即時溝通。會長為發起人之配偶。設計／實作計畫見 `docs/superpowers/`。
+集美國小國樂團（學生家長社團）的**對內資訊網站**，定位為「長期資訊倉庫」——行事曆、公告、文件、師資、活動支援集中於此；LINE 繼續做即時溝通。會長為發起人之配偶。設計／實作計畫見 `docs/superpowers/`。
 
 ## 技術棧
 - **Astro**（靜態網站產生器）＋ 原生 HTML/CSS/JS
@@ -14,7 +14,7 @@
 - `npm test` — 跑 vitest 單元測試
 
 ## 目錄結構
-- `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（認識我們）、documents、gallery（相簿）、achievements（成果）
+- `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（關於我們）、documents、gallery（相簿）、achievements（成果）
 - `src/layouts/Layout.astro` — 共用版型
 - `src/components/` — Header.astro（淺色 header＋左上 logo 品牌＋導覽）、Footer.astro（頁尾聯絡）
 - `src/lib/` — 純邏輯：`csv.js`（splitCsvLine／parseCsvRows）、`announcements.js`、`support.js`，各有 `*.test.js`
@@ -37,7 +37,7 @@
 - 公告真實來源：於 Cloudflare 環境變數設 `PUBLIC_ANNOUNCEMENTS_CSV`（未設則 fallback 至 `/sample-announcements.csv`）。
 
 ## 目前狀態 / 待辦
-- Phase 1（首頁／行事曆／公告／認識我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
+- Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
