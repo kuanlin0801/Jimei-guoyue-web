@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { albums } from '../data/albums.js';
+---
+<Layout title="活動相簿">
+  <h1>活動相簿</h1>
+  <p class="muted">演出、比賽、練習花絮。點擊相簿在 Google 相簿開啟。</p>
+  {albums.length === 0 && <p class="muted">尚未有相簿。</p>}
+  <div class="grid cols-3">
+    {albums.map((a) => (
+      <a class="card album" href={a.url} target="_blank" rel="noopener noreferrer">
+        <div class="album-cover">{a.cover ? <img src={a.cover} alt={a.title} /> : '🎶'}</div>
+        <div class="album-body">
+          <strong>{a.title}</strong>
+          <p class="label">{a.date}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</Layout>
+<style>
+  .album{display:flex;flex-direction:column;text-decoration:none;color:inherit;overflow:hidden;padding:0}
+  .album:hover{border-color:var(--gold)}
+  .album-cover{aspect-ratio:4/3;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:2rem;border-bottom:1px solid var(--line)}
+  .album-cover img{width:100%;height:100%;object-fit:cover}
+  .album-body{padding:.7rem .9rem}
+  .album-body p{margin:.15rem 0 0}
+</style>
