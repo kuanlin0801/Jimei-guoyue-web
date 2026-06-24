@@ -32,7 +32,7 @@ const sections = [
   import { fetchAnnouncements, pinnedFirst } from '../lib/announcements.js';
   const el = document.getElementById('home-announcements');
   if (el) {
-    const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV;
+    const url = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV || '/sample-announcements.csv';
     const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
     try {
       const items = pinnedFirst(await fetchAnnouncements(url)).slice(0, 4);
