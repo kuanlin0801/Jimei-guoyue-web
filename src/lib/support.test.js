@@ -31,6 +31,11 @@ describe('summarizeSupport', () => {
     expect(byLabel['現場場佈']).toMatchObject({ signed: 2, short: 1, enough: false });
     expect(byLabel['攝影記錄']).toMatchObject({ signed: 1, short: 0, enough: true });
   });
+  it('returns an empty byCategory when no needs are given', () => {
+    const s = summarizeSupport(CSV, []);
+    expect(s.byCategory).toEqual([]);
+    expect(s.total).toBe(3);
+  });
   it('returns zeros for empty responses', () => {
     const empty = '時間戳記,顯示稱呼,能否到場,可幫忙項目\n';
     const s = summarizeSupport(empty, NEEDS);

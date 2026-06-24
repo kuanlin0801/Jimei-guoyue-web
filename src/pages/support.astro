@@ -19,7 +19,7 @@ import { supportEvents } from '../data/support-events.js';
     </section>
   ))}
 
-  <script type="application/json" id="support-config" set:html={JSON.stringify(supportEvents)} />
+  <script type="application/json" id="support-config" set:html={JSON.stringify(supportEvents).replace(/</g, '\\u003c')} />
 </Layout>
 <script>
   import { summarizeSupport } from '../lib/support.js';
@@ -27,7 +27,7 @@ import { supportEvents } from '../data/support-events.js';
   const cfgEl = document.getElementById('support-config');
   const events = cfgEl ? JSON.parse(cfgEl.textContent || '[]') : [];
   for (const ev of events) {
-    const board = document.querySelector(`[data-board="${ev.id}"]`);
+    const board = document.querySelector(`[data-board="${CSS.escape(ev.id)}"]`);
     if (!board) continue;
     if (!ev.responsesCsvUrl) {
       board.innerHTML = '<p class="muted">報名看板尚未設定（待填入回覆 CSV 連結）。</p>';
