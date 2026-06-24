@@ -28,3 +28,9 @@ a{color:var(--vermilion)}
 .label{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 time{color:var(--vermilion);font-weight:500}
 .pin{display:inline-block;background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:700;padding:.08rem .5rem;border-radius:999px}
+.support-event{margin-bottom:1.25rem}
+.support-event .board{margin-top:.8rem}
+.board-row{display:flex;justify-content:space-between;gap:1rem;padding:.35rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.board-row .ok{color:#2e7d32;font-weight:700}
+.board-row .need{color:#b25e00;font-weight:700}
+.board-thanks{margin-top:.6rem}

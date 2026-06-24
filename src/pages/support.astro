@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supportEvents } from '../data/support-events.js';
+---
+<Layout title="活動支援">
+  <h1>活動支援</h1>
+  <p class="muted">需要家長到場支援的活動。點「我要報名支援」填表單，下方看板會即時顯示目前報名狀況與還缺的人手。</p>
+
+  {supportEvents.length === 0 && <p class="muted">目前沒有需要支援的活動。</p>}
+
+  {supportEvents.map((ev) => (
+    <section class="card support-event">
+      <h2>{ev.name}</h2>
+      <p><time>{ev.date}</time></p>
+      {ev.formUrl
+        ? <a class="btn" href={ev.formUrl} target="_blank" rel="noopener noreferrer">我要報名支援</a>
+        : <span class="muted">報名表單尚未設定</span>}
+      <div class="board" data-board={ev.id}><p class="muted">看板載入中…</p></div>
+    </section>
+  ))}
+
+  <script type="application/json" id="support-config" set:html={JSON.stringify(supportEvents)} />
+</Layout>
+<script>
+  import { summarizeSupport } from '../lib/support.js';
+  const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+  const cfgEl = document.getElementById('support-config');
+  const events = cfgEl ? JSON.parse(cfgEl.textContent || '[]') : [];
+  for (const ev of events) {
+    const board = document.querySelector(`[data-board="${ev.id}"]`);
+    if (!board) continue;
+    if (!ev.responsesCsvUrl) {
+      board.innerHTML = '<p class="muted">報名看板尚未設定（待填入回覆 CSV 連結）。</p>';
+      continue;
+    }
+    try {
+      const res = await fetch(ev.responsesCsvUrl);
+      if (!res.ok) throw new Error(String(res.status));
+      const sum = summarizeSupport(await res.text(), ev.needs || []);
+      const rows = sum.byCategory.map((c) =>
+        `<div class="board-row"><span>${esc(c.label)}</span>` +
+        (c.enough
+          ? '<span class="ok">足夠 ✓</span>'
+          : `<span class="need">已報 ${c.signed} / 需 ${c.target}（還缺 ${c.short}）</span>`) +
+        '</div>'
+      ).join('');
+      const names = sum.names.length
+        ? `<p class="muted board-thanks">感謝支援：${sum.names.map(esc).join('、')}</p>`
+        : '';
+      board.innerHTML =
+        `<div class="board-row"><span>目前可支援家長</span><span class="ok">${sum.total} 位</span></div>` +
+        rows + names;
+    } catch (e) {
+      board.innerHTML = '<p class="muted">看板載入失敗，請稍後再試。</p>';
+    }
+  }
+</script>
