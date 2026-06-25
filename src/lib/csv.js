@@ -34,3 +34,8 @@ export function parseCsvRows(csvText) {
     return row;
   });
 }
+
+// 連結安全檢查：僅 http(s) 視為可點，擋 javascript:/data: 等 URL 注入。
+export function isSafeHref(url) {
+  return /^https?:\/\//i.test(String(url ?? '').trim());
+}

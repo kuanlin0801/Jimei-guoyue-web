@@ -1,5 +1,5 @@
 // splitCsvLine 已抽到共用的 csv.js；此處 re-export 以維持既有匯入點。
-import { splitCsvLine } from './csv.js';
+import { splitCsvLine, isSafeHref } from './csv.js';
 export { splitCsvLine };
 
 // 置頂判定：任何非空白且非明確否定的記號（V、是、★、1…）都視為置頂。
@@ -19,7 +19,10 @@ export function parseAnnouncementsCsv(csvText) {
     const title = (cols[1] ?? '').trim();
     const body = (cols[2] ?? '').trim();
     if (!date && !title && !body) continue;
-    items.push({ date, title, body, pinned: isPinnedMark(cols[3]) });
+    const attName = (cols[4] ?? '').trim();
+    const attUrl = (cols[5] ?? '').trim();
+    const attachment = attUrl && isSafeHref(attUrl) ? { name: attName || title, url: attUrl } : null;
+    items.push({ date, title, body, pinned: isPinnedMark(cols[3]), attachment });
   }
   return items;
 }

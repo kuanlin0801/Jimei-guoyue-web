@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { splitCsvLine, parseCsvRows } from './csv.js';
+import { splitCsvLine, parseCsvRows, isSafeHref } from './csv.js';
 
 describe('splitCsvLine', () => {
   it('keeps commas inside quoted fields', () => {
@@ -24,5 +24,17 @@ describe('parseCsvRows', () => {
   });
   it('returns an empty array for empty input', () => {
     expect(parseCsvRows('')).toEqual([]);
+  });
+});
+
+describe('isSafeHref', () => {
+  it('accepts http(s) URLs (trims first)', () => {
+    expect(isSafeHref('https://drive.google.com/file/d/x')).toBe(true);
+    expect(isSafeHref('  http://example.com  ')).toBe(true);
+  });
+  it('rejects javascript:, data:, blank, relative, nullish', () => {
+    for (const u of ['javascript:alert(1)', 'data:text/html,x', '', '   ', '/local', 'drive.google.com', undefined, null]) {
+      expect(isSafeHref(u)).toBe(false);
+    }
   });
 });

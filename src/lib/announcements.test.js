@@ -35,7 +35,7 @@ describe('parseAnnouncementsCsv', () => {
   it('parses rows, skips the header, and defaults pinned to false', () => {
     const csv = '日期,標題,內容\n2026-06-20,練習異動,本週六改上午九點\n';
     expect(parseAnnouncementsCsv(csv)).toEqual([
-      { date: '2026-06-20', title: '練習異動', body: '本週六改上午九點', pinned: false },
+      { date: '2026-06-20', title: '練習異動', body: '本週六改上午九點', pinned: false, attachment: null },
     ]);
   });
   it('reads the 置頂 column into a pinned boolean', () => {
@@ -71,12 +71,31 @@ describe('fetchAnnouncements', () => {
     const csv = '日期,標題,內容,置頂\n2026-06-20,A,B,\n';
     const fakeFetch = async () => ({ ok: true, text: async () => csv });
     const items = await fetchAnnouncements('http://example/csv', { fetchImpl: fakeFetch });
-    expect(items).toEqual([{ date: '2026-06-20', title: 'A', body: 'B', pinned: false }]);
+    expect(items).toEqual([{ date: '2026-06-20', title: 'A', body: 'B', pinned: false, attachment: null }]);
   });
   it('throws on HTTP error', async () => {
     const fakeFetch = async () => ({ ok: false, status: 404 });
     await expect(
       fetchAnnouncements('http://example/csv', { fetchImpl: fakeFetch })
     ).rejects.toThrow('404');
+  });
+});
+
+describe('parseAnnouncementsCsv attachments', () => {
+  it('reads 附件名稱/附件連結 into attachment', () => {
+    const csv = '日期,標題,內容,置頂,附件名稱,附件連結\n2026-06-20,A,B,,通知單,https://drive.google.com/x\n';
+    expect(parseAnnouncementsCsv(csv)[0].attachment).toEqual({ name: '通知單', url: 'https://drive.google.com/x' });
+  });
+  it('falls back to the title when 附件名稱 is blank', () => {
+    const csv = '日期,標題,內容,置頂,附件名稱,附件連結\n2026-06-20,成果發表,B,,,https://drive.google.com/x\n';
+    expect(parseAnnouncementsCsv(csv)[0].attachment).toEqual({ name: '成果發表', url: 'https://drive.google.com/x' });
+  });
+  it('is null with no link (backward compatible with 4-column sheets)', () => {
+    const csv = '日期,標題,內容,置頂\n2026-06-20,A,B,\n';
+    expect(parseAnnouncementsCsv(csv)[0].attachment).toBe(null);
+  });
+  it('is null when the link is unsafe', () => {
+    const csv = '日期,標題,內容,置頂,附件名稱,附件連結\n2026-06-20,A,B,,x,javascript:alert(1)\n';
+    expect(parseAnnouncementsCsv(csv)[0].attachment).toBe(null);
   });
 });
