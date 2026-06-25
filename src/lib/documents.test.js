@@ -72,4 +72,12 @@ describe('buildDocumentList', () => {
   it('handles empty inputs', () => {
     expect(buildDocumentList([], [])).toEqual([]);
   });
+  it('sorts mixed slash/dash/unpadded date formats correctly', () => {
+    const docs = [
+      { date: '2026-06-01', name: 'dash-early', pinned: false, source: 'document' },
+      { date: '2026/06/25', name: 'slash-late', pinned: false, source: 'document' },
+      { date: '2026/6/10', name: 'slash-mid', pinned: false, source: 'document' },
+    ];
+    expect(buildDocumentList([], docs).map((d) => d.name)).toEqual(['slash-late', 'slash-mid', 'dash-early']);
+  });
 });

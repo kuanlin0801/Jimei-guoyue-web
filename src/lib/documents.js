@@ -53,11 +53,19 @@ export function announcementToDoc(a) {
   };
 }
 
-// 依日期降冪、相同日期維持輸入順序（穩定）。
+// 把日期正規化成可比較的 YYYYMMDD（容錯 2026/06/25、2026-6-5、2026.6.5 等格式）。
+function dateKey(s) {
+  const parts = String(s ?? '').match(/\d+/g);
+  if (!parts || parts.length < 3) return '';
+  const [y, m, d] = parts;
+  return y.padStart(4, '0') + m.padStart(2, '0') + d.padStart(2, '0');
+}
+
+// 依日期降冪、相同日期維持輸入順序（穩定）；日期格式正規化後再比較。
 function byDateDesc(items) {
   return items
-    .map((it, i) => [it, i])
-    .sort((a, b) => (a[0].date < b[0].date ? 1 : a[0].date > b[0].date ? -1 : a[1] - b[1]))
+    .map((it, i) => [it, dateKey(it.date), i])
+    .sort((a, b) => (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : a[2] - b[2]))
     .map(([it]) => it);
 }
 

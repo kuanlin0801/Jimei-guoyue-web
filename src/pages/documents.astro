@@ -35,7 +35,8 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 </script>
-<style>
+<style is:global>
+  /* 卡片由 client script 以 innerHTML 注入，需全域樣式才套得到（同首頁近期行程） */
   .doc{display:flex;gap:.8rem;align-items:center;text-decoration:none;color:inherit}
   .doc:hover{border-color:var(--gold)}
   .doc-type{background:var(--brand);color:#fff;font-size:.7rem;padding:.2rem .5rem;border-radius:6px;flex-shrink:0}
