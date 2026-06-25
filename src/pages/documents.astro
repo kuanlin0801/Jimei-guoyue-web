@@ -1,25 +1,44 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { documents } from '../data/documents.js';
 ---
 <Layout title="文件下載">
   <h1>文件下載</h1>
   <p class="muted">通知單、樂譜、報名與繳費表單。點擊在 Google 雲端硬碟開啟／下載。</p>
-  <div class="grid cols-2">
-    {documents.map((d) => (
-      <a class="card doc" href={d.url} target="_blank" rel="noopener noreferrer">
-        <span class="doc-type">{d.type}</span>
-        <span>
-          <strong>{d.title}</strong>
-          {d.note && <p class="muted">{d.note}</p>}
-        </span>
-      </a>
-    ))}
-  </div>
+  <div id="documents" class="grid cols-2"><p class="muted">載入中…</p></div>
 </Layout>
+<script>
+  import { fetchAnnouncements } from '../lib/announcements.js';
+  import { parseDocumentsCsv, buildDocumentList } from '../lib/documents.js';
+  const el = document.getElementById('documents');
+  if (el) {
+    const annUrl = import.meta.env.PUBLIC_ANNOUNCEMENTS_CSV || '/sample-announcements.csv';
+    const docUrl = import.meta.env.PUBLIC_DOCUMENTS_CSV || '/sample-documents.csv';
+    const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+    try {
+      const [anns, docText] = await Promise.all([
+        fetchAnnouncements(annUrl),
+        fetch(docUrl).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.text(); }),
+      ]);
+      const items = buildDocumentList(anns, parseDocumentsCsv(docText));
+      el.innerHTML = items.length
+        ? items.map((d) => {
+            const pin = d.pinned ? '<span class="pin">📌</span> ' : '';
+            const note = d.note ? `<p class="muted">${esc(d.note)}</p>` : '';
+            const inner = `<span class="doc-type">${esc(d.type)}</span><span>${pin}<strong>${esc(d.name)}</strong>${note}<time class="doc-date">${esc(d.date)}</time></span>`;
+            return d.url
+              ? `<a class="card doc" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${inner}</a>`
+              : `<div class="card doc">${inner}<span class="muted">（連結無效）</span></div>`;
+          }).join('')
+        : '<p class="muted">目前沒有文件。</p>';
+    } catch (e) {
+      el.innerHTML = '<p class="muted">文件載入失敗，請稍後再試。</p>';
+    }
+  }
+</script>
 <style>
   .doc{display:flex;gap:.8rem;align-items:center;text-decoration:none;color:inherit}
   .doc:hover{border-color:var(--gold)}
   .doc-type{background:var(--brand);color:#fff;font-size:.7rem;padding:.2rem .5rem;border-radius:6px;flex-shrink:0}
   .doc p{margin:.15rem 0 0}
+  .doc-date{display:block;font-size:.75rem;color:var(--muted,#777);margin-top:.15rem}
 </style>
