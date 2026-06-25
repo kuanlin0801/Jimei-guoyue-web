@@ -36,15 +36,16 @@
 - 流程：在 **GitHub Desktop 按 Push** → Cloudflare 自動 `npm run build` 重新部署，**不需手動操作 Cloudflare**。
 - **環境變數**（皆為 Astro build 時嵌入的 `PUBLIC_*`）：設在 Cloudflare **Settings → Build → Variables and secrets**（build 變數區，**非** runtime 那欄——靜態資產 Worker 的 runtime 變數是鎖住的）；改完需**重新部署**才生效。
   - `PUBLIC_GOOGLE_API_KEY`：首頁「近期行程」讀 Google Calendar API 用（限本站 referrer＋只開 Calendar API、唯讀）。**已設定** ✓
-  - `PUBLIC_ANNOUNCEMENTS_CSV`：公告真實來源（未設則 fallback `/sample-announcements.csv`）。**目前未設 → 線上「最新公告」仍是範例資料**；備妥公告試算表 CSV 後設此變數即可切換。
+  - `PUBLIC_ANNOUNCEMENTS_CSV`：公告真實來源（未設則 fallback `/sample-announcements.csv`）。**已設定** ✓ → 線上「最新公告」已切到社團公告試算表（published CSV，含「置頂」欄）；本次只接通管道，試算表暫只有表頭故線上顯示空狀態。⚠️ Google 對 published CSV 有 `max-age=300` 快取，幹部更新後約 5 分鐘內才反映。
 
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
 - **行事曆**已接上三個社團 Google 日曆 ✓（國樂團／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `src/data/calendars.js` 單一來源管理，各日曆已設公開「查看完整內容」）。
 - **首頁近期行程**已上線 ✓（前端讀 Google Calendar API 顯示未來 5 筆；純邏輯在 `src/lib/events.js`＋vitest，未設金鑰時 fallback `src/data/sample-events.js`）。設計見 `docs/superpowers/specs/2026-06-25-home-upcoming-events-design.md`。
+- **公告**已接真實公告試算表 ✓（瀏覽器端 fetch published CSV → `esc()` 防 XSS、置頂欄填 `V`；本次只接通管道、試算表暫只有表頭故顯示空狀態）。設計見 `docs/superpowers/specs/2026-06-25-announcements-go-live-design.md`、操作清單 `docs/superpowers/plans/2026-06-25-announcements-go-live-checklist.md`。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
   - `src/components/Footer.astro`：學校全名、聯絡窗口、Email（目前佔位）
-  - Google 連結：公告試算表（需含「置頂」欄）、活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）、成果（`achievements.js`）
+  - Google 連結：活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）、成果（`achievements.js`）
 - Phase 3（尚未做）：練習資源、常見問題 FAQ。
