@@ -76,7 +76,7 @@ const sections = [
     try {
       const items = pinnedFirst(await fetchAnnouncements(url)).slice(0, 4);
       el.innerHTML = items.length
-        ? items.map((a) => `<article class="card">${a.pinned ? '<span class="pin">📌 置頂</span> ' : ''}<time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p></article>`).join('')
+        ? items.map((a) => `<article class="card">${a.pinned ? '<span class="pin">📌 置頂</span> ' : ''}<time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${a.attachment ? `<p class="att"><a href="${esc(a.attachment.url)}" target="_blank" rel="noopener noreferrer">📎 ${esc(a.attachment.name)}</a></p>` : ''}</article>`).join('')
         : '<p class="muted">目前沒有公告。</p>';
     } catch (e) {
       el.innerHTML = '<p class="muted">公告載入失敗。</p>';
