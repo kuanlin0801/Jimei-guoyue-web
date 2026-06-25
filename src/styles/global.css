@@ -34,3 +34,6 @@ time{color:var(--brand);font-weight:500}
 .board-row .ok{color:#2e7d32;font-weight:700}
 .board-row .need{color:#b25e00;font-weight:700}
 .board-thanks{margin-top:.6rem}
+.cal-legend{list-style:none;display:flex;flex-wrap:wrap;gap:.45rem 1.25rem;padding:0;margin:0 0 .9rem}
+.cal-legend li{display:flex;align-items:center;gap:.45rem;font-size:.95rem;color:var(--text)}
+.cal-legend .dot{width:.8rem;height:.8rem;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.15)}

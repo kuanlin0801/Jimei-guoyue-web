@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { calendars } from '../data/calendars.js';
 const sections = [
   { href: '/calendar', icon: '📅', title: '行事曆', desc: '練習、活動、比賽、演出時間' },
   { href: '/announcements', icon: '📢', title: '最新公告', desc: '通知、提醒、臨時異動' },
@@ -11,7 +12,17 @@ const sections = [
   <section class="hero card">
     <h1>集美國小國樂團</h1>
     <p class="muted hero-sub">學生家長社團 ・ 社團的資訊家：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
-    <a class="btn" href="/calendar">看近期行事曆</a>
+  </section>
+
+  <h2 style="margin-top:2rem">近期行程</h2>
+  <section class="card upcoming">
+    <ul class="cal-legend">
+      {calendars.map((c) => (
+        <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
+      ))}
+    </ul>
+    <div id="home-events"><p class="muted">載入中…</p></div>
+    <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
   </section>
 
   <h2 style="margin-top:2rem">最新公告</h2>
@@ -27,6 +38,35 @@ const sections = [
     ))}
   </div>
 </Layout>
+<script>
+  import { calendars } from '../data/calendars.js';
+  import { fetchUpcoming, toUpcoming, takeNext, formatMonthDay, formatWeekday, formatTime } from '../lib/events.js';
+  import { sampleEvents } from '../data/sample-events.js';
+
+  const el = document.getElementById('home-events');
+  const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+  const rowHtml = (ev) =>
+    `<div class="ev-row"><div class="ev-date"><div class="md">${esc(formatMonthDay(ev.at))}</div><div class="wd">${esc(formatWeekday(ev.at))}</div></div><span class="ev-dot" style="background:${ev.color}"></span><div class="ev-title">${esc(ev.title)}</div><div class="ev-time">${esc(formatTime(ev))}</div></div>`;
+
+  if (el) {
+    const apiKey = import.meta.env.PUBLIC_GOOGLE_API_KEY;
+    const now = new Date();
+    try {
+      let events, isSample = false;
+      if (apiKey) {
+        events = await fetchUpcoming(calendars, { apiKey, now, count: 5 });
+      } else {
+        events = takeNext(toUpcoming(sampleEvents(now), now), 5);
+        isSample = true;
+      }
+      el.innerHTML = events.length
+        ? events.map(rowHtml).join('') + (isSample ? '<p class="upcoming-sample">（範例資料，設定 API 金鑰後顯示真實行程）</p>' : '')
+        : '<p class="muted">近期暫無安排，請見完整行事曆。</p>';
+    } catch (e) {
+      el.innerHTML = '<p class="muted">行程載入失敗。</p>';
+    }
+  }
+</script>
 <script>
   import { fetchAnnouncements, pinnedFirst } from '../lib/announcements.js';
   const el = document.getElementById('home-announcements');
@@ -46,9 +86,23 @@ const sections = [
 <style>
   .hero{text-align:center}
   .hero h1{margin:.2rem 0 .45rem}
-  .hero-sub{max-width:34rem;margin:0 auto 1.15rem}
+  .hero-sub{max-width:34rem;margin:0 auto}
   .section-link{display:flex;gap:.8rem;align-items:flex-start;text-decoration:none;color:inherit}
   .section-link:hover{border-color:var(--gold)}
   .section-icon{font-size:1.6rem;line-height:1}
   .section-link p{margin:.2rem 0 0}
+</style>
+<style is:global>
+  /* 近期行程列由 client script 以 innerHTML 注入，需用全域樣式才套得到 */
+  .ev-row{display:flex;align-items:center;gap:.8rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
+  .ev-row:last-child{border-bottom:none}
+  .ev-date{flex:none;width:3rem;text-align:center;line-height:1.15}
+  .ev-date .md{font-weight:600;color:var(--ink)}
+  .ev-date .wd{font-size:.72rem;color:var(--muted)}
+  .ev-dot{width:.6rem;height:.6rem;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
+  .ev-title{flex:1;min-width:0}
+  .ev-time{flex:none;font-size:.85rem;color:var(--muted)}
+  .upcoming-more{display:inline-block;margin-top:.7rem;font-size:.9rem;color:var(--brand);text-decoration:none}
+  .upcoming-more:hover{text-decoration:underline}
+  .upcoming-sample{font-size:.75rem;color:var(--muted);margin:.6rem 0 0}
 </style>

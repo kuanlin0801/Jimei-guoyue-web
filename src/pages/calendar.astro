@@ -1,15 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-// 行事曆清單：要增刪日曆只改這個陣列即可（例如暑訓每年加回／移除）。
-// 取得 ID：Google 日曆 → 設定 → 該日曆「整合日曆」→ 日曆 ID（…@group.calendar.google.com）。
-// color 用 Google 嵌入支援的色票；name 用於下方自訂圖例。
-// ⚠️ 每個日曆需在 Google「活動的存取權限」設為「公開供大眾使用」，網站訪客才看得到活動。
-const calendars = [
-  { name: '集美國樂團',     id: '22c5761d79fad72e0446bf355a9e95bc5316d127709efa635a3ffa4d8f67d027@group.calendar.google.com', color: '#e4c441' },
-  { name: '集美古箏/提琴',  id: 'ae55bd08ac5c4362f5e8443a73480aa86a955b8ce09acc62fc3aa0d4b4ede7d2@group.calendar.google.com', color: '#f09300' },
-  { name: '集美國樂團暑訓', id: '617ff5ed5f1de469bf47541c15ceaa4d798ec9268a8bd3049d5354e68fd31fa0@group.calendar.google.com', color: '#c0ca33' },
-];
+import { calendars } from '../data/calendars.js';
 
 const params = new URLSearchParams();
 params.set('ctz', 'Asia/Taipei');
@@ -41,9 +32,6 @@ const configured = calendars.length > 0;
   )}
 </Layout>
 <style>
-  .cal-legend{list-style:none;display:flex;flex-wrap:wrap;gap:.45rem 1.25rem;padding:0;margin:0 0 .9rem}
-  .cal-legend li{display:flex;align-items:center;gap:.45rem;font-size:.95rem;color:var(--text)}
-  .cal-legend .dot{width:.8rem;height:.8rem;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.15)}
   .cal-wrap{padding:.5rem}
   .cal-wrap iframe{display:block;border-radius:8px}
   @media (max-width:640px){
