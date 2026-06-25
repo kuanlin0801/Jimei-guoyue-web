@@ -39,8 +39,9 @@
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
+- **行事曆**已接上三個社團 Google 日曆 ✓（國樂團／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `calendar.astro` 的 `calendars` 陣列管理，各日曆已設公開「查看完整內容」）。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
   - `src/components/Footer.astro`：學校全名、聯絡窗口、Email（目前佔位）
-  - Google 連結：日曆（`calendar.astro` 的 `CALENDAR_EMBED_SRC`）、公告試算表（需含「置頂」欄）、活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）、成果（`achievements.js`）
+  - Google 連結：公告試算表（需含「置頂」欄）、活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）、成果（`achievements.js`）
 - Phase 3（尚未做）：練習資源、常見問題 FAQ。
