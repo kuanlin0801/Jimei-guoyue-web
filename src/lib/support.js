@@ -25,7 +25,8 @@ function dateKey(s) {
 }
 
 function makeJob({ label, target, assigned, claimers, activityOpen }) {
-  const names = [...assigned, ...claimers];
+  // 同一稱呼在同一工作只算一次（試算表保留原始列，看板去重呈現與計數）。
+  const names = [...new Set([...assigned, ...claimers])];
   const signed = names.length;
   const assignedFixed = assigned.length > 0;
   const enough = assignedFixed || (target != null && signed >= target);

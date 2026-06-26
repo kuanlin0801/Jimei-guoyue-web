@@ -78,17 +78,24 @@ import Layout from '../layouts/Layout.astro';
   }
 
   let lastJson = '';
+  let rendering = false;
   async function render() {
+    // 避免輪詢與送出後重整重疊觸發的並行 render。
+    if (rendering) return;
     // 使用者正在輸入時不要重繪，以免清掉打到一半的字。
     if (root.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
+    rendering = true;
     try {
       const view = buildSupportView(await loadData());
       const snapshot = JSON.stringify(view);
-      if (snapshot === lastJson) return;
-      lastJson = snapshot;
-      root.innerHTML = view.length ? view.map(cardHtml).join('') : '<p class="muted">目前沒有需要支援的活動。</p>';
+      if (snapshot !== lastJson) {
+        lastJson = snapshot;
+        root.innerHTML = view.length ? view.map(cardHtml).join('') : '<p class="muted">目前沒有需要支援的活動。</p>';
+      }
     } catch (e) {
       if (!lastJson) root.innerHTML = '<p class="muted">看板載入失敗，請稍後再試。</p>';
+    } finally {
+      rendering = false;
     }
   }
 

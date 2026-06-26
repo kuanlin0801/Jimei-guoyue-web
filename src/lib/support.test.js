@@ -59,10 +59,10 @@ describe('buildSupportView — 分工', () => {
     expect(j).toMatchObject({ assignedFixed: true, enough: true, canClaim: false });
     expect(j.names).toEqual(['黃子玉']);
   });
-  it('開放工作：依報名計算 signed/short，未滿可認領', () => {
+  it('開放工作：同一稱呼去重後計 signed/short，未滿可認領', () => {
     const j = job(find(buildSupportView(data), '新生準備日'), '搬樂器');
-    expect(j.names).toEqual(['王爸', '王爸']); // 純邏輯不去重，呈現層處理
-    expect(j).toMatchObject({ target: 4, signed: 2, short: 2, enough: false, canClaim: true });
+    expect(j.names).toEqual(['王爸']); // 同一稱呼同一工作只算一次
+    expect(j).toMatchObject({ target: 4, signed: 1, short: 3, enough: false, canClaim: true });
   });
   it('開放工作達標：足夠、不可認領', () => {
     const j = job(find(buildSupportView(data), '新生準備日'), '攝影');
