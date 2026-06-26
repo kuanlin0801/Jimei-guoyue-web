@@ -36,15 +36,23 @@ function readSheet(ss, name) {
   if (!sh) return [];
   const values = sh.getDataRange().getValues();
   if (values.length < 2) return [];
+  const tz = ss.getSpreadsheetTimeZone();
   const headers = values[0].map((h) => String(h).trim());
   return values
     .slice(1)
     .map((row) => {
       const o = {};
-      headers.forEach((h, i) => { o[h] = row[i] == null ? '' : String(row[i]).trim(); });
+      headers.forEach((h, i) => { o[h] = cellToString(row[i], tz); });
       return o;
     })
     .filter((o) => Object.values(o).some((v) => v !== ''));
+}
+
+// 日期欄在試算表是「日期物件」，直接轉字串會變 "Mon Jun 29 2026..."；統一格式成 yyyy-MM-dd。
+function cellToString(v, tz) {
+  if (v == null) return '';
+  if (v instanceof Date) return Utilities.formatDate(v, tz, 'yyyy-MM-dd');
+  return String(v).trim();
 }
 
 function json(obj) {
