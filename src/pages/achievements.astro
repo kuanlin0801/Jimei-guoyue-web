@@ -1,26 +1,92 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { achievements } from '../data/achievements.js';
+import { performances, teamAwards, soloAwardGroups } from '../data/achievements.js';
 ---
 <Layout title="成果與榮譽">
   <h1>成果與榮譽</h1>
-  <p class="muted">歷年比賽得獎與重要演出紀錄。</p>
-  {achievements.length === 0 && <p class="muted">尚未有紀錄。</p>}
-  <ol class="timeline">
-    {achievements.map((a) => (
-      <li class="card ach">
-        <span class="ach-year">{a.year}</span>
-        <div>
-          <strong>{a.title}</strong>
-          {a.detail && <p class="muted">{a.detail}</p>}
-        </div>
-      </li>
+  <p class="muted intro">集美國小國樂團歷年競賽榮譽與公開演出紀錄。</p>
+
+  <section class="ach-block">
+    <h2>競賽榮譽</h2>
+
+    <h3 class="ach-sub">樂團團體獎</h3>
+    <ul class="awards">
+      {teamAwards.map((a) => (
+        <li class="card award">
+          <span class={`badge ${a.tier}`}>{a.result}</span>
+          <div class="award-body">
+            <strong>{a.competition}</strong>
+            <span class="meta muted">{a.year}｜{a.item}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="ach-sub">個人獎</h3>
+    {soloAwardGroups.map((g) => (
+      <div class="solo-group">
+        <h4 class="solo-title">{g.group}</h4>
+        <ul class="awards">
+          {g.awards.map((a) => (
+            <li class="card award">
+              <span class={`badge ${a.tier}`}>{a.result}</span>
+              <div class="award-body">
+                <strong>{a.name}<span class="item">{a.item}</span></strong>
+                <span class="meta muted">{a.year}{a.note ? `・${a.note}` : ''}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     ))}
-  </ol>
+  </section>
+
+  <section class="ach-block">
+    <h2>演出紀錄</h2>
+    <ol class="timeline">
+      {performances.map((p) => (
+        <li class="card ach">
+          <span class="ach-year">{p.date}</span>
+          <div>
+            <strong>{p.title}</strong>
+            {p.venue && <p class="muted">{p.venue}{p.note ? `・${p.note}` : ''}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
 </Layout>
 <style>
-  .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
-  .ach{display:flex;gap:1rem;align-items:flex-start}
-  .ach-year{background:var(--brand);color:#fff;font-weight:700;border-radius:8px;padding:.25rem .6rem;flex-shrink:0}
+  .intro{margin-top:-.4rem}
+  .ach-block{margin-top:2rem}
+  .ach-block h2{font-size:1.3rem;border-bottom:2px solid var(--line);padding-bottom:.35rem;margin-bottom:1rem}
+  .ach-sub{font-size:1.05rem;color:var(--brand-dark);margin:1.25rem 0 .6rem}
+
+  .awards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
+  .award{display:grid;grid-template-columns:7.1rem 1fr;gap:.85rem;align-items:center;padding:.65rem .95rem}
+  .award-body{display:flex;flex-direction:column;min-width:0}
+  .award-body .item{color:var(--text);font-weight:400;margin-left:.5rem}
+  .award-body .meta{font-size:.8rem;margin-top:.1rem}
+
+  .badge{justify-self:start;display:inline-flex;align-items:center;justify-content:center;min-width:3.6rem;
+    padding:.32rem .6rem;border-radius:999px;font-weight:700;font-size:.82rem;line-height:1.2;text-align:center}
+  .badge.gold{background:var(--gold);color:#3a2c08}
+  .badge.silver{background:#C9CDD4;color:#2f3338}
+  .badge.bronze{background:#D49A63;color:#3a2407}
+  .badge.normal{background:var(--paper);border:1px solid var(--line);color:var(--muted)}
+
+  .solo-group{margin-bottom:1rem}
+  .solo-title{font-size:.95rem;margin:.95rem 0 .5rem;color:var(--ink);display:flex;align-items:center;gap:.5rem}
+  .solo-title::before{content:"";width:.5rem;height:1rem;background:var(--brand);border-radius:2px;display:inline-block}
+
+  .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
+  .ach{display:grid;grid-template-columns:7.1rem 1fr;gap:.85rem;align-items:center;padding:.65rem .95rem}
+  .ach-year{justify-self:start;background:var(--brand);color:#fff;font-weight:700;border-radius:8px;padding:.28rem .55rem;text-align:center;font-size:.86rem;white-space:nowrap}
   .ach p{margin:.15rem 0 0}
+
+  @media(max-width:520px){
+    .award,.ach{gap:.65rem}
+    .award-body .item{margin-left:0;display:block}
+    .ach-year{font-size:.78rem;padding:.28rem .4rem}
+  }
 </style>
