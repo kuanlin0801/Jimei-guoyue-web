@@ -45,7 +45,7 @@ import Layout from '../layouts/Layout.astro';
   }
   function claimForm(act, label, btn) {
     return `<form class="claim" data-activity="${esc(act.name)}" data-job="${esc(label)}">`
-      + `<input name="name" placeholder="您的稱呼，例：侑亭媽" required maxlength="50">`
+      + `<input name="name" placeholder="您的稱呼，例：林霏媽" required maxlength="50">`
       + `<button>${esc(btn)}</button></form>`;
   }
   function jobRow(act, j) {
