@@ -15,7 +15,7 @@
 
 ## 目錄結構
 - `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（關於我們）、documents、gallery（相簿）、achievements（成果）
-- `src/layouts/Layout.astro` — 共用版型
+- `src/layouts/Layout.astro` — 共用版型；含 `<title>`、`description` 與連結預覽用的 Open Graph／Twitter Card meta（`og:image` 為站上 `logo.png`，需 `astro.config.mjs` 的 `site` 才能產生絕對網址）。首頁不傳 `title`，故標題僅「集美國小國樂團」；其餘頁為「XXX｜集美國小國樂團」。
 - `src/components/` — Header.astro（淺色 header＋左上 logo 品牌＋導覽）、Footer.astro（頁尾聯絡）
 - `src/lib/` — 純邏輯：`csv.js`（splitCsvLine／parseCsvRows／isSafeHref）、`announcements.js`、`documents.js`、`support.js`，各有 `*.test.js`
 - `src/data/*.js` — 半靜態內容資料檔：club、teachers、officers、albums、achievements、support-events
@@ -33,7 +33,8 @@
 
 ## 部署
 - 已上線：**https://jimei-guoyue-web.kuan-lin.workers.dev**（Cloudflare，與 GitHub 連動）
-- 流程：在 **GitHub Desktop 按 Push** → Cloudflare 自動 `npm run build` 重新部署，**不需手動操作 Cloudflare**。
+- 流程：在 **GitHub Desktop 按 Push** → Cloudflare 自動 `npm run build` 重新部署，**不需手動操作 Cloudflare**。⚠️ 正式站從 **`main`** 部署；功能分支的修改要等併入 `main` 才會上線。
+- ⚠️ **連結預覽快取**：LINE／Messenger 等聊天 App 會快取每個網址的預覽卡片（抓 `<title>`／OG meta）。改了站名／標題後，舊網址可能仍顯示舊文字；要立即看到新版就在網址後加沒貼過的參數（如 `?v=3`）或等其快取過期。`astro.config.mjs` 已設 `site`。
 - **環境變數**（皆為 Astro build 時嵌入的 `PUBLIC_*`）：設在 Cloudflare **Settings → Build → Variables and secrets**（build 變數區，**非** runtime 那欄——靜態資產 Worker 的 runtime 變數是鎖住的）；改完需**重新部署**才生效。
   - `PUBLIC_GOOGLE_API_KEY`：首頁「近期行程」讀 Google Calendar API 用（限本站 referrer＋只開 Calendar API、唯讀）。**已設定** ✓
   - `PUBLIC_ANNOUNCEMENTS_CSV`：公告真實來源（未設則 fallback `/sample-announcements.csv`）。**已設定** ✓ → 線上「最新公告」已切到社團公告試算表（published CSV，含「置頂」欄）；本次只接通管道，試算表暫只有表頭故線上顯示空狀態。⚠️ Google 對 published CSV 有 `max-age=300` 快取，幹部更新後約 5 分鐘內才反映。公告試算表現可選填 `附件名稱`/`附件連結` 兩欄（公告附件功能）。
@@ -42,6 +43,7 @@
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
+- **連結預覽 meta** 已上線 ✓（`Layout.astro` 加 Open Graph／Twitter Card＋`canonical`、`astro.config.mjs` 設 `site`；分享卡片含 logo 縮圖、標題為「集美國小國樂團」）。首頁標題已移除「首頁」前綴。
 - **行事曆**已接上三個社團 Google 日曆 ✓（國樂團／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `src/data/calendars.js` 單一來源管理，各日曆已設公開「查看完整內容」）。
 - **首頁近期行程**已上線 ✓（前端讀 Google Calendar API 顯示未來 5 筆；純邏輯在 `src/lib/events.js`＋vitest，未設金鑰時 fallback `src/data/sample-events.js`）。設計見 `docs/superpowers/specs/2026-06-25-home-upcoming-events-design.md`。
 - **公告**已接真實公告試算表 ✓（瀏覽器端 fetch published CSV → `esc()` 防 XSS、置頂欄填 `V`；本次只接通管道、試算表暫只有表頭故顯示空狀態）。設計見 `docs/superpowers/specs/2026-06-25-announcements-go-live-design.md`、操作清單 `docs/superpowers/plans/2026-06-25-announcements-go-live-checklist.md`。
