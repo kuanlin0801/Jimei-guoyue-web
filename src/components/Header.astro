@@ -25,7 +25,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   </div>
 </header>
 <style>
-  .site-header{background:var(--paper-card);border-bottom:1px solid var(--line)}
+  .site-header{background:var(--paper-card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1000;box-shadow:0 1px 6px rgba(0,0,0,.06)}
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-top:.5rem;padding-bottom:.5rem}
   .brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--ink)}
   .brand-logo{height:44px;width:auto;display:block}
