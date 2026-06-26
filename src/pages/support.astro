@@ -1,57 +1,129 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { supportEvents } from '../data/support-events.js';
 ---
 <Layout title="活動支援">
   <h1>活動支援</h1>
-  <p class="muted">需要家長到場支援的活動。點「我要報名支援」填表單，下方看板會即時顯示目前報名狀況與還缺的人手。</p>
-
-  {supportEvents.length === 0 && <p class="muted">目前沒有需要支援的活動。</p>}
-
-  {supportEvents.map((ev) => (
-    <section class="card support-event">
-      <h2>{ev.name}</h2>
-      <p><time>{ev.date}</time></p>
-      {ev.formUrl
-        ? <a class="btn" href={ev.formUrl} target="_blank" rel="noopener noreferrer">我要報名支援</a>
-        : <span class="muted">報名表單尚未設定</span>}
-      <div class="board" data-board={ev.id}><p class="muted">看板載入中…</p></div>
-    </section>
-  ))}
-
-  <script type="application/json" id="support-config" set:html={JSON.stringify(supportEvents).replace(/</g, '\\u003c')} />
+  <p class="muted">需要家長到場支援的活動。直接在下方填稱呼送出即可報名／認領，看板會即時更新。</p>
+  <div id="support"><p class="muted">看板載入中…</p></div>
 </Layout>
 <script>
-  import { summarizeSupport } from '../lib/support.js';
-  const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
-  const cfgEl = document.getElementById('support-config');
-  const events = cfgEl ? JSON.parse(cfgEl.textContent || '[]') : [];
-  for (const ev of events) {
-    const board = document.querySelector(`[data-board="${CSS.escape(ev.id)}"]`);
-    if (!board) continue;
-    if (!ev.responsesCsvUrl) {
-      board.innerHTML = '<p class="muted">報名看板尚未設定（待填入回覆 CSV 連結）。</p>';
-      continue;
+  import { parseCsvRows } from '../lib/csv.js';
+  import { buildSupportView } from '../lib/support.js';
+
+  const API_URL = import.meta.env.PUBLIC_SUPPORT_API_URL || '';
+  const TOKEN = import.meta.env.PUBLIC_SUPPORT_TOKEN || '';
+  const CSV = {
+    activities: import.meta.env.PUBLIC_SUPPORT_ACTIVITIES_CSV || '/sample-support-activities.csv',
+    jobs: import.meta.env.PUBLIC_SUPPORT_JOBS_CSV || '/sample-support-jobs.csv',
+    responses: import.meta.env.PUBLIC_SUPPORT_RESPONSES_CSV || '/sample-support-responses.csv',
+  };
+  const root = document.getElementById('support');
+  // 文字＋屬性都安全：innerHTML 跳脫 & < >，再補跳脫 " 供屬性使用。
+  const esc = (s) => { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML.replace(/"/g, '&quot;'); };
+
+  async function fetchViaApi() {
+    const res = await fetch(`${API_URL}?action=board`);
+    if (!res.ok) throw new Error(String(res.status));
+    const d = await res.json();
+    return { activities: d.activities || [], jobs: d.jobs || [], responses: d.responses || [] };
+  }
+  async function fetchViaCsv() {
+    const get = (u) => fetch(u).then((x) => (x.ok ? x.text() : Promise.reject(new Error(String(x.status)))));
+    const [a, j, r] = await Promise.all([get(CSV.activities), get(CSV.jobs), get(CSV.responses)]);
+    return { activities: parseCsvRows(a), jobs: parseCsvRows(j), responses: parseCsvRows(r) };
+  }
+  async function loadData() {
+    if (API_URL) { try { return await fetchViaApi(); } catch (e) { /* 退回 CSV */ } }
+    return await fetchViaCsv();
+  }
+
+  function progress(j) {
+    if (j.enough) return '<span class="ok">足夠 ✓</span>';
+    const target = j.target != null ? ` / 需 ${j.target}` : '';
+    const short = j.short ? `（還缺 ${j.short}）` : '';
+    return `<span class="need">已 ${j.signed}${target}${short}</span>`;
+  }
+  function claimForm(act, label, btn) {
+    return `<form class="claim" data-activity="${esc(act.name)}" data-job="${esc(label)}">`
+      + `<input name="name" placeholder="您的稱呼，例：侑亭媽" required maxlength="50">`
+      + `<button>${esc(btn)}</button></form>`;
+  }
+  function jobRow(act, j) {
+    if (j.assignedFixed) {
+      return `<div class="board-row"><span>${esc(j.label)}</span><span class="ok">${j.names.map(esc).join('、')} ✓</span></div>`;
     }
+    const names = j.names.length ? `<p class="muted board-thanks">${j.names.map(esc).join('、')}</p>` : '';
+    const form = j.canClaim ? claimForm(act, j.label, '認領') : '';
+    return `<div class="board-row"><span>${esc(j.label)}</span>${progress(j)}</div>${names}${form}`;
+  }
+  function rosterCard(act) {
+    const j = act.jobs[0];
+    const list = j.names.length
+      ? `<ol class="signup-list">${j.names.map((n) => `<li>${esc(n)}</li>`).join('')}</ol>`
+      : '<p class="muted">還沒有人報名，當第一個吧！</p>';
+    const form = j.canClaim
+      ? claimForm(act, '', '＋ 我要報名')
+      : (act.ended ? '' : '<p class="muted">名額已滿，感謝報名！</p>');
+    return list + `<div class="board-row"><span>目前報名</span>${progress(j)}</div>` + form;
+  }
+  function cardHtml(act) {
+    const badge = act.ended ? '<span class="pin">已結束</span>' : act.full ? '<span class="pin">額滿</span>' : '';
+    const meta = `<p><time>${esc(act.date)}</time>${act.time ? ` ${esc(act.time)}` : ''}</p>`;
+    const note = act.note ? `<p class="muted">${esc(act.note)}</p>` : '';
+    const line = act.lineUrl ? `<p><a href="${esc(act.lineUrl)}" target="_blank" rel="noopener noreferrer">LINE 討論串 ↗</a></p>` : '';
+    const body = act.type === '分工'
+      ? `<div class="board-row"><span>目前支援家長</span><span class="ok">${act.total} 位</span></div>` + act.jobs.map((j) => jobRow(act, j)).join('')
+      : rosterCard(act);
+    return `<section class="card support-event"><h2>${esc(act.name)} ${badge}</h2>${meta}${note}<div class="board">${body}</div>${line}</section>`;
+  }
+
+  let lastJson = '';
+  async function render() {
+    // 使用者正在輸入時不要重繪，以免清掉打到一半的字。
+    if (root.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
     try {
-      const res = await fetch(ev.responsesCsvUrl);
-      if (!res.ok) throw new Error(String(res.status));
-      const sum = summarizeSupport(await res.text(), ev.needs || []);
-      const rows = sum.byCategory.map((c) =>
-        `<div class="board-row"><span>${esc(c.label)}</span>` +
-        (c.enough
-          ? '<span class="ok">足夠 ✓</span>'
-          : `<span class="need">已報 ${c.signed} / 需 ${c.target}（還缺 ${c.short}）</span>`) +
-        '</div>'
-      ).join('');
-      const names = sum.names.length
-        ? `<p class="muted board-thanks">感謝支援：${sum.names.map(esc).join('、')}</p>`
-        : '';
-      board.innerHTML =
-        `<div class="board-row"><span>目前可支援家長</span><span class="ok">${sum.total} 位</span></div>` +
-        rows + names;
+      const view = buildSupportView(await loadData());
+      const snapshot = JSON.stringify(view);
+      if (snapshot === lastJson) return;
+      lastJson = snapshot;
+      root.innerHTML = view.length ? view.map(cardHtml).join('') : '<p class="muted">目前沒有需要支援的活動。</p>';
     } catch (e) {
-      board.innerHTML = '<p class="muted">看板載入失敗，請稍後再試。</p>';
+      if (!lastJson) root.innerHTML = '<p class="muted">看板載入失敗，請稍後再試。</p>';
     }
   }
+
+  async function onSubmit(form) {
+    const name = (form.querySelector('input[name="name"]').value || '').trim();
+    if (!name) return;
+    const activity = form.getAttribute('data-activity');
+    const job = form.getAttribute('data-job') || '';
+    const ack = document.createElement('p');
+    ack.className = 'muted';
+    ack.textContent = `已送出：${name}，感謝支援！`;
+    form.replaceWith(ack); // 樂觀更新
+    if (!API_URL) return;  // 開發環境（無後端）僅樂觀顯示
+    try {
+      await fetch(API_URL, { method: 'POST', body: new URLSearchParams({ action: 'signup', activity, job, name, token: TOKEN }) });
+    } catch (e) { /* 已樂觀顯示；下次輪詢以伺服器資料校正 */ }
+    lastJson = '';
+    setTimeout(render, 1500);
+  }
+
+  if (root) {
+    root.addEventListener('submit', (e) => {
+      if (e.target && e.target.classList.contains('claim')) { e.preventDefault(); onSubmit(e.target); }
+    });
+    render();
+    setInterval(() => { if (!document.hidden) render(); }, 30000);
+  }
 </script>
+<style is:global>
+  /* 卡片由 client script 以 innerHTML 注入，需全域樣式才套得到（同文件下載頁） */
+  .support-event h2{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .signup-list{margin:.3rem 0 .6rem;padding-left:1.5rem}
+  .signup-list li{padding:.15rem 0}
+  .claim{display:flex;gap:.4rem;margin:.3rem 0 .2rem}
+  .claim input{flex:1;min-width:0;padding:.4rem .6rem;border:1px solid var(--line);border-radius:8px;font:inherit}
+  .claim button{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:.4rem .9rem;font:inherit;cursor:pointer;white-space:nowrap}
+  .claim button:hover{background:var(--brand-dark)}
+</style>
