@@ -48,8 +48,9 @@
 - **首頁近期行程**已上線 ✓（前端讀 Google Calendar API 顯示未來 5 筆；純邏輯在 `src/lib/events.js`＋vitest，未設金鑰時 fallback `src/data/sample-events.js`）。設計見 `docs/superpowers/specs/2026-06-25-home-upcoming-events-design.md`。
 - **公告**已接真實公告試算表 ✓（瀏覽器端 fetch published CSV → `esc()` 防 XSS、置頂欄填 `V`；本次只接通管道、試算表暫只有表頭故顯示空狀態）。設計見 `docs/superpowers/specs/2026-06-25-announcements-go-live-design.md`、操作清單 `docs/superpowers/plans/2026-06-25-announcements-go-live-checklist.md`。
 - **公告附件＋文件下載整合**：程式完成 ✓（公告可夾帶一個 Google Drive 附件、點擊開啟，並自動與常設文件一起出現在改為動態的文件下載頁；置頂最前其餘依日期；外部 CSV 連結經 `isSafeHref` 防 `javascript:` 注入。純邏輯 `src/lib/documents.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-announcement-attachments*`）。⚠️ **上線待使用者操作**：公告試算表加 `附件名稱/附件連結` 兩欄、建「文件試算表」（日期/名稱/連結/類型/備註/置頂）、設 `PUBLIC_DOCUMENTS_CSV` 並重新部署。
+- **成果與榮譽**已是真實資料 ✓（從社團 FB 粉專逐張得獎／活動海報核對整理；`src/data/achievements.js` 拆成 `performances`／`teamAwards`／`soloAwardGroups` 三組，`achievements.astro` 分「競賽榮譽」「演出紀錄」兩區、名次用金銀銅 badge、各列固定 badge 欄對齊）。涵蓋絲竹合奏特優／優等第一名（113）等團體獎、卓越盃與全國器樂大賽北區等個人獎，及 2024–2026 共 11 場演出。⚠️ 樂團史其實可回溯 111 學年度（2022），早於粉專簡介「2024 全新登場」的行銷說法；目前依使用者選擇只列 2024 起，更早成果（如 111 傳統藝術盃擊鼓特優、2022 音樂會）尚未納入，未來可補。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
   - `src/components/Footer.astro`：學校全名、聯絡窗口、Email（目前佔位）
-  - Google 連結：活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）、成果（`achievements.js`）
+  - Google 連結：活動支援表單與回覆 CSV（`support-events.js`）、相簿（`albums.js`）
 - Phase 3（尚未做）：練習資源、常見問題 FAQ。
