@@ -22,8 +22,13 @@ function doPost(e) {
   const name = String(p.name || '').slice(0, 50).trim();
   if (!activity || !name) return json({ ok: false, error: 'missing fields' });
   const sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName('報名');
-  sh.appendRow([new Date(), activity, job, name]);
+  sh.appendRow([new Date(), sanitizeCell(activity), sanitizeCell(job), sanitizeCell(name)]);
   return json({ ok: true });
+}
+
+// 防試算表公式注入：開頭為 = + - @ 時前置單引號，幹部開試算表時不會被當公式執行。
+function sanitizeCell(s) {
+  return /^[=+\-@]/.test(s) ? "'" + s : s;
 }
 
 function readSheet(ss, name) {
