@@ -53,6 +53,6 @@
 - **成果與榮譽**已是真實資料 ✓（從社團 FB 粉專逐張得獎／活動海報核對整理；`src/data/achievements.js` 拆成 `performances`／`teamAwards`／`soloAwardGroups` 三組，`achievements.astro` 分「競賽榮譽」「演出紀錄」兩區、名次用金銀銅 badge、各列固定 badge 欄對齊）。涵蓋絲竹合奏特優／優等第一名（113）等團體獎、卓越盃與全國器樂大賽北區等個人獎，及 2024–2026 共 11 場演出。⚠️ 樂團史其實可回溯 111 學年度（2022），早於粉專簡介「2024 全新登場」的行銷說法；目前依使用者選擇只列 2024 起，更早成果（如 111 傳統藝術盃擊鼓特優、2022 音樂會）尚未納入，未來可補。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
-  - `src/components/Footer.astro`：學校全名、聯絡窗口、Email（目前佔位）
+  - `src/components/Footer.astro`：聯絡窗口（黃子玉 0968230563）＋ LINE QR（`public/line-qr.jpg`，取代原 Email）已填 ✓；僅「學校全名」一行依使用者選擇暫不放、未定
   - Google 連結：相簿（`albums.js`）
 - Phase 3（尚未做）：練習資源、常見問題 FAQ。
