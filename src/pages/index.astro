@@ -9,12 +9,9 @@ const sections = [
 ];
 ---
 <Layout>
-  <section class="hero card">
-    <h1>集美國小國樂團</h1>
-    <p class="muted hero-sub">學生家長社團 ・ 社團的資訊家：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
-  </section>
+  <p class="hero-sub muted">學生家長社團 ・ 社團的資訊家：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
 
-  <h2 style="margin-top:2rem">近期行程</h2>
+  <h2 style="margin-top:1.6rem">近期行程</h2>
   <section class="card upcoming">
     <ul class="cal-legend">
       {calendars.map((c) => (
@@ -84,9 +81,7 @@ const sections = [
   }
 </script>
 <style>
-  .hero{text-align:center}
-  .hero h1{margin:.2rem 0 .45rem}
-  .hero-sub{max-width:34rem;margin:0 auto}
+  .hero-sub{max-width:40rem;margin:.4rem 0 0;font-size:.95rem}
   .section-link{display:flex;gap:.8rem;align-items:flex-start;text-decoration:none;color:inherit}
   .section-link:hover{border-color:var(--gold)}
   .section-icon{font-size:1.6rem;line-height:1}
