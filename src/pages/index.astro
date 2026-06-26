@@ -11,7 +11,10 @@ const socials = [
 <Layout>
   <p class="hero-sub muted">學生家長社團 ・ 社團的資訊家：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
 
-  <h2 style="margin-top:1.6rem">近期行程</h2>
+  <h2 style="margin-top:1.6rem">最新公告</h2>
+  <div id="home-announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
+
+  <h2 style="margin-top:2rem">近期行程</h2>
   <section class="card upcoming">
     <ul class="cal-legend">
       {calendars.map((c) => (
@@ -21,9 +24,6 @@ const socials = [
     <div id="home-events"><p class="muted">載入中…</p></div>
     <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
   </section>
-
-  <h2 style="margin-top:2rem">最新公告</h2>
-  <div id="home-announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
 
   <h2 style="margin-top:2rem">追蹤我們</h2>
   <div class="grid cols-2">
