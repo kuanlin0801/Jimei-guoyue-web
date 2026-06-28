@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "build:intro": "node scripts/build-intro-images.mjs",
     "test": "vitest run"
   },
   "dependencies": {
