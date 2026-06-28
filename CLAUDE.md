@@ -45,7 +45,7 @@
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
 - **連結預覽 meta** 已上線 ✓（`Layout.astro` 加 Open Graph／Twitter Card＋`canonical`、`astro.config.mjs` 設 `site`；分享卡片含 logo 縮圖、標題為「集美國小國樂團」）。首頁標題已移除「首頁」前綴。
-- **行事曆**已接上四個社團 Google 日曆 ✓（國樂團／國樂團個別課／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `src/data/calendars.js` 單一來源管理）。各日曆需設公開「查看完整內容」才會顯示——前三個已設；國樂團個別課為 6/28（K260628A）新增，需確認其公開設定。
+- **行事曆**已接上四個社團 Google 日曆 ✓（國樂團／國樂團加強課／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `src/data/calendars.js` 單一來源管理）。各日曆需設公開「查看完整內容」才會顯示——前三個已設；國樂團加強課為 6/28（K260628A）新增，需確認其公開設定。
 - **首頁近期行程**已上線 ✓（前端讀 Google Calendar API 顯示未來 5 筆；純邏輯在 `src/lib/events.js`＋vitest，未設金鑰時 fallback `src/data/sample-events.js`）。設計見 `docs/superpowers/specs/2026-06-25-home-upcoming-events-design.md`。
 - **公告**已接真實公告試算表 ✓（瀏覽器端 fetch published CSV → `esc()` 防 XSS、置頂欄填 `V`；本次只接通管道、試算表暫只有表頭故顯示空狀態）。設計見 `docs/superpowers/specs/2026-06-25-announcements-go-live-design.md`、操作清單 `docs/superpowers/plans/2026-06-25-announcements-go-live-checklist.md`。
 - **公告附件＋文件下載整合**：程式完成 ✓（公告可夾帶一個 Google Drive 附件、點擊開啟，並自動與常設文件一起出現在改為動態的文件下載頁；置頂最前其餘依日期；外部 CSV 連結經 `isSafeHref` 防 `javascript:` 注入。純邏輯 `src/lib/documents.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-announcement-attachments*`）。⚠️ **上線待使用者操作**：公告試算表加 `附件名稱/附件連結` 兩欄、建「文件試算表」（日期/名稱/連結/類型/備註/置頂）、設 `PUBLIC_DOCUMENTS_CSV` 並重新部署。
