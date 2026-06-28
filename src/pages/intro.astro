@@ -1,0 +1,181 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { buildPages } from '../lib/flipbook.js';
+
+const TOTAL = 25;
+const pages = buildPages(TOTAL);
+---
+<Layout title="社團介紹">
+  <h1>社團介紹</h1>
+  <p class="muted">翻閱集美國小國樂團介紹（共 {TOTAL} 頁）。手機可左右滑動翻頁。</p>
+
+  <div class="flip-frame" id="flip-frame">
+    <div class="intro-controls" id="intro-controls" hidden>
+      <button class="btn ghost" id="btn-prev" type="button">◀ 上一頁</button>
+      <span class="page-label" id="page-label">1 / {TOTAL}</span>
+      <button class="btn ghost" id="btn-next" type="button">下一頁 ▶</button>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="btn-thumbs" type="button">縮圖</button>
+      <button class="btn ghost" id="btn-zoom" type="button">放大</button>
+      <button class="btn ghost" id="btn-fs" type="button">全螢幕</button>
+    </div>
+    <div class="flip-stage" id="flip-stage"></div>
+  </div>
+
+  <div class="thumbs" id="thumbs" hidden>
+    {pages.map((p) => (
+      <button class="thumb" type="button" data-index={p.index - 1} aria-label={p.alt}>
+        <img src={p.thumb} alt={p.alt} loading="lazy" />
+      </button>
+    ))}
+  </div>
+
+  <div class="intro-fallback" id="intro-fallback">
+    {pages.map((p) => <img src={p.src} alt={p.alt} loading="lazy" />)}
+  </div>
+
+  <div class="zoom-overlay" id="zoom-overlay" hidden>
+    <button class="zoom-close" id="zoom-close" type="button" aria-label="關閉放大">✕</button>
+    <div class="zoom-scroll"><img id="zoom-img" alt="" /></div>
+  </div>
+</Layout>
+
+<style>
+  /* class 上的 display:flex/grid 會蓋過 UA 的 [hidden]{display:none}，故明確讓 [hidden] 勝出 */
+  [hidden]{display:none!important}
+  .flip-frame{margin:1rem auto 0;max-width:1040px}
+  .intro-controls{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem}
+  .intro-controls .spacer{flex:1 1 auto}
+  .intro-controls .btn.ghost{background:var(--paper-card);color:var(--brand);border:1px solid var(--line);padding:.35rem .8rem;font-size:.9rem;cursor:pointer}
+  .intro-controls .btn.ghost:hover{background:var(--brand);color:#fff}
+  .intro-controls .btn.ghost:disabled{opacity:.4;cursor:default;background:var(--paper-card);color:var(--muted)}
+  .page-label{font-weight:700;color:var(--ink);min-width:4.5rem;text-align:center}
+  /* StPageFlip 為了 portrait 門檻會在台上寫 inline min-width:1000px；用 !important 蓋掉避免手機溢出 */
+  .flip-stage{width:100%;max-width:1400px;margin:0 auto;min-width:0!important;overflow:hidden}
+
+  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;margin-top:1rem;padding:1rem;background:var(--paper-card);border:1px solid var(--line);border-radius:12px}
+  .thumb{padding:0;border:2px solid transparent;border-radius:6px;background:none;cursor:pointer;line-height:0;overflow:hidden}
+  .thumb img{width:100%;height:auto;display:block}
+  .thumb:hover{border-color:var(--gold)}
+  .thumb.is-current{border-color:var(--brand)}
+
+  .intro-fallback{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:1rem}
+  .intro-fallback img{width:100%;max-width:1000px;height:auto;border:1px solid var(--line);border-radius:8px}
+
+  .zoom-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);display:flex}
+  .zoom-scroll{width:100%;height:100%;overflow:auto;touch-action:pinch-zoom;display:flex}
+  #zoom-img{margin:auto;width:1400px;max-width:96vw;height:auto;cursor:zoom-in}
+  #zoom-img.is-2x{max-width:none;width:1900px;cursor:zoom-out}
+  .zoom-close{position:fixed;top:.8rem;right:1rem;z-index:2001;width:2.4rem;height:2.4rem;border-radius:999px;border:none;background:rgba(255,255,255,.9);color:var(--ink);font-size:1.1rem;cursor:pointer}
+
+  /* 全螢幕（原生 API）＋無 API 時的填滿視窗退路 */
+  #flip-frame:fullscreen{background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:1rem;max-width:none}
+  #flip-frame:fullscreen .flip-stage{max-width:min(95vw,1400px)}
+  .flip-frame.fill-viewport{position:fixed;inset:0;z-index:1500;background:var(--paper);max-width:none;display:flex;flex-direction:column;justify-content:center;padding:1rem;overflow:auto}
+  .flip-frame.fill-viewport .flip-stage{max-width:min(95vw,1400px)}
+</style>
+
+<script>
+  import { PageFlip } from 'page-flip';
+  import { buildPages, formatPageLabel } from '../lib/flipbook.js';
+
+  const TOTAL = 25;
+  const pages = buildPages(TOTAL);
+
+  const $ = (id) => document.getElementById(id);
+  const stage = $('flip-stage');
+  const frame = $('flip-frame');
+  const controls = $('intro-controls');
+  const fallback = $('intro-fallback');
+  const label = $('page-label');
+  const btnPrev = $('btn-prev');
+  const btnNext = $('btn-next');
+  const btnThumbs = $('btn-thumbs');
+  const btnZoom = $('btn-zoom');
+  const btnFs = $('btn-fs');
+  const thumbs = $('thumbs');
+  const zoomOverlay = $('zoom-overlay');
+  const zoomImg = $('zoom-img');
+  const zoomClose = $('zoom-close');
+
+  const flip = new PageFlip(stage, {
+    width: 1000,
+    height: 563,
+    size: 'stretch',
+    minWidth: 1000, // 與 maxWidth 一起把 orientation 鎖在 portrait（單頁）：threshold = 2*minWidth = 2000 > 任何台寬
+    maxWidth: 1400,
+    minHeight: 180,
+    maxHeight: 788,
+    maxShadowOpacity: 0.5,
+    showCover: true,
+    usePortrait: true,
+    mobileScrollSupport: true,
+  });
+
+  flip.loadFromImages(pages.map((p) => p.src));
+
+  const current = () => flip.getCurrentPageIndex();
+
+  function syncUI() {
+    const idx = current();
+    label.textContent = formatPageLabel(idx + 1, TOTAL);
+    btnPrev.disabled = idx <= 0;
+    btnNext.disabled = idx >= TOTAL - 1;
+    thumbs.querySelectorAll('.thumb').forEach((t, i) => {
+      t.classList.toggle('is-current', i === idx);
+    });
+  }
+
+  // 只有 StPageFlip 成功 init 後才隱藏基礎層（init 不觸發＝退路續顯）
+  flip.on('init', () => {
+    controls.hidden = false;
+    fallback.hidden = true;
+    syncUI();
+  });
+  flip.on('flip', syncUI);
+
+  btnPrev.addEventListener('click', () => flip.flipPrev());
+  btnNext.addEventListener('click', () => flip.flipNext());
+
+  btnThumbs.addEventListener('click', () => { thumbs.hidden = !thumbs.hidden; });
+  thumbs.querySelectorAll('.thumb').forEach((t) => {
+    t.addEventListener('click', () => {
+      flip.flip(Number(t.dataset.index));
+      thumbs.hidden = true;
+    });
+  });
+
+  // 放大檢視
+  function openZoom() {
+    const p = pages[current()];
+    zoomImg.src = p.src;
+    zoomImg.alt = p.alt;
+    zoomImg.classList.remove('is-2x');
+    zoomOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeZoom() {
+    zoomOverlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+  btnZoom.addEventListener('click', openZoom);
+  zoomClose.addEventListener('click', closeZoom);
+  zoomOverlay.addEventListener('click', (e) => { if (e.target === zoomOverlay) closeZoom(); });
+  zoomImg.addEventListener('click', () => zoomImg.classList.toggle('is-2x'));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !zoomOverlay.hidden) closeZoom(); });
+
+  // 全螢幕（原生 API；不支援則退化為填滿視窗 class）
+  const canFs = !!(frame.requestFullscreen && document.exitFullscreen);
+  btnFs.addEventListener('click', () => {
+    if (canFs) {
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen();
+    } else {
+      frame.classList.toggle('fill-viewport');
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 120);
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 120);
+  });
+</script>
