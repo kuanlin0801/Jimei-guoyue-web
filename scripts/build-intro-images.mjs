@@ -7,7 +7,7 @@
 // 若給「含中文的絕對輸出路徑」會「Error opening output file」；相對 ASCII 路徑經由 cwd
 // 解析則正常。
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readdirSync } from 'node:fs';
+import { mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,17 +15,40 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const bin = process.env.PDFTOCAIRO || 'pdftocairo';
 const pdfRel = 'Reference/集美國小國樂介紹.pdf';
 const outRel = 'public/intro';
+const outDir = join(root, outRel);
+
+// 來源 PDF 中的空白頁（1-based）；產圖時略過、其餘頁重新編號為連續 1..N。
+// 換新版介紹時若無空白頁，改成空集合 new Set() 即可。
+const DROP = new Set([13, 15]);
+
+const pad = (n) => String(n).padStart(2, '0');
 const run = (args) => execFileSync(bin, args, { cwd: root, stdio: 'inherit' });
 
-mkdirSync(join(root, outRel), { recursive: true });
+mkdirSync(outDir, { recursive: true });
 
-// 整頁圖：約 1800px 寬、JPEG q85 → page-NN.jpg
-run(['-jpeg', '-scale-to-x', '1800', '-scale-to-y', '-1', '-jpegopt', 'quality=85', pdfRel, `${outRel}/page`]);
+// 清掉舊輸出，避免重新編號後殘留多餘頁（如舊的 page-24/25）或上次的暫存檔
+for (const f of readdirSync(outDir)) {
+  if (/^(page|thumb|_raw-page|_raw-thumb)-\d+\.jpg$/.test(f)) rmSync(join(outDir, f));
+}
 
-// 縮圖：約 320px 寬、JPEG q80 → thumb-NN.jpg
-run(['-jpeg', '-scale-to-x', '320', '-scale-to-y', '-1', '-jpegopt', 'quality=80', pdfRel, `${outRel}/thumb`]);
+// 先把每一頁轉到暫存前綴（_raw-page-NN / _raw-thumb-NN）
+run(['-jpeg', '-scale-to-x', '1800', '-scale-to-y', '-1', '-jpegopt', 'quality=85', pdfRel, `${outRel}/_raw-page`]);
+run(['-jpeg', '-scale-to-x', '320', '-scale-to-y', '-1', '-jpegopt', 'quality=80', pdfRel, `${outRel}/_raw-thumb`]);
 
-const files = readdirSync(join(root, outRel));
-const pageCount = files.filter((f) => /^page-\d+\.jpg$/.test(f)).length;
-const thumbCount = files.filter((f) => /^thumb-\d+\.jpg$/.test(f)).length;
-console.log(`Generated ${pageCount} pages + ${thumbCount} thumbs in public/intro/`);
+// 依來源頁序略過 DROP，其餘搬成連續編號的 page-NN / thumb-NN
+const rawPages = readdirSync(outDir).filter((f) => /^_raw-page-\d+\.jpg$/.test(f)).sort();
+let out = 0;
+for (const f of rawPages) {
+  const n = f.match(/^_raw-page-(\d+)\.jpg$/)[1];
+  const srcPage = parseInt(n, 10);
+  if (DROP.has(srcPage)) {
+    rmSync(join(outDir, `_raw-page-${n}.jpg`));
+    rmSync(join(outDir, `_raw-thumb-${n}.jpg`));
+    continue;
+  }
+  out += 1;
+  renameSync(join(outDir, `_raw-page-${n}.jpg`), join(outDir, `page-${pad(out)}.jpg`));
+  renameSync(join(outDir, `_raw-thumb-${n}.jpg`), join(outDir, `thumb-${pad(out)}.jpg`));
+}
+
+console.log(`Generated ${out} pages + thumbs in public/intro/ (dropped blank source pages: ${[...DROP].join(', ') || 'none'})`);
