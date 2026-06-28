@@ -14,6 +14,14 @@ import { officers } from '../data/officers.js';
     <p class="muted">{club.ensemble}</p>
   </section>
 
+  <a class="card intro-entry" href="/intro">
+    <img src="/intro/thumb-01.jpg" alt="集美國小國樂團介紹電子書封面" loading="lazy" />
+    <div class="intro-entry-text">
+      <strong>翻閱社團介紹 →</strong>
+      <p class="muted">25 頁的國樂團介紹電子書，可翻頁、放大、全螢幕閱讀。</p>
+    </div>
+  </a>
+
   <h2 style="margin-top:2rem">核心團隊</h2>
   <div class="grid cols-3">
     {core.map((p) => (
@@ -66,4 +74,10 @@ import { officers } from '../data/officers.js';
   .part-name{background:var(--brand);color:#fff;font-weight:700;border-radius:8px;padding:.3rem .7rem;flex-shrink:0;min-width:5.5rem;text-align:center}
   .part p{margin:.15rem 0 0}
   section.card ul{margin:.4rem 0 .4rem 1.25rem}
+  .intro-entry{display:flex;gap:1rem;align-items:center;text-decoration:none;color:inherit;margin:1rem 0}
+  .intro-entry:hover{border-color:var(--gold)}
+  .intro-entry img{width:160px;height:auto;border-radius:8px;border:1px solid var(--line);flex-shrink:0}
+  .intro-entry-text strong{color:var(--brand);font-size:1.1rem}
+  .intro-entry-text p{margin:.3rem 0 0}
+  @media (max-width:480px){.intro-entry{flex-direction:column;align-items:flex-start}.intro-entry img{width:100%}}
 </style>
