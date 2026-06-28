@@ -21,7 +21,8 @@
 - `src/data/*.js` — 半靜態內容資料檔：club、teachers、officers、albums、achievements、support-events
 - `src/styles/global.css` — 全站配色：主色**竹綠 `--brand` #1F7A4D**（取自 logo）＋ 金 `--gold` ＋ 宣紙底 `--paper`
 - `public/` — 靜態資源：`logo.png`（已去背）、`sample-*.csv`（開發範例資料）、`intro/`（社團介紹翻頁書整頁圖＋縮圖）
-- `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把社團介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站
+- `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把社團介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站。並同步圖片＋page-flip 函式庫到 `intro-public/`、注入其 no-JS 退路清單
+- `intro-public/` — **對外公開**的獨立翻頁站（純靜態、無導覽列、無內網連結；給官方 LINE）。不被 Astro build 收錄，由**另一個 Cloudflare Pages 專案**部署成不同網址（見「部署」段）
 - `docs/superpowers/` — 設計 spec 與 Phase 1/2 實作計畫
 - `Reference/` — 使用者提供的原始素材（logo 原檔、師資 docx），非建置用
 
@@ -35,6 +36,7 @@
 ## 部署
 - 已上線：**https://jimei-guoyue-web.kuan-lin.workers.dev**（Cloudflare，與 GitHub 連動）
 - 流程：在 **GitHub Desktop 按 Push** → Cloudflare 自動 `npm run build` 重新部署，**不需手動操作 Cloudflare**。⚠️ 正式站從 **`main`** 部署；功能分支的修改要等併入 `main` 才會上線。
+- **對外公開版介紹**為**第二個 Cloudflare Pages 專案**（同 repo、Framework preset None、無 build、輸出目錄 `intro-public`），部署成與內網不同網址、放官方 LINE，避免曝光內網。一次 Push、兩站各自自動更新。設定見 `docs/superpowers/plans/2026-06-28-public-intro-go-live-checklist.md`。
 - ⚠️ **連結預覽快取**：LINE／Messenger 等聊天 App 會快取每個網址的預覽卡片（抓 `<title>`／OG meta）。改了站名／標題後，舊網址可能仍顯示舊文字；要立即看到新版就在網址後加沒貼過的參數（如 `?v=3`）或等其快取過期。`astro.config.mjs` 已設 `site`。
 - **環境變數**（皆為 Astro build 時嵌入的 `PUBLIC_*`）：設在 Cloudflare **Settings → Build → Variables and secrets**（build 變數區，**非** runtime 那欄——靜態資產 Worker 的 runtime 變數是鎖住的）；改完需**重新部署**才生效。
   - `PUBLIC_GOOGLE_API_KEY`：首頁「近期行程」讀 Google Calendar API 用（限本站 referrer＋只開 Calendar API、唯讀）。**已設定** ✓
@@ -52,7 +54,8 @@
 - **公告附件＋文件下載整合**：程式完成 ✓（公告可夾帶一個 Google Drive 附件、點擊開啟，並自動與常設文件一起出現在改為動態的文件下載頁；置頂最前其餘依日期；外部 CSV 連結經 `isSafeHref` 防 `javascript:` 注入。純邏輯 `src/lib/documents.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-announcement-attachments*`）。⚠️ **上線待使用者操作**：公告試算表加 `附件名稱/附件連結` 兩欄、建「文件試算表」（日期/名稱/連結/類型/備註/置頂）、設 `PUBLIC_DOCUMENTS_CSV` 並重新部署。
 - **活動支援（站內即時報名／認領）**已實作 ✓（兩型——接龍湊人手／分工認領——共用同一資料模型；家長站內填稱呼直接送出、看板即時更新；活動由 Google 試算表「活動／工作／報名」三分頁驅動，幹部加列即可新增活動；讀走 Apps Script `doGet`＋CSV 後備、寫走 `doPost`；純邏輯 `src/lib/support.js`＋vitest；舊 `src/data/support-events.js` 已移除）。設計 `docs/superpowers/specs/2026-06-26-support-live-signup-design.md`、計畫 `docs/superpowers/plans/2026-06-26-support-live-signup.md`、上線清單 `docs/superpowers/plans/2026-06-26-support-go-live-checklist.md`、後端參考 `apps-script/support.gs`。⚠️ **上線待使用者操作**：建三分頁試算表、部署 Apps Script、設 `PUBLIC_SUPPORT_API_URL`／`PUBLIC_SUPPORT_TOKEN` 並重新部署。
 - **成果與榮譽**已是真實資料 ✓（從社團 FB 粉專逐張得獎／活動海報核對整理；`src/data/achievements.js` 拆成 `performances`／`teamAwards`／`soloAwardGroups` 三組，`achievements.astro` 分「競賽榮譽」「演出紀錄」兩區、名次用金銀銅 badge、各列固定 badge 欄對齊）。涵蓋絲竹合奏特優／優等第一名（113）等團體獎、卓越盃與全國器樂大賽北區等個人獎，及 2024–2026 共 11 場演出。⚠️ 樂團史其實可回溯 111 學年度（2022），早於粉專簡介「2024 全新登場」的行銷說法；目前依使用者選擇只列 2024 起，更早成果（如 111 傳統藝術盃擊鼓特優、2022 音樂會）尚未納入，未來可補。
-- **社團介紹翻頁書**已上線 ✓（`/intro`：團員設計的 25 頁介紹 PDF 自建翻頁電子書，取代需付費解鎖的外部 fliphtml5；StPageFlip 單頁翻＋上下頁／頁碼／縮圖跳頁／放大／全螢幕，關閉 JS 時退化為整頁圖清單。圖片用 `pdftocairo` 轉出放 `public/intro/`、由 `npm run build:intro`（`scripts/build-intro-images.mjs`）產生；入口卡放「關於我們」頁、導覽列不變。純邏輯 `src/lib/flipbook.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-club-intro-flipbook*`）。更新介紹：換 `Reference/集美國小國樂介紹.pdf` → `npm run build:intro`（pdftocairo 需在 PATH 或設 `PDFTOCAIRO`）→ push。
+- **社團介紹翻頁書**已上線 ✓（`/intro`：團員設計的介紹 PDF 自建翻頁電子書（23 頁，原 25 頁已移除 2 頁空白），取代需付費解鎖的外部 fliphtml5；StPageFlip 單頁翻＋上下頁／頁碼／縮圖跳頁／放大／全螢幕，關閉 JS 時退化為整頁圖清單。圖片用 `pdftocairo` 轉出放 `public/intro/`、由 `npm run build:intro`（`scripts/build-intro-images.mjs`）產生；入口卡放「關於我們」頁、導覽列不變。純邏輯 `src/lib/flipbook.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-club-intro-flipbook*`）。更新介紹：換 `Reference/集美國小國樂介紹.pdf` → `npm run build:intro`（pdftocairo 需在 PATH 或設 `PDFTOCAIRO`）→ push。
+- **對外公開版介紹**已實作 ✓（`intro-public/`：與內網**不同網址**的獨立純靜態翻頁站，供官方 LINE——本站為內網，直接貼內網網址會曝光整個內網。自包覆、無導覽列、無內網連結；含 OG 預覽 meta；page-flip 用 module build 原生 import、頁面清單由注入的 no-JS 退路推導；`build:intro` 一併同步圖片＋函式庫並注入清單）。設計／計畫見 `docs/superpowers/`（`*-public-intro-site*`），上線清單 `docs/superpowers/plans/2026-06-28-public-intro-go-live-checklist.md`。⚠️ **上線待使用者操作**：Push＋Cloudflare 建第二個 Pages 專案（輸出目錄 `intro-public`、無 build）→ 放官方 LINE。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
   - `src/components/Footer.astro`：聯絡窗口（黃子玉 0968230563）＋ LINE QR（`public/line-qr.jpg`，取代原 Email）已填 ✓；僅「學校全名」一行依使用者選擇暫不放、未定
