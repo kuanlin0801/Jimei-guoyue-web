@@ -80,9 +80,13 @@ export async function fetchCalendarEvents(calendar, { apiKey, now, maxResults = 
   return (data.items ?? []).map((item) => normalize(item, calendar));
 }
 
+// 容錯：單一日曆失敗（如未設公開）只少那一個，仍回傳其餘日曆的活動；全部失敗才丟出。
 export async function fetchUpcoming(calendars, { apiKey, now, count = 5, fetchImpl = fetch } = {}) {
-  const batches = await Promise.all(
+  const results = await Promise.allSettled(
     calendars.map((c) => fetchCalendarEvents(c, { apiKey, now, fetchImpl }))
   );
-  return takeNext(toUpcoming(batches.flat(), now), count);
+  const ok = results.filter((r) => r.status === 'fulfilled');
+  if (ok.length === 0) throw results[0]?.reason ?? new Error('行事曆載入失敗');
+  const events = ok.flatMap((r) => r.value);
+  return takeNext(toUpcoming(events, now), count);
 }

@@ -127,4 +127,21 @@ describe('fetchUpcoming', () => {
     const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, count: 5, fetchImpl: fakeFetch });
     expect(items.map((e) => e.title)).toEqual(['B-soon', 'A-future']);
   });
+  it('tolerates one failing calendar and still returns events from the rest', async () => {
+    const fakeFetch = async (u) => {
+      if (u.includes('/calendars/bad/')) return { ok: false, status: 403 };
+      return { ok: true, json: async () => ({ items: [{ summary: 'OK-event', start: { dateTime: '2026-07-10T10:00:00+08:00' } }] }) };
+    };
+    const cals = [
+      { id: 'bad', name: 'Bad', color: '#0' },
+      { id: 'good', name: 'Good', color: '#1' },
+    ];
+    const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, count: 5, fetchImpl: fakeFetch });
+    expect(items.map((e) => e.title)).toEqual(['OK-event']);
+  });
+  it('throws when every calendar fails', async () => {
+    const fakeFetch = async () => ({ ok: false, status: 500 });
+    const cals = [{ id: 'a', name: 'A', color: '#0' }, { id: 'b', name: 'B', color: '#1' }];
+    await expect(fetchUpcoming(cals, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch })).rejects.toThrow();
+  });
 });
