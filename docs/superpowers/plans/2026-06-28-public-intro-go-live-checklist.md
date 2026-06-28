@@ -7,22 +7,22 @@
 - [ ] 確認最新圖片：`PDFTOCAIRO="C:/poppler/poppler-24.08.0/Library/bin/pdftocairo.exe" npm run build:intro`（兩處同步、注入 fallback；若已把 poppler 加進 PATH 則直接 `npm run build:intro`）。
 - [ ] GitHub Desktop **Push**，讓 repo 含最新 `intro-public/`。
 
-## 建立第二個 Cloudflare Pages 專案
-- [ ] Cloudflare 儀表板 → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**。
-- [ ] 選同一個 GitHub repo（集美網站）。
+## 建立第二個 Worker（靜態資產）
+> 此帳號無獨立 Pages 入口，改用 Workers 靜態資產。`intro-public/wrangler.jsonc` 已備好（assets-only Worker，已 `wrangler deploy --dry-run` 驗證）。
+- [ ] Cloudflare 儀表板 → **Workers & Pages** → **Create application** → 連 Git（Import a repository）。
+- [ ] 選 repo `kuanlin0801/Jimei-guoyue-web`。
 - [ ] 設定：
-  - Production branch：`main`
-  - Framework preset：**None**
+  - Project name：`jimei-guoyue-intro`
+  - **Path（Root directory／根目錄）：`intro-public`** ← 關鍵，一定要填；wrangler 要在這個資料夾裡才讀得到設定檔
   - Build command：**留空**
-  - Build output directory：**`intro-public`**
-- [ ] **Save and Deploy** → 取得網址 `https://<專案名>.pages.dev`（例：`jimei-guoyue-intro.pages.dev`）。
+  - Deploy command：`npx wrangler deploy`（預設值，保留）
+- [ ] **Deploy** → 取得網址 `https://jimei-guoyue-intro.kuan-lin.workers.dev`。
 
-## 修正連結預覽網址（讓 LINE 卡片正確）
-- [ ] 若專案名 ≠ `jimei-guoyue-intro`，把 `intro-public/index.html` 內 4 處絕對網址（`og:url`、`og:image`、`twitter:image`，預設 `https://jimei-guoyue-intro.pages.dev/...`）改成你的實際 `*.pages.dev`。
-- [ ] GitHub Desktop **Push**（Pages 會自動重新部署）。
+## 連結預覽網址（已預填，通常不用動）
+- [ ] `intro-public/index.html` 的 og／twitter 網址已預填 `https://jimei-guoyue-intro.kuan-lin.workers.dev`。**只有**當你把 Worker 取了別的名字時，才需改那 3 處再 Push。
 
 ## 放上官方 LINE
-- [ ] 把 `https://<專案名>.pages.dev` 貼到官方 LINE。
+- [ ] 把 `https://jimei-guoyue-intro.kuan-lin.workers.dev` 貼到官方 LINE。
 - [ ] 用手機點開確認可翻頁、預覽卡片顯示封面＋標題。
 - [ ] ⚠️ LINE 對網址預覽有快取：若卡片仍是舊的，網址後加沒貼過的參數（如 `?v=2`）或等快取過期。
 

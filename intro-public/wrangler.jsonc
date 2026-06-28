@@ -1,0 +1,8 @@
+{
+  // 把 intro-public/ 當「純靜態資產」部署成一個獨立 Worker（無 Worker 程式碼）。
+  // Cloudflare Workers Builds 設定：Root directory = intro-public、Build command 留空、
+  // Deploy command = npx wrangler deploy。部署後網址為 https://jimei-guoyue-intro.kuan-lin.workers.dev
+  "name": "jimei-guoyue-intro",
+  "compatibility_date": "2025-09-01",
+  "assets": { "directory": "./" }
+}

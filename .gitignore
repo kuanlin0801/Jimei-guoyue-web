@@ -11,6 +11,9 @@ desktop.ini
 # Astro build output
 dist/
 
+# Wrangler 本機快取（公開站 intro-public 部署用）
+.wrangler/
+
 # Astro generated types
 .astro/
 
