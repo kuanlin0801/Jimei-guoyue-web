@@ -38,7 +38,7 @@
 
 ## D. 驗證（🛠️ 我來，你把網址給我即可）
 
-- [ ] **D1** 開 `https://jimei-guoyue-web.kuan-lin.workers.dev/announcements`，確認顯示「**目前沒有公告。**」（空狀態，正常）。
+- [ ] **D1** 開 `https://jimei-guoyue-web.jmes-ntpc.workers.dev/announcements`，確認顯示「**目前沒有公告。**」（空狀態，正常）。
 - [ ] **D2** 看瀏覽器 console，確認**沒有 CORS／fetch 錯誤** ← 本站第一次接 Google CSV，這是最關鍵的檢查。
 - [ ] **D3** 臨時在試算表加一列測試（例：日期 `2026-06-25`、標題「測試公告」、內容「這是一筆測試」、**置頂填 `V`**）→ 等 1–5 分鐘（Google 快取）→ 重整頁面 → 確認該筆顯示、置頂排最前、文字不破版。
 - [ ] **D4** 驗畢後**刪掉測試列**，回到只有表頭的空狀態。

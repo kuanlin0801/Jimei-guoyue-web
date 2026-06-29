@@ -324,7 +324,7 @@ Create `docs/superpowers/plans/2026-06-28-public-intro-go-live-checklist.md`：
 
 ## 驗證隔離
 - [ ] 在公開站上**找不到也點不到**任何內網頁面（無導覽列、無內網網址）。
-- [ ] 內網站維持不變：`jimei-guoyue-web.kuan-lin.workers.dev` 照舊，`/intro` 與「關於我們」入口卡仍在。
+- [ ] 內網站維持不變：`jimei-guoyue-web.jmes-ntpc.workers.dev` 照舊，`/intro` 與「關於我們」入口卡仍在。
 
 ## 日後維護
 - 換新版介紹：替換 `Reference/集美國小國樂介紹.pdf`（空白頁清單見 `scripts/build-intro-images.mjs` 的 `DROP`）→ `npm run build:intro` → Push。內網與公開站會各自自動更新。

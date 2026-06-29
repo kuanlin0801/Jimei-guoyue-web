@@ -57,7 +57,7 @@
 
 ## F. 驗證（🛠️ 我來，你給我網址即可）
 
-- [ ] **F1** 開 `https://jimei-guoyue-web.kuan-lin.workers.dev/documents`，確認顯示**真實的常設文件 ＋ 公告附件合併清單**（不再是「（範例）」那幾筆）。
+- [ ] **F1** 開 `https://jimei-guoyue-web.jmes-ntpc.workers.dev/documents`，確認顯示**真實的常設文件 ＋ 公告附件合併清單**（不再是「（範例）」那幾筆）。
 - [ ] **F2** console 無 **CORS／fetch** 錯誤。
 - [ ] **F3** 排序正確：**置頂最前、其餘依日期新到舊**。
 - [ ] **F4** 公告附件那幾筆標「**來自○○公告**」、類型標籤合理。
