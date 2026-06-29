@@ -12,7 +12,7 @@ export function buildPages(count, { dir = '/intro' } = {}) {
       index: i,
       src: `${dir}/page-${p}.jpg`,
       thumb: `${dir}/thumb-${p}.jpg`,
-      alt: `社團介紹 第 ${i} 頁`,
+      alt: `樂團介紹 第 ${i} 頁`,
     });
   }
   return pages;

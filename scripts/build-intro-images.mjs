@@ -76,7 +76,7 @@ copyFileSync(
 // 把整頁圖 <img> 清單注入 index.html 的 fallback markers 之間（no-JS 退路＋前端資料來源）
 const finalPages = readdirSync(pubDir).filter((f) => /^page-\d+\.jpg$/.test(f)).sort();
 const fallbackHtml = finalPages
-  .map((f, i) => `      <img src="./${f}" alt="社團介紹 第 ${i + 1} 頁" loading="lazy" />`)
+  .map((f, i) => `      <img src="./${f}" alt="樂團介紹 第 ${i + 1} 頁" loading="lazy" />`)
   .join('\n');
 const htmlPath = join(pubDir, 'index.html');
 const html = readFileSync(htmlPath, 'utf8').replace(

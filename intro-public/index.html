@@ -57,7 +57,7 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>社團介紹</h1>
+    <h1>樂團介紹</h1>
     <p class="muted">翻閱集美國小國樂團介紹。手機可左右滑動翻頁。</p>
 
     <div class="flip-frame" id="flip-frame">
@@ -77,29 +77,29 @@
 
     <div class="intro-fallback" id="intro-fallback">
       <!--FALLBACK_START-->
-      <img src="./page-01.jpg" alt="社團介紹 第 1 頁" loading="lazy" />
-      <img src="./page-02.jpg" alt="社團介紹 第 2 頁" loading="lazy" />
-      <img src="./page-03.jpg" alt="社團介紹 第 3 頁" loading="lazy" />
-      <img src="./page-04.jpg" alt="社團介紹 第 4 頁" loading="lazy" />
-      <img src="./page-05.jpg" alt="社團介紹 第 5 頁" loading="lazy" />
-      <img src="./page-06.jpg" alt="社團介紹 第 6 頁" loading="lazy" />
-      <img src="./page-07.jpg" alt="社團介紹 第 7 頁" loading="lazy" />
-      <img src="./page-08.jpg" alt="社團介紹 第 8 頁" loading="lazy" />
-      <img src="./page-09.jpg" alt="社團介紹 第 9 頁" loading="lazy" />
-      <img src="./page-10.jpg" alt="社團介紹 第 10 頁" loading="lazy" />
-      <img src="./page-11.jpg" alt="社團介紹 第 11 頁" loading="lazy" />
-      <img src="./page-12.jpg" alt="社團介紹 第 12 頁" loading="lazy" />
-      <img src="./page-13.jpg" alt="社團介紹 第 13 頁" loading="lazy" />
-      <img src="./page-14.jpg" alt="社團介紹 第 14 頁" loading="lazy" />
-      <img src="./page-15.jpg" alt="社團介紹 第 15 頁" loading="lazy" />
-      <img src="./page-16.jpg" alt="社團介紹 第 16 頁" loading="lazy" />
-      <img src="./page-17.jpg" alt="社團介紹 第 17 頁" loading="lazy" />
-      <img src="./page-18.jpg" alt="社團介紹 第 18 頁" loading="lazy" />
-      <img src="./page-19.jpg" alt="社團介紹 第 19 頁" loading="lazy" />
-      <img src="./page-20.jpg" alt="社團介紹 第 20 頁" loading="lazy" />
-      <img src="./page-21.jpg" alt="社團介紹 第 21 頁" loading="lazy" />
-      <img src="./page-22.jpg" alt="社團介紹 第 22 頁" loading="lazy" />
-      <img src="./page-23.jpg" alt="社團介紹 第 23 頁" loading="lazy" />
+      <img src="./page-01.jpg" alt="樂團介紹 第 1 頁" loading="lazy" />
+      <img src="./page-02.jpg" alt="樂團介紹 第 2 頁" loading="lazy" />
+      <img src="./page-03.jpg" alt="樂團介紹 第 3 頁" loading="lazy" />
+      <img src="./page-04.jpg" alt="樂團介紹 第 4 頁" loading="lazy" />
+      <img src="./page-05.jpg" alt="樂團介紹 第 5 頁" loading="lazy" />
+      <img src="./page-06.jpg" alt="樂團介紹 第 6 頁" loading="lazy" />
+      <img src="./page-07.jpg" alt="樂團介紹 第 7 頁" loading="lazy" />
+      <img src="./page-08.jpg" alt="樂團介紹 第 8 頁" loading="lazy" />
+      <img src="./page-09.jpg" alt="樂團介紹 第 9 頁" loading="lazy" />
+      <img src="./page-10.jpg" alt="樂團介紹 第 10 頁" loading="lazy" />
+      <img src="./page-11.jpg" alt="樂團介紹 第 11 頁" loading="lazy" />
+      <img src="./page-12.jpg" alt="樂團介紹 第 12 頁" loading="lazy" />
+      <img src="./page-13.jpg" alt="樂團介紹 第 13 頁" loading="lazy" />
+      <img src="./page-14.jpg" alt="樂團介紹 第 14 頁" loading="lazy" />
+      <img src="./page-15.jpg" alt="樂團介紹 第 15 頁" loading="lazy" />
+      <img src="./page-16.jpg" alt="樂團介紹 第 16 頁" loading="lazy" />
+      <img src="./page-17.jpg" alt="樂團介紹 第 17 頁" loading="lazy" />
+      <img src="./page-18.jpg" alt="樂團介紹 第 18 頁" loading="lazy" />
+      <img src="./page-19.jpg" alt="樂團介紹 第 19 頁" loading="lazy" />
+      <img src="./page-20.jpg" alt="樂團介紹 第 20 頁" loading="lazy" />
+      <img src="./page-21.jpg" alt="樂團介紹 第 21 頁" loading="lazy" />
+      <img src="./page-22.jpg" alt="樂團介紹 第 22 頁" loading="lazy" />
+      <img src="./page-23.jpg" alt="樂團介紹 第 23 頁" loading="lazy" />
       <!--FALLBACK_END-->
     </div>
 
@@ -136,7 +136,7 @@
 
     // 建縮圖面板（純自家路徑、非外部輸入）
     thumbsPanel.innerHTML = srcs
-      .map((s, i) => `<button class="thumb" type="button" data-index="${i}" aria-label="社團介紹 第 ${i + 1} 頁"><img src="${thumbOf(s)}" alt="社團介紹 第 ${i + 1} 頁" loading="lazy" /></button>`)
+      .map((s, i) => `<button class="thumb" type="button" data-index="${i}" aria-label="樂團介紹 第 ${i + 1} 頁"><img src="${thumbOf(s)}" alt="樂團介紹 第 ${i + 1} 頁" loading="lazy" /></button>`)
       .join('');
 
     const flip = new PageFlip(stage, {

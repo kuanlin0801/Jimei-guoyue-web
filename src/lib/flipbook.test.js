@@ -19,7 +19,7 @@ describe('buildPages', () => {
       index: 1,
       src: '/intro/page-01.jpg',
       thumb: '/intro/thumb-01.jpg',
-      alt: '社團介紹 第 1 頁',
+      alt: '樂團介紹 第 1 頁',
     });
     expect(pages[24].src).toBe('/intro/page-25.jpg');
     expect(pages[24].thumb).toBe('/intro/thumb-25.jpg');

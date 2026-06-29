@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-const { title = '', description = '集美國小國樂團社團資訊' } = Astro.props;
+const { title = '', description = '集美國小國樂團資訊' } = Astro.props;
 const fullTitle = title ? `${title}｜集美國小國樂團` : '集美國小國樂團';
 const ogImage = new URL('/logo.png', Astro.site).href;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;

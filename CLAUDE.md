@@ -14,14 +14,14 @@
 - `npm test` — 跑 vitest 單元測試
 
 ## 目錄結構
-- `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（關於我們）、documents、gallery（相簿）、achievements（成果）、intro（社團介紹翻頁書）
+- `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（關於我們）、documents、gallery（相簿）、achievements（成果）、intro（樂團介紹翻頁書）
 - `src/layouts/Layout.astro` — 共用版型；含 `<title>`、`description` 與連結預覽用的 Open Graph／Twitter Card meta（`og:image` 為站上 `logo.png`，需 `astro.config.mjs` 的 `site` 才能產生絕對網址）。首頁不傳 `title`，故標題僅「集美國小國樂團」；其餘頁為「XXX｜集美國小國樂團」。
 - `src/components/` — Header.astro（淺色 header＋左上 logo 品牌＋導覽）、Footer.astro（頁尾聯絡）
 - `src/lib/` — 純邏輯：`csv.js`（splitCsvLine／parseCsvRows／isSafeHref）、`announcements.js`、`documents.js`、`support.js`、`flipbook.js`（翻頁書頁面清單／頁碼），各有 `*.test.js`
 - `src/data/*.js` — 半靜態內容資料檔：club、teachers、officers、albums、achievements、support-events
 - `src/styles/global.css` — 全站配色：主色**竹綠 `--brand` #1F7A4D**（取自 logo）＋ 金 `--gold` ＋ 宣紙底 `--paper`
-- `public/` — 靜態資源：`logo.png`（已去背）、`sample-*.csv`（開發範例資料）、`intro/`（社團介紹翻頁書整頁圖＋縮圖）
-- `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把社團介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站。並同步圖片＋page-flip 函式庫到 `intro-public/`、注入其 no-JS 退路清單
+- `public/` — 靜態資源：`logo.png`（已去背）、`sample-*.csv`（開發範例資料）、`intro/`（樂團介紹翻頁書整頁圖＋縮圖）
+- `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站。並同步圖片＋page-flip 函式庫到 `intro-public/`、注入其 no-JS 退路清單
 - `intro-public/` — **對外公開**的獨立翻頁站（純靜態、無導覽列、無內網連結；給官方 LINE）。不被 Astro build 收錄，由**另一個 Cloudflare Worker（靜態資產）**部署成不同網址（含 `wrangler.jsonc`；見「部署」段）
 - `docs/superpowers/` — 設計 spec 與 Phase 1/2 實作計畫
 - `Reference/` — 使用者提供的原始素材（logo 原檔、師資 docx），非建置用
@@ -46,6 +46,8 @@
 
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
+- **站台用詞統一「樂團」** ✓（K260629C）：訪客可見文字不再用「社團」（關於我們、行事曆、內外網翻頁書標題等）；程式碼註解仍保留「社團」描述這個家長社團組織。首頁標語改為「集美國小國樂團後援會：行事曆、公告、文件都在這…」（原「學生家長社團 ・ 社團的資訊家」）。
+- **活動相簿暫時隱藏** ✓（K260629C）：目前無內容需求，已從導覽列（`Header.astro`）移除「活動相簿」項；`gallery.astro`／`albums.js` 保留不刪，恢復＝把 nav 的 `/gallery` 那行加回。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
 - **連結預覽 meta** 已上線 ✓（`Layout.astro` 加 Open Graph／Twitter Card＋`canonical`、`astro.config.mjs` 設 `site`；分享卡片含 logo 縮圖、標題為「集美國小國樂團」）。首頁標題已移除「首頁」前綴。
 - **行事曆**已接上四個社團 Google 日曆 ✓（國樂團／國樂團加強課／古箏提琴／暑訓，合併單一檢視＋顏色圖例；以 `src/data/calendars.js` 單一來源管理）。各日曆需設公開「查看完整內容」才會顯示——前三個已設；國樂團加強課為 6/28（K260628A）新增，需確認其公開設定。
@@ -54,10 +56,10 @@
 - **公告附件＋文件下載整合**：程式完成 ✓（公告可夾帶一個 Google Drive 附件、點擊開啟，並自動與常設文件一起出現在改為動態的文件下載頁；置頂最前其餘依日期；外部 CSV 連結經 `isSafeHref` 防 `javascript:` 注入。純邏輯 `src/lib/documents.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-announcement-attachments*`）。⚠️ **上線待使用者操作**：公告試算表加 `附件名稱/附件連結` 兩欄、建「文件試算表」（日期/名稱/連結/類型/備註/置頂）、設 `PUBLIC_DOCUMENTS_CSV` 並重新部署。
 - **活動支援（站內即時報名／認領）**已實作 ✓（兩型——接龍湊人手／分工認領——共用同一資料模型；家長站內填稱呼直接送出、看板即時更新；活動由 Google 試算表「活動／工作／報名」三分頁驅動，幹部加列即可新增活動；讀走 Apps Script `doGet`＋CSV 後備、寫走 `doPost`；純邏輯 `src/lib/support.js`＋vitest；舊 `src/data/support-events.js` 已移除）。設計 `docs/superpowers/specs/2026-06-26-support-live-signup-design.md`、計畫 `docs/superpowers/plans/2026-06-26-support-live-signup.md`、上線清單 `docs/superpowers/plans/2026-06-26-support-go-live-checklist.md`、後端參考 `apps-script/support.gs`。⚠️ **上線待使用者操作**：建三分頁試算表、部署 Apps Script、設 `PUBLIC_SUPPORT_API_URL`／`PUBLIC_SUPPORT_TOKEN` 並重新部署。
 - **成果與榮譽**已是真實資料 ✓（從社團 FB 粉專逐張得獎／活動海報核對整理；`src/data/achievements.js` 拆成 `performances`／`teamAwards`／`soloAwardGroups` 三組，`achievements.astro` 分「競賽榮譽」「演出紀錄」兩區、名次用金銀銅 badge、各列固定 badge 欄對齊）。涵蓋絲竹合奏特優／優等第一名（113）等團體獎、卓越盃與全國器樂大賽北區等個人獎，及 2024–2026 共 11 場演出。⚠️ 樂團史其實可回溯 111 學年度（2022），早於粉專簡介「2024 全新登場」的行銷說法；目前依使用者選擇只列 2024 起，更早成果（如 111 傳統藝術盃擊鼓特優、2022 音樂會）尚未納入，未來可補。
-- **社團介紹翻頁書**已上線 ✓（`/intro`：團員設計的介紹 PDF 自建翻頁電子書（23 頁，原 25 頁已移除 2 頁空白），取代需付費解鎖的外部 fliphtml5；StPageFlip 單頁翻＋上下頁／頁碼／縮圖跳頁／放大／全螢幕，關閉 JS 時退化為整頁圖清單。圖片用 `pdftocairo` 轉出放 `public/intro/`、由 `npm run build:intro`（`scripts/build-intro-images.mjs`）產生；入口卡放「關於我們」頁、導覽列不變。純邏輯 `src/lib/flipbook.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-club-intro-flipbook*`）。更新介紹：換 `Reference/集美國小國樂介紹.pdf` → `npm run build:intro`（pdftocairo 需在 PATH 或設 `PDFTOCAIRO`）→ push。
+- **樂團介紹翻頁書**已上線 ✓（`/intro`：團員設計的介紹 PDF 自建翻頁電子書（23 頁，原 25 頁已移除 2 頁空白），取代需付費解鎖的外部 fliphtml5；StPageFlip 單頁翻＋上下頁／頁碼／縮圖跳頁／放大／全螢幕，關閉 JS 時退化為整頁圖清單。圖片用 `pdftocairo` 轉出放 `public/intro/`、由 `npm run build:intro`（`scripts/build-intro-images.mjs`）產生；入口卡放「關於我們」頁、導覽列不變。純邏輯 `src/lib/flipbook.js`＋vitest）。設計／計畫見 `docs/superpowers/`（`*-club-intro-flipbook*`）。更新介紹：換 `Reference/集美國小國樂介紹.pdf` → `npm run build:intro`（pdftocairo 需在 PATH 或設 `PDFTOCAIRO`）→ push。
 - **對外公開版介紹**已實作 ✓（`intro-public/`：與內網**不同網址**的獨立純靜態翻頁站，供官方 LINE——本站為內網，直接貼內網網址會曝光整個內網。自包覆、無導覽列、無內網連結；含 OG 預覽 meta；page-flip 用 module build 原生 import、頁面清單由注入的 no-JS 退路推導；`build:intro` 一併同步圖片＋函式庫並注入清單）。設計／計畫見 `docs/superpowers/`（`*-public-intro-site*`），上線清單 `docs/superpowers/plans/2026-06-28-public-intro-go-live-checklist.md`。**已上線 ✓ https://jimei-guoyue-intro.jmes-ntpc.workers.dev**（第二個 Cloudflare Worker／靜態資產，從 `intro-public/` 部署、設定檔 `intro-public/wrangler.jsonc`、Root directory `intro-public`、無 build；本帳號無 Pages 入口故走 Workers）。
 - **待補真實素材**：
   - `src/data/officers.js`：家長幹部（會長等）真實姓名（目前佔位）
   - `src/components/Footer.astro`：聯絡窗口（黃子玉 0968230563）＋ LINE QR（`public/line-qr.jpg`，取代原 Email）已填 ✓；僅「學校全名」一行依使用者選擇暫不放、未定
-  - Google 連結：相簿（`albums.js`）
+  - Google 相簿連結（`albums.js`）；⚠️ 相簿目前已從導覽列隱藏（見上「活動相簿暫時隱藏」），待有真實相簿再填連結並恢復導覽
 - Phase 3（尚未做）：練習資源、常見問題 FAQ。
