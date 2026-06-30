@@ -9,12 +9,27 @@ const socials = [
 ];
 ---
 <Layout>
-  <p class="hero-sub muted">集美國小國樂團後援會：行事曆、公告、文件都在這，隨時可查、長期留存。</p>
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">絲 ・ 竹 ・ 雅 ・ 集</p>
+      <h1 class="hero-title">童心<br />奏古韻</h1>
+      <p class="hero-sub">集美國小國樂團後援會——把每一次練習、演出與相聚，溫柔地收藏。</p>
+      <div class="hero-cta">
+        <a class="btn" href="/announcements">看公告</a>
+        <a class="btn btn-ghost" href="/calendar">看行事曆</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <span class="blob blob-green"></span>
+      <span class="blob blob-gold"></span>
+      <span class="blob blob-red"></span>
+    </div>
+  </section>
 
-  <h2 style="margin-top:1.6rem">最新公告</h2>
+  <h2 class="sec-head first"><span class="sec-dot brand"></span>最新公告</h2>
   <div id="home-announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
 
-  <h2 style="margin-top:2rem">近期行程</h2>
+  <h2 class="sec-head"><span class="sec-dot gold"></span>近期行程</h2>
   <section class="card upcoming">
     <ul class="cal-legend">
       {calendars.map((c) => (
@@ -25,8 +40,8 @@ const socials = [
     <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
   </section>
 
-  <h2 style="margin-top:2rem">追蹤我們</h2>
-  <div class="grid cols-2">
+  <h2 class="sec-head"><span class="sec-dot seal"></span>追蹤我們</h2>
+  <div class="grid cols-2 follow-grid">
     {socials.map((s) => (
       <a class="card section-link" href={s.href} target="_blank" rel="noopener noreferrer">
         <span class="section-icon" set:html={s.icon}></span>
@@ -73,7 +88,7 @@ const socials = [
     try {
       const items = pinnedFirst(await fetchAnnouncements(url)).slice(0, 4);
       el.innerHTML = items.length
-        ? items.map((a) => `<article class="card">${a.pinned ? '<span class="pin">📌 置頂</span> ' : ''}<time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${a.attachment ? `<p class="att"><a href="${esc(a.attachment.url)}" target="_blank" rel="noopener noreferrer">📎 ${esc(a.attachment.name)}</a></p>` : ''}</article>`).join('')
+        ? items.map((a) => `<article class="card ann-card"><div class="ann-meta">${a.pinned ? '<span class="pin">置頂</span>' : ''}<time>${esc(a.date)}</time></div><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${a.attachment ? `<p class="att"><a href="${esc(a.attachment.url)}" target="_blank" rel="noopener noreferrer">附件 · ${esc(a.attachment.name)}</a></p>` : ''}</article>`).join('')
         : '<p class="muted">目前沒有公告。</p>';
     } catch (e) {
       el.innerHTML = '<p class="muted">公告載入失敗。</p>';
@@ -81,24 +96,48 @@ const socials = [
   }
 </script>
 <style>
-  .hero-sub{max-width:40rem;margin:.4rem 0 0;font-size:.95rem}
-  .section-link{display:flex;gap:.8rem;align-items:flex-start;text-decoration:none;color:inherit}
-  .section-link:hover{border-color:var(--gold)}
-  .section-icon{display:flex;align-items:center;line-height:1}
-  .section-icon svg{display:block}
-  .section-link p{margin:.2rem 0 0}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:24px;padding:54px 0 48px}
+  .hero-eyebrow{font-size:12px;letter-spacing:.34em;color:var(--gold);font-weight:700;margin:0 0 20px}
+  .hero-title{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:80px;line-height:1.05;color:var(--ink);margin:0;letter-spacing:.05em}
+  .hero-sub{margin:24px 0 28px;font-family:"Noto Serif TC",serif;font-size:17px;line-height:1.85;color:var(--muted);max-width:430px}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero-cta .btn{box-shadow:0 8px 18px -8px rgba(31,122,77,.6)}
+  .hero-cta .btn.btn-ghost{box-shadow:none}
+
+  .hero-art{position:relative;height:300px;display:flex;align-items:center;justify-content:center}
+  .blob{position:absolute;display:block;filter:blur(1px)}
+  .blob-green{width:248px;height:248px;border-radius:52% 48% 50% 50%/48% 52% 48% 52%;background:radial-gradient(58% 58% at 42% 38%,#cfe3d2 0%,#a9cdb0 50%,#8bbf9a 100%);opacity:.7}
+  .blob-gold{right:24px;bottom:24px;width:130px;height:130px;border-radius:50% 50% 48% 52%/52% 48% 52% 48%;background:radial-gradient(58% 58% at 45% 40%,#f1e0bd,#d8b25e);opacity:.55}
+  .blob-red{left:30px;top:34px;width:74px;height:74px;border-radius:50%;background:radial-gradient(58% 58% at 45% 40%,#f6ddd8,#e7a99b);opacity:.5}
+
+  .follow-grid{margin-bottom:44px}
+  .section-link{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+  .section-link:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
+  .section-icon{display:flex;align-items:center;line-height:1;flex:none}
+  .section-icon svg{display:block;width:40px;height:40px}
+  .section-link strong{font-family:"Noto Serif TC",serif;color:var(--ink)}
+  .section-link p{margin:3px 0 0;font-size:13px}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;padding:30px 0 26px}
+    .hero-title{font-size:54px}
+    .hero-art{display:none}
+  }
 </style>
 <style is:global>
   /* 近期行程列由 client script 以 innerHTML 注入，需用全域樣式才套得到 */
-  .ev-row{display:flex;align-items:center;gap:.8rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
-  .ev-row:last-child{border-bottom:none}
-  .ev-date{flex:none;width:3rem;text-align:center;line-height:1.15}
-  .ev-date .md{font-weight:600;color:var(--ink)}
-  .ev-date .wd{font-size:.72rem;color:var(--muted)}
-  .ev-dot{width:.6rem;height:.6rem;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
-  .ev-title{flex:1;min-width:0}
-  .ev-time{flex:none;font-size:.85rem;color:var(--muted)}
-  .upcoming-more{display:inline-block;margin-top:.7rem;font-size:.9rem;color:var(--brand);text-decoration:none}
+  .upcoming{padding:18px 22px}
+  .upcoming .cal-legend{gap:8px 18px;padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line-soft)}
+  .upcoming .cal-legend li{font-size:12.5px}
+  .upcoming .cal-legend .dot{width:10px;height:10px}
+  .ev-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+  .ev-date{flex:none;width:42px;text-align:center;line-height:1.15}
+  .ev-date .md{font-weight:700;color:var(--ink);font-size:14px}
+  .ev-date .wd{font-size:11px;color:var(--faint)}
+  .ev-dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .ev-title{flex:1;min-width:0;font-size:14.5px;color:#5a4f3a}
+  .ev-time{flex:none;font-size:12.5px;color:var(--faint)}
+  .upcoming-more{display:inline-block;margin-top:13px;font-size:13px;color:var(--brand);text-decoration:none;font-weight:600}
   .upcoming-more:hover{text-decoration:underline}
-  .upcoming-sample{font-size:.75rem;color:var(--muted);margin:.6rem 0 0}
+  .upcoming-sample{font-size:.75rem;color:var(--faint);margin:.6rem 0 0}
 </style>

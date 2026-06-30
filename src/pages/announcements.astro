@@ -1,9 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 ---
-<Layout title="最新公告">
-  <h1>最新公告</h1>
-  <div id="announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
+<Layout title="公告">
+  <section class="page">
+    <PageHero eyebrow="最 新 消 息" title="公告" sub="樂團的最新通知與消息，置頂者優先顯示。" />
+    <div id="announcements" class="grid"><p class="muted">載入中…</p></div>
+  </section>
 </Layout>
 <script>
   import { fetchAnnouncements, pinnedFirst } from '../lib/announcements.js';
@@ -14,10 +17,17 @@ import Layout from '../layouts/Layout.astro';
     try {
       const items = pinnedFirst(await fetchAnnouncements(url));
       el.innerHTML = items.length
-        ? items.map((a) => `<article class="card">${a.pinned ? '<span class="pin">📌 置頂</span> ' : ''}<time>${esc(a.date)}</time><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${a.attachment ? `<p class="att"><a href="${esc(a.attachment.url)}" target="_blank" rel="noopener noreferrer">📎 ${esc(a.attachment.name)}</a></p>` : ''}</article>`).join('')
+        ? items.map((a) => `<article class="card ann-card"><div class="ann-meta">${a.pinned ? '<span class="pin">置頂</span>' : ''}<time>${esc(a.date)}</time></div><h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${a.attachment ? `<p class="att"><a href="${esc(a.attachment.url)}" target="_blank" rel="noopener noreferrer">附件 · ${esc(a.attachment.name)}</a></p>` : ''}</article>`).join('')
         : '<p class="muted">目前沒有公告。</p>';
     } catch (e) {
       el.innerHTML = '<p class="muted">公告載入失敗，請稍後再試。</p>';
     }
   }
 </script>
+<style is:global>
+  #announcements{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  /* 公告頁卡片內距略大於首頁 */
+  #announcements .ann-card{padding:20px 22px}
+  #announcements .ann-card h3{font-size:18px}
+  #announcements .ann-card p{font-size:14.5px;line-height:1.75}
+</style>

@@ -1,10 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 ---
 <Layout title="活動支援">
-  <h1>活動支援</h1>
-  <p class="muted">需要家長到場支援的活動。直接在下方填稱呼送出即可報名／認領，看板會即時更新。</p>
-  <div id="support"><p class="muted">看板載入中…</p></div>
+  <section class="page">
+    <PageHero
+      eyebrow="家 長 一 起 來"
+      title="活動支援"
+      sub="需要家長到場支援的活動。直接在下方填稱呼送出即可報名／認領，看板會即時更新。"
+    />
+    <div id="support"><p class="muted">看板載入中…</p></div>
+  </section>
 </Layout>
 <script>
   import { parseCsvRows } from '../lib/csv.js';
@@ -67,10 +73,10 @@ import Layout from '../layouts/Layout.astro';
     return list + `<div class="board-row"><span>目前報名</span>${progress(j)}</div>` + form;
   }
   function cardHtml(act) {
-    const badge = act.ended ? '<span class="pin">已結束</span>' : act.full ? '<span class="pin">額滿</span>' : '';
-    const meta = `<p><time>${esc(act.date)}</time>${act.time ? ` ${esc(act.time)}` : ''}</p>`;
-    const note = act.note ? `<p class="muted">${esc(act.note)}</p>` : '';
-    const line = act.lineUrl ? `<p><a href="${esc(act.lineUrl)}" target="_blank" rel="noopener noreferrer">LINE 討論串 ↗</a></p>` : '';
+    const badge = act.ended ? '<span class="badge-muted">已結束</span>' : act.full ? '<span class="badge-muted">額滿</span>' : '';
+    const meta = `<p class="support-when"><time>${esc(act.date)}</time>${act.time ? ` · ${esc(act.time)}` : ''}</p>`;
+    const note = act.note ? `<p class="support-note">${esc(act.note)}</p>` : '';
+    const line = act.lineUrl ? `<p class="support-line"><a href="${esc(act.lineUrl)}" target="_blank" rel="noopener noreferrer">LINE 討論串 ↗</a></p>` : '';
     const body = act.type === '分工'
       ? `<div class="board-row"><span>目前支援家長</span><span class="ok">${act.total} 位</span></div>` + act.jobs.map((j) => jobRow(act, j)).join('')
       : rosterCard(act);
@@ -125,12 +131,29 @@ import Layout from '../layouts/Layout.astro';
   }
 </script>
 <style is:global>
-  /* 卡片由 client script 以 innerHTML 注入，需全域樣式才套得到（同文件下載頁） */
-  .support-event h2{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
-  .signup-list{margin:.3rem 0 .6rem;padding-left:1.5rem}
-  .signup-list li{padding:.15rem 0}
-  .claim{display:flex;gap:.4rem;margin:.3rem 0 .2rem}
-  .claim input{flex:1;min-width:0;padding:.4rem .6rem;border:1px solid var(--line);border-radius:8px;font:inherit}
-  .claim button{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:.4rem .9rem;font:inherit;cursor:pointer;white-space:nowrap}
+  /* 看板卡片由 client script 以 innerHTML 注入，需全域樣式才套得到 */
+  #support{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+  .card.support-event{border-radius:18px;padding:22px 24px;box-shadow:0 6px 20px -12px rgba(120,90,40,.45)}
+  .support-event h2{font-family:"Noto Serif TC",serif;font-weight:700;font-size:19px;color:var(--ink);display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 4px}
+  .badge-muted{background:#f3ead8;color:#8a7c5e;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .support-when{margin:0 0 4px;font-size:13.5px;color:var(--brand);font-weight:600}
+  .support-when time{color:inherit;font-size:inherit;font-weight:inherit}
+  .support-note{margin:0 0 10px;font-size:13.5px;color:var(--muted)}
+  .support-line{margin:10px 0 0;font-size:13px}
+
+  .support-event .board{margin-top:10px;border-top:1px solid var(--line-soft);padding-top:6px}
+  .support-event .board p{margin:.3rem 0;font-size:13px;color:var(--muted)}
+  .board-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+  .board-row span:first-child{color:#5a4f3a}
+  .board-row .ok{color:#2e7d32;font-weight:700}
+  .board-row .need{color:#b25e00;font-weight:700}
+  .support-event .board .board-thanks{color:var(--faint);font-size:12.5px;margin:5px 0 0}
+
+  .signup-list{margin:.2rem 0 .6rem;padding-left:1.4rem}
+  .signup-list li{padding:.15rem 0;font-size:13.5px}
+
+  .claim{display:flex;gap:8px;margin:8px 0 2px}
+  .claim input{flex:1;min-width:0;padding:9px 12px;border:1px solid #e3d4b8;border-radius:10px;font:inherit;background:#FBF7EE}
+  .claim button{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
   .claim button:hover{background:var(--brand-dark)}
 </style>

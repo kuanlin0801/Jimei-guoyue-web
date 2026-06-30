@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 ---
 <Layout title="文件下載">
-  <h1>文件下載</h1>
-  <p class="muted">通知單、樂譜、報名與繳費表單。點擊在 Google 雲端硬碟開啟／下載。</p>
-  <div id="documents" class="grid cols-2"><p class="muted">載入中…</p></div>
+  <section class="page">
+    <PageHero eyebrow="下 載 專 區" title="文件下載" sub="通知單、樂譜、報名與繳費表單。點擊在 Google 雲端硬碟開啟／下載。" />
+    <div id="documents" class="grid"><p class="muted">載入中…</p></div>
+  </section>
 </Layout>
 <script>
   import { fetchAnnouncements } from '../lib/announcements.js';
@@ -22,9 +24,9 @@ import Layout from '../layouts/Layout.astro';
       const items = buildDocumentList(anns, parseDocumentsCsv(docText));
       el.innerHTML = items.length
         ? items.map((d) => {
-            const pin = d.pinned ? '<span class="pin">📌</span> ' : '';
-            const note = d.note ? `<p class="muted">${esc(d.note)}</p>` : '';
-            const inner = `<span class="doc-type">${esc(d.type)}</span><span>${pin}<strong>${esc(d.name)}</strong>${note}<time class="doc-date">${esc(d.date)}</time></span>`;
+            const dot = d.pinned ? '<span class="doc-dot">●</span>' : '';
+            const meta = [d.note, d.date].filter(Boolean).map(esc).join(' · ');
+            const inner = `<span class="doc-type">${esc(d.type)}</span><span class="doc-body"><span class="doc-head">${dot}<strong>${esc(d.name)}</strong></span><span class="doc-meta">${meta}</span></span>`;
             return d.url
               ? `<a class="card doc" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${inner}</a>`
               : `<div class="card doc">${inner}<span class="muted">（連結無效）</span></div>`;
@@ -36,10 +38,14 @@ import Layout from '../layouts/Layout.astro';
   }
 </script>
 <style is:global>
-  /* 卡片由 client script 以 innerHTML 注入，需全域樣式才套得到（同首頁近期行程） */
-  .doc{display:flex;gap:.8rem;align-items:center;text-decoration:none;color:inherit}
-  .doc:hover{border-color:var(--gold)}
-  .doc-type{background:var(--brand);color:#fff;font-size:.7rem;padding:.2rem .5rem;border-radius:6px;flex-shrink:0}
-  .doc p{margin:.15rem 0 0}
-  .doc-date{display:block;font-size:.75rem;color:var(--muted,#777);margin-top:.15rem}
+  /* 卡片由 client script 以 innerHTML 注入，需全域樣式才套得到 */
+  #documents{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .card.doc{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;border-radius:14px;padding:16px 18px;transition:transform .15s,box-shadow .15s}
+  .card.doc:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
+  .doc-type{background:var(--brand);color:#fff;font-size:11px;font-weight:700;padding:6px 9px;border-radius:8px;flex:none}
+  .doc-body{min-width:0}
+  .doc-head{display:flex;align-items:center;gap:7px}
+  .doc-head strong{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:15.5px}
+  .doc-dot{color:var(--seal);font-size:12px;flex:none}
+  .doc-meta{display:block;font-size:12.5px;color:var(--faint);margin-top:3px}
 </style>

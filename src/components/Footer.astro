@@ -6,20 +6,20 @@ const club = {
 };
 ---
 <footer class="site-footer">
-  <div class="container">
-    <strong>{club.name}</strong>
-    <p>聯絡：{club.contact}</p>
-    <figure class="line-qr">
-      <img src={club.lineQr} alt="集美國小國樂團 LINE QR code" width="128" height="128" loading="lazy" />
-      <figcaption class="muted">掃描 QR 加入 LINE</figcaption>
-    </figure>
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <div class="footer-name">{club.name}</div>
+      <p class="footer-contact">聯絡：{club.contact}</p>
+      <p class="footer-line">掃描 QR 加入 LINE</p>
+    </div>
+    <img class="footer-qr" src={club.lineQr} alt="集美國小國樂團 LINE QR code" width="96" height="96" loading="lazy" />
   </div>
 </footer>
 <style>
-  .site-footer{background:var(--ink);color:#d8d2c4;font-size:.9rem;padding:1.4rem 0;margin-top:1.5rem}
-  .site-footer a{color:var(--gold)}
-  .site-footer p{margin:.15rem 0}
-  .line-qr{margin:.7rem 0 0;display:flex;flex-direction:column;gap:.35rem;align-items:flex-start}
-  .line-qr img{width:128px;height:128px;border-radius:8px;background:#fff;padding:6px;display:block}
-  .line-qr figcaption{font-size:.82rem}
+  .site-footer{background:#4a3f2a;color:#d8cdb4;margin-top:auto}
+  .footer-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:26px;padding-bottom:26px}
+  .footer-name{font-family:"Noto Serif TC",serif;font-weight:700;color:#FBF6EC;font-size:16px}
+  .footer-contact{margin:6px 0 0;font-size:13.5px}
+  .footer-line{margin:8px 0 0;font-size:12.5px;color:#E7D3A6;letter-spacing:.04em}
+  .footer-qr{width:96px;height:96px;border-radius:12px;background:#fff;padding:6px;display:block;flex:none}
 </style>

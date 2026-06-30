@@ -1,83 +1,104 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 import { club } from '../data/club.js';
 import { core, sections, groups } from '../data/teachers.js';
 import { officers } from '../data/officers.js';
 ---
 <Layout title="關於我們">
-  <h1>關於我們</h1>
+  <section class="page">
+    <PageHero eyebrow="關 於 樂 團" title="關於我們" />
 
-  <section class="card">
-    <h2>樂團簡介</h2>
-    <p>{club.intro}</p>
-    <ul>{club.features.map((f) => <li>{f}</li>)}</ul>
-    <p class="muted">{club.ensemble}</p>
-  </section>
+    <section class="card about-intro">
+      <h2 class="card-title">樂團簡介</h2>
+      <p class="intro-text">{club.intro}</p>
+      <div class="chips">{club.features.map((f) => <span class="chip">{f}</span>)}</div>
+      <p class="faint ensemble">{club.ensemble}</p>
+    </section>
 
-  <a class="card intro-entry" href="/intro">
-    <img src="/intro/thumb-01.jpg" alt="集美國小國樂團介紹電子書封面" loading="lazy" />
-    <div class="intro-entry-text">
-      <strong>翻閱樂團介紹 →</strong>
-      <p class="muted">23 頁的國樂團介紹電子書，可翻頁、放大、全螢幕閱讀。</p>
+    <a class="card intro-entry" href="/intro">
+      <img src="/intro/thumb-01.jpg" alt="集美國小國樂團介紹電子書封面" loading="lazy" />
+      <div class="intro-entry-text">
+        <strong>翻閱樂團介紹 →</strong>
+        <p class="muted">23 頁的國樂團介紹電子書，可翻頁、放大、全螢幕閱讀。</p>
+      </div>
+    </a>
+
+    <h2 class="sec-head"><span class="sec-dot brand"></span>核心團隊</h2>
+    <div class="grid cols-3">
+      {core.map((p) => (
+        <article class="card team-card">
+          <p class="label">{p.role}</p>
+          <strong class="team-name">{p.name}</strong>
+          <p class="muted team-desc">{p.desc}</p>
+        </article>
+      ))}
     </div>
-  </a>
 
-  <h2 style="margin-top:2rem">核心團隊</h2>
-  <div class="grid cols-3">
-    {core.map((p) => (
-      <article class="card">
-        <p class="label">{p.role}</p>
-        <strong>{p.name}</strong>
-        <p class="muted">{p.desc}</p>
-      </article>
-    ))}
-  </div>
+    <h2 class="sec-head"><span class="sec-dot gold"></span>各分部師資</h2>
+    <div class="grid cols-2">
+      {sections.map((s) => (
+        <article class="card part">
+          <div class="part-name">{s.part}</div>
+          <div>
+            <strong>{s.teacher}</strong>
+            {s.note && <p class="faint">{s.note}</p>}
+          </div>
+        </article>
+      ))}
+    </div>
 
-  <h2 style="margin-top:2rem">各分部師資</h2>
-  <div class="grid cols-2">
-    {sections.map((s) => (
-      <article class="card part">
-        <div class="part-name">{s.part}</div>
-        <div>
-          <strong>{s.teacher}</strong>
-          {s.note && <p class="muted">{s.note}</p>}
-        </div>
-      </article>
-    ))}
-  </div>
+    <h2 class="sec-head"><span class="sec-dot seal"></span>國樂三團（階梯式）</h2>
+    <div class="grid cols-3">
+      {groups.map((g) => (
+        <article class="card group-card">
+          <p class="label">{g.tier}</p>
+          <strong class="group-name">{g.name}</strong>
+          <p class="group-teacher">任課：{g.teacher}</p>
+          <p class="muted group-focus">{g.focus}</p>
+        </article>
+      ))}
+    </div>
 
-  <h2 style="margin-top:2rem">國樂三團（階梯式）</h2>
-  <div class="grid cols-3">
-    {groups.map((g) => (
-      <article class="card">
-        <p class="label">{g.tier}</p>
-        <strong>{g.name}</strong>
-        <p class="muted">任課：{g.teacher}</p>
-        <p>{g.focus}</p>
-      </article>
-    ))}
-  </div>
-
-  <h2 style="margin-top:2rem">家長幹部</h2>
-  <div class="grid cols-3">
-    {officers.map((o) => (
-      <article class="card">
-        <p class="label">{o.role}</p>
-        <strong>{o.name}</strong>
-        {o.note && <p class="muted">{o.note}</p>}
-      </article>
-    ))}
-  </div>
+    <h2 class="sec-head"><span class="sec-dot brand"></span>家長幹部</h2>
+    <div class="grid cols-3">
+      {officers.map((o) => (
+        <article class="card team-card">
+          <p class="label">{o.role}</p>
+          <strong class="team-name">{o.name}</strong>
+          {o.note && <p class="muted team-desc">{o.note}</p>}
+        </article>
+      ))}
+    </div>
+  </section>
 </Layout>
 <style>
-  .part{display:flex;gap:.9rem;align-items:center}
-  .part-name{background:var(--brand);color:#fff;font-weight:700;border-radius:8px;padding:.3rem .7rem;flex-shrink:0;min-width:5.5rem;text-align:center}
-  .part p{margin:.15rem 0 0}
-  section.card ul{margin:.4rem 0 .4rem 1.25rem}
-  .intro-entry{display:flex;gap:1rem;align-items:center;text-decoration:none;color:inherit;margin:1rem 0}
-  .intro-entry:hover{border-color:var(--gold)}
-  .intro-entry img{width:160px;height:auto;border-radius:8px;border:1px solid var(--line);flex-shrink:0}
-  .intro-entry-text strong{color:var(--brand);font-size:1.1rem}
-  .intro-entry-text p{margin:.3rem 0 0}
-  @media (max-width:480px){.intro-entry{flex-direction:column;align-items:flex-start}.intro-entry img{width:100%}}
+  .about-intro{padding:26px 28px;box-shadow:0 6px 20px -12px rgba(120,90,40,.45)}
+  .card-title{font-family:"Noto Serif TC",serif;font-weight:700;font-size:20px;color:var(--ink);margin:0 0 12px}
+  .intro-text{margin:0 0 14px;font-size:15px;color:var(--muted);line-height:1.85}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px}
+  .chip{background:var(--chip);color:var(--brand);font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px}
+  .ensemble{margin:0;font-size:13.5px}
+
+  .intro-entry{display:flex;gap:18px;align-items:center;text-decoration:none;color:inherit;margin-top:16px;padding:16px 18px;border:1px solid var(--line-soft);transition:transform .15s,box-shadow .15s}
+  .intro-entry:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
+  .intro-entry img{width:120px;height:auto;border-radius:10px;border:1px solid var(--line);flex:none;display:block}
+  .intro-entry-text strong{font-family:"Noto Serif TC",serif;color:var(--brand);font-size:17px}
+  .intro-entry-text p{margin:6px 0 0;font-size:13.5px;line-height:1.7}
+
+  .team-card{padding:20px 22px}
+  .team-name{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:17px}
+  .team-desc{margin:8px 0 0;font-size:13.5px;line-height:1.7}
+
+  .part{display:flex;gap:14px;align-items:center;padding:14px 18px;border-radius:14px;box-shadow:0 4px 14px -10px rgba(120,90,40,.4)}
+  .part-name{background:var(--brand);color:#fff;font-weight:700;border-radius:9px;padding:8px 10px;flex:none;min-width:84px;text-align:center;font-size:14px;font-family:"Noto Serif TC",serif}
+  .part strong{color:var(--ink);font-size:15px}
+  .part p{margin:2px 0 0;font-size:12.5px}
+
+  .group-card{padding:20px 22px;border-top:4px solid var(--brand)}
+  .group-name{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:18px}
+  .group-teacher{margin:6px 0 8px;font-size:12.5px;color:var(--brand);font-weight:600}
+  .group-focus{margin:0;font-size:13.5px;line-height:1.7}
+
+  @media(max-width:480px){.intro-entry{flex-direction:column;align-items:flex-start}.intro-entry img{width:100%}}
 </style>

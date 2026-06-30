@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
 import { calendars } from '../data/calendars.js';
 
 const params = new URLSearchParams();
@@ -14,26 +15,31 @@ const embedSrc = `https://calendar.google.com/calendar/embed?${params.toString()
 const configured = calendars.length > 0;
 ---
 <Layout title="行事曆">
-  <h1>行事曆</h1>
-  <p class="muted">練習、活動、比賽、演出時間，即時同步自樂團 Google 日曆。</p>
-  {configured ? (
-    <>
-      <ul class="cal-legend">
-        {calendars.map((c) => (
-          <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
-        ))}
-      </ul>
-      <div class="cal-wrap card">
-        <iframe src={embedSrc} width="100%" height="600" style="border:0" frameborder="0" scrolling="no" title="樂團行事曆"></iframe>
-      </div>
-    </>
-  ) : (
-    <div class="card"><p>⚠️ 行事曆尚未設定。請於 <code>calendar.astro</code> 的 <code>calendars</code> 陣列填入日曆 ID。</p></div>
-  )}
+  <section class="page">
+    <PageHero
+      eyebrow="練 習 ・ 演 出 ・ 比 賽"
+      title="行事曆"
+      sub="練習、活動、比賽、演出時間，即時同步自樂團 Google 日曆。"
+    />
+    {configured ? (
+      <>
+        <ul class="cal-legend">
+          {calendars.map((c) => (
+            <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
+          ))}
+        </ul>
+        <div class="cal-wrap card">
+          <iframe src={embedSrc} width="100%" height="600" style="border:0" frameborder="0" scrolling="no" title="樂團行事曆"></iframe>
+        </div>
+      </>
+    ) : (
+      <div class="card"><p>⚠️ 行事曆尚未設定。請於 <code>calendar.astro</code> 的 <code>calendars</code> 陣列填入日曆 ID。</p></div>
+    )}
+  </section>
 </Layout>
 <style>
-  .cal-wrap{padding:.5rem}
-  .cal-wrap iframe{display:block;border-radius:8px}
+  .cal-wrap{padding:10px;border-radius:18px;box-shadow:0 6px 20px -12px rgba(120,90,40,.45)}
+  .cal-wrap iframe{display:block;border-radius:10px}
   @media (max-width:640px){
     .cal-wrap iframe{height:520px}
   }
