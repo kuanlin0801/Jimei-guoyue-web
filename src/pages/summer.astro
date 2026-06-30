@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { summer } from '../data/summer.js';
+const playIcon = `<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1F7A4D"/><path fill="#fff" d="M10 8.5v7l5.5-3.5L10 8.5Z"/></svg>`;
+---
+<Layout title="暑訓專區" description="集美國小國樂團暑期練習作業與參考影片。">
+  <section class="page">
+    <PageHero eyebrow="暑 ・ 期 ・ 練 ・ 功" title="暑訓專區" sub={summer.intro} />
+
+    <h2 class="sec-head first"><span class="sec-dot brand"></span>練習作業</h2>
+    {summer.assignments.length ? (
+      <div class="grid">
+        {summer.assignments.map((a) => (
+          <article class="card assign">
+            <div class="assign-head">
+              <strong class="assign-title">{a.title}</strong>
+              <span class="assign-part">{a.part}</span>
+            </div>
+            <p class="assign-detail">{a.detail}</p>
+            {a.due && <p class="assign-due">進度：{a.due}</p>}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="muted">暑訓作業準備中，敬請期待。</p>
+    )}
+
+    <h2 class="sec-head"><span class="sec-dot gold"></span>參考影片</h2>
+    {summer.videos.length ? (
+      <div class="grid cols-2">
+        {summer.videos.map((v) => (
+          <a class="card video-link" href={v.url} target="_blank" rel="noopener noreferrer">
+            <span class="video-icon" set:html={playIcon}></span>
+            <div><strong>{v.title}</strong><p class="muted">{v.desc}</p></div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="muted">參考影片整理中。</p>
+    )}
+  </section>
+</Layout>
+<style>
+  .assign{padding:20px 22px;border-top:4px solid var(--brand)}
+  .assign-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .assign-title{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:17px}
+  .assign-part{flex:none;background:var(--chip);color:var(--brand);font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px}
+  .assign-detail{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.8}
+  .assign-due{margin:10px 0 0;font-size:12.5px;color:var(--seal);font-weight:600}
+
+  .video-link{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+  .video-link:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
+  .video-icon{display:flex;align-items:center;line-height:1;flex:none}
+  .video-icon svg{display:block;width:40px;height:40px}
+  .video-link strong{font-family:"Noto Serif TC",serif;color:var(--ink)}
+  .video-link p{margin:3px 0 0;font-size:13px}
+</style>
