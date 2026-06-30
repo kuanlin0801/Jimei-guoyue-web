@@ -16,10 +16,10 @@
 ## 目錄結構
 - `src/pages/*.astro` — 各頁：index（首頁）、calendar、announcements、support（活動支援）、about（關於我們）、documents、gallery（相簿）、achievements（成果）、intro（樂團介紹翻頁書）
 - `src/layouts/Layout.astro` — 共用版型；含 `<title>`、`description` 與連結預覽用的 Open Graph／Twitter Card meta（`og:image` 為站上 `logo.png`，需 `astro.config.mjs` 的 `site` 才能產生絕對網址）。首頁不傳 `title`，故標題僅「集美國小國樂團」；其餘頁為「XXX｜集美國小國樂團」。
-- `src/components/` — Header.astro（淺色 header＋左上 logo 品牌＋導覽）、Footer.astro（頁尾聯絡）
+- `src/components/` — Header.astro（毛玻璃 sticky header＋左上 logo 雙行品牌＋膠囊導覽，≤720px 漢堡下拉選單）、Footer.astro（深棕頁尾聯絡＋LINE QR）、PageHero.astro（子頁共用頁首：小字 eyebrow＋主標＋副標）
 - `src/lib/` — 純邏輯：`csv.js`（splitCsvLine／parseCsvRows／isSafeHref）、`announcements.js`、`documents.js`、`support.js`、`flipbook.js`（翻頁書頁面清單／頁碼），各有 `*.test.js`
 - `src/data/*.js` — 半靜態內容資料檔：club、teachers、officers、albums、achievements、support-events
-- `src/styles/global.css` — 全站配色：主色**竹綠 `--brand` #1F7A4D**（取自 logo）＋ 金 `--gold` ＋ 宣紙底 `--paper`
+- `src/styles/global.css` — 全站視覺 token＋共用樣式（1c「水彩雅集」風）：主色**竹綠 `--brand` #1F7A4D**＋金 `--gold`＋朱印紅 `--seal`＋墨棕 `--ink`＋米色底 `--paper` #FBF6EC＋`--faint`／`--line-soft`／`--chip`；卡片、膠囊鈕、區段輪替色圓點標題、`.page-hero` 等共用 class 也集中於此
 - `public/` — 靜態資源：`logo.png`（已去背）、`sample-*.csv`（開發範例資料）、`intro/`（樂團介紹翻頁書整頁圖＋縮圖）
 - `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站。並同步圖片＋page-flip 函式庫到 `intro-public/`、注入其 no-JS 退路清單
 - `intro-public/` — **對外公開**的獨立翻頁站（純靜態、無導覽列、無內網連結；給官方 LINE）。不被 Astro build 收錄，由**另一個 Cloudflare Worker（靜態資產）**部署成不同網址（含 `wrangler.jsonc`；見「部署」段）
@@ -45,8 +45,9 @@
   - `PUBLIC_SUPPORT_API_URL`＋`PUBLIC_SUPPORT_TOKEN`：活動支援的 Apps Script Web App 網址（看板即時讀 `doGet`＋站內報名寫 `doPost`）與送出用共用 token。未設則 fallback 讀 `public/sample-support-*.csv`。**Apps Script 已部署** ✓（`/exec` 回 JSON 正常）；環境變數已填、待本次 build 生效後線上支援頁改讀真實試算表。另可選填 `PUBLIC_SUPPORT_ACTIVITIES_CSV`／`PUBLIC_SUPPORT_JOBS_CSV`／`PUBLIC_SUPPORT_RESPONSES_CSV` 作為 `doGet` 失敗時的後備。操作見 `docs/superpowers/plans/2026-06-26-support-go-live-checklist.md`。
 
 ## 目前狀態 / 待辦
-- Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。視覺為竹綠主題、去背 logo 置左上、淺色 header。
-- **站台用詞統一「樂團」** ✓（K260629C）：訪客可見文字不再用「社團」（關於我們、行事曆、內外網翻頁書標題等）；程式碼註解仍保留「社團」描述這個家長社團組織。首頁標語改為「集美國小國樂團後援會：行事曆、公告、文件都在這…」（原「學生家長社團 ・ 社團的資訊家」）。
+- Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。
+- **全站視覺改版 1c「水彩雅集」** ✓（K260630A）：依 `Reference/集美國樂團網站介面優化/design_handoff_1c_redesign/` 設計稿把視覺層全面換新——米色底（`--paper` #FBF6EC）＋書法 hero 大標（Ma Shan Zheng「童心奏古韻」，僅首頁用）＋膠囊導覽（手機 ≤720px 漢堡下拉）＋柔和圓角白卡＋區段輪替色（竹綠→金→朱紅）圓點標題；去背 logo 仍置左上。tokens／共用樣式集中在 `global.css`，子頁頁首抽成 `PageHero.astro`。**只動視覺層**：資料流（Calendar API／published CSV／Apps Script `doGet/doPost`／輪詢與樂觀更新）與 `src/lib/` 純邏輯及 vitest 全未動。原型對照驗證見記憶 `jimei-preview-verify`（build 後 `npm run preview` 靜態截圖）。
+- **站台用詞統一「樂團」** ✓（K260629C）：訪客可見文字不再用「社團」（關於我們、行事曆、內外網翻頁書標題等）；程式碼註解仍保留「社團」描述這個家長社團組織。K260630A 再調整：首頁 hero 副標改為「集美國小國樂團後援會——把每一次練習、演出與相聚，溫柔地收藏。」；「最新公告」統一簡稱「公告」（導覽分類、首頁按鈕、公告內頁 H1 與分頁標題），首頁 hero 兩鈕為「看公告」（→/announcements）／「看行事曆」（→/calendar）。
 - **活動相簿暫時隱藏** ✓（K260629C）：目前無內容需求，已從導覽列（`Header.astro`）移除「活動相簿」項；`gallery.astro`／`albums.js` 保留不刪，恢復＝把 nav 的 `/gallery` 那行加回。
 - **師資**已是真實資料 ✓（核心團隊／各分部／國樂三團）。
 - **連結預覽 meta** 已上線 ✓（`Layout.astro` 加 Open Graph／Twitter Card＋`canonical`、`astro.config.mjs` 設 `site`；分享卡片含 logo 縮圖、標題為「集美國小國樂團」）。首頁標題已移除「首頁」前綴。
