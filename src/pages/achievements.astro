@@ -88,10 +88,10 @@ import { performances, teamAwards, soloAwardGroups } from '../data/achievements.
   .ach strong{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:15px}
   .ach p{margin:2px 0 0;font-size:12.5px}
 
+  /* 窄螢幕改上下堆疊：名次膠囊／日期塊自成一行靠左，避免長膠囊(如「晉級北區決賽」)溢出壓到描述 */
   @media(max-width:520px){
-    .award{grid-template-columns:5rem 1fr;gap:.65rem}
+    .award{grid-template-columns:1fr;gap:7px}
     .award-body .item{margin-left:0;display:block}
-    .ach{grid-template-columns:4.5rem 1fr;gap:.65rem}
-    .ach-year{font-size:11.5px;padding:6px 4px}
+    .ach{grid-template-columns:1fr;gap:6px}
   }
 </style>
