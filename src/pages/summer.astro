@@ -12,12 +12,14 @@ const embedUrl = (a) => {
     <PageHero eyebrow="暑 ・ 期 ・ 練 ・ 功" title="暑訓專區" sub={summer.intro} />
 
     <h2 class="sec-head first"><span class="sec-dot brand"></span>暑訓行事曆</h2>
+    {summer.scheduleNote && <p class="sec-note">{summer.scheduleNote}</p>}
     <a class="card schedule" href="/summer-schedule.jpg" target="_blank" rel="noopener noreferrer">
       <img src="/summer-schedule.jpg" alt="集美國樂團 7～8 月暑訓行事曆，含各分部練習時間與錄影功課繳交期限" loading="lazy" />
       <span class="schedule-hint">點圖可放大 ↗</span>
     </a>
 
     <h2 class="sec-head"><span class="sec-dot gold"></span>練習作業</h2>
+    {summer.assignmentsNote && <p class="sec-note">{summer.assignmentsNote}</p>}
     {summer.assignments.length ? (
       <div class="grid">
         {summer.assignments.map((a) => (
@@ -59,6 +61,8 @@ const embedUrl = (a) => {
   </section>
 </Layout>
 <style>
+  .sec-note{white-space:pre-line;margin:0 0 14px;font-size:14.5px;color:var(--muted);line-height:1.9;max-width:680px}
+
   .schedule{display:block;padding:12px;text-align:right;transition:transform .15s,box-shadow .15s}
   .schedule:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
   .schedule img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line)}
