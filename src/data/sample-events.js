@@ -16,12 +16,12 @@ export function sampleEvents(now) {
   const d = (off) => taipeiDateStr(now, off);
   const cal = (name) => calendars.find((c) => c.name === name);
   const raw = [
-    ['集美國樂團', '常態團練', { dateTime: `${d(3)}T09:00:00+08:00` }],
-    ['國樂團加強課', '小提琴加強課', { dateTime: `${d(5)}T16:00:00+08:00` }],
-    ['集美國樂團暑訓', '暑期密集訓練（第一週）', { date: d(7) }],
-    ['集美古箏/提琴', '古箏分部課', { dateTime: `${d(10)}T14:00:00+08:00` }],
-    ['集美國樂團', '期末成果彩排', { dateTime: `${d(17)}T09:00:00+08:00` }],
-    ['集美國樂團暑訓', '暑訓成果發表會', { dateTime: `${d(24)}T15:00:00+08:00` }],
+    ['全團常態課與展演', '常態團練', { dateTime: `${d(3)}T09:00:00+08:00` }],
+    ['加強課', '小提琴加強課', { dateTime: `${d(5)}T16:00:00+08:00` }],
+    ['暑期集訓', '暑期密集訓練（第一週）', { date: d(7) }],
+    ['低音組分部課', '大提琴分部課', { dateTime: `${d(10)}T14:00:00+08:00` }],
+    ['全團常態課與展演', '期末成果彩排', { dateTime: `${d(17)}T09:00:00+08:00` }],
+    ['暑期集訓', '暑訓成果發表會', { dateTime: `${d(24)}T15:00:00+08:00` }],
   ];
   return raw.map(([name, summary, start]) => normalize({ summary, start }, cal(name)));
 }
