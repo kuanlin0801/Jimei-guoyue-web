@@ -138,7 +138,9 @@ const socials = [
     .hero{min-height:auto;padding:30px 0 26px}
     .hero-title{font-size:54px}
     .hero-text{max-width:100%}
-    .hero-carousel{display:none}
+    /* phones: keep the artwork as a faint backdrop behind the full-width text instead of hiding it */
+    .hero-carousel{opacity:.2}
+    .hero-scrim{display:none}   /* left-side scrim is desktop-only; unused when text is full width */
   }
   @media(prefers-reduced-motion:reduce){
     .hero-slide{transition:none}
