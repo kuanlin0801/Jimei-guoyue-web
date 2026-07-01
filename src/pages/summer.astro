@@ -18,7 +18,37 @@ const embedUrl = (a) => {
       <span class="schedule-hint">點圖可放大 ↗</span>
     </a>
 
-    <h2 class="sec-head"><span class="sec-dot gold"></span>練習作業</h2>
+    <h2 class="sec-head"><span class="sec-dot gold"></span>暑訓教室</h2>
+    {summer.classrooms && (
+      <>
+        {summer.classrooms.title && <p class="sec-note">{summer.classrooms.title}</p>}
+        <section class="card classroom">
+          <div class="classroom-scroll">
+            <table class="classroom-table">
+              <thead>
+                <tr><th>分部</th><th>教室</th><th>老師</th></tr>
+              </thead>
+              <tbody>
+                {summer.classrooms.rows.map((r) => (
+                  <tr>
+                    <td class="cr-part">{r.part}{r.time && <span class="cr-time">{r.time}</span>}</td>
+                    <td>{r.room}</td>
+                    <td>{r.teacher}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {summer.classrooms.notes.length > 0 && (
+            <ul class="classroom-notes">
+              {summer.classrooms.notes.map((n) => <li>{n}</li>)}
+            </ul>
+          )}
+        </section>
+      </>
+    )}
+
+    <h2 class="sec-head"><span class="sec-dot seal"></span>練習作業</h2>
     {summer.assignmentsNote && <p class="sec-note">{summer.assignmentsNote}</p>}
     {summer.assignments.length ? (
       <div class="grid">
@@ -67,6 +97,26 @@ const embedUrl = (a) => {
   .schedule:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
   .schedule img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line)}
   .schedule-hint{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--faint);font-weight:600}
+
+  .classroom{padding:18px 20px}
+  .classroom-scroll{overflow-x:auto}
+  .classroom-table{width:100%;border-collapse:collapse;font-size:14.5px}
+  .classroom-table th,.classroom-table td{padding:11px 14px;text-align:left;vertical-align:middle;white-space:nowrap}
+  .classroom-table thead th{background:var(--brand);color:#fff;font-family:"Noto Serif TC",serif;font-weight:700;font-size:14px}
+  .classroom-table thead th:first-child{border-top-left-radius:10px}
+  .classroom-table thead th:last-child{border-top-right-radius:10px}
+  .classroom-table tbody tr:nth-child(even){background:rgba(120,90,40,.045)}
+  .classroom-table tbody td{border-bottom:1px solid var(--line-soft);color:var(--muted)}
+  .classroom-table tbody tr:last-child td{border-bottom:0}
+  .classroom-table .cr-part{font-weight:600;color:var(--ink)}
+  .classroom-table .cr-time{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--faint)}
+  .classroom-notes{margin:14px 2px 0;padding-left:18px;display:flex;flex-direction:column;gap:7px}
+  .classroom-notes li{font-size:13px;color:var(--muted);line-height:1.7}
+  @media(max-width:480px){
+    .classroom{padding:14px 12px}
+    .classroom-table{font-size:14px}
+    .classroom-table th,.classroom-table td{padding:10px 9px}
+  }
 
   .assign{padding:20px 22px;border-top:4px solid var(--brand)}
   .assign-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
