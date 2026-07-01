@@ -10,6 +10,15 @@ const socials = [
 ---
 <Layout>
   <section class="hero">
+    <div class="hero-carousel" aria-hidden="true">
+      <img class="hero-slide is-active" src="/instruments/erhu_yangqin.png" alt="" />
+      <img class="hero-slide" src="/instruments/guzheng.png" alt="" />
+      <img class="hero-slide" src="/instruments/pipa_dizi.png" alt="" />
+      <img class="hero-slide" src="/instruments/cello.png" alt="" />
+      <img class="hero-slide" src="/instruments/sheng.png" alt="" />
+      <img class="hero-slide" src="/instruments/zhongruan.png" alt="" />
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-text">
       <p class="hero-eyebrow">絲 ・ 竹 ・ 和 ・ 鳴</p>
       <h1 class="hero-title">童心<br />奏古音</h1>
@@ -17,11 +26,6 @@ const socials = [
       <div class="hero-cta">
         <a class="btn" href="/summer">暑訓專區</a>
       </div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <span class="blob blob-green"></span>
-      <span class="blob blob-gold"></span>
-      <span class="blob blob-red"></span>
     </div>
   </section>
 
@@ -94,19 +98,33 @@ const socials = [
     }
   }
 </script>
+<script>
+  // Hero instrument carousel: hold each slide, then slowly cross-fade to the next. Loops forever.
+  (function () {
+    var slides = document.querySelectorAll('.hero-slide');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (slides.length < 2 || reduce) return;   // reduced motion: keep only the first slide
+    var idx = 0;
+    var HOLD_MS = 6800;
+    setInterval(function () {
+      slides[idx].classList.remove('is-active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('is-active');
+    }, HOLD_MS);
+  })();
+</script>
 <style>
-  .hero{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:24px;padding:54px 0 48px}
+  .hero{position:relative;min-height:472px;display:flex;align-items:center}
+  .hero-carousel{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;object-position:100% 54%;opacity:0;transition:opacity 3s ease-in-out}
+  .hero-slide.is-active{opacity:1}
+  .hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,var(--paper) 15%,rgba(251,246,236,.72) 33%,rgba(251,246,236,0) 55%)}
+  .hero-text{position:relative;z-index:2;max-width:52%;padding:26px 0}
   .hero-eyebrow{font-size:12px;letter-spacing:.34em;color:var(--gold);font-weight:700;margin:0 0 20px}
   .hero-title{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:80px;line-height:1.05;color:var(--ink);margin:0;letter-spacing:.05em}
   .hero-sub{margin:24px 0 26px;font-family:"Noto Serif TC",serif;font-size:17px;line-height:1.85;color:var(--muted);max-width:430px}
   .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
   .hero-cta .btn{box-shadow:0 8px 18px -8px rgba(31,122,77,.6)}
-
-  .hero-art{position:relative;height:300px;display:flex;align-items:center;justify-content:center}
-  .blob{position:absolute;display:block;filter:blur(1px)}
-  .blob-green{width:248px;height:248px;border-radius:52% 48% 50% 50%/48% 52% 48% 52%;background:radial-gradient(58% 58% at 42% 38%,#cfe3d2 0%,#a9cdb0 50%,#8bbf9a 100%);opacity:.7}
-  .blob-gold{right:24px;bottom:24px;width:130px;height:130px;border-radius:50% 50% 48% 52%/52% 48% 52% 48%;background:radial-gradient(58% 58% at 45% 40%,#f1e0bd,#d8b25e);opacity:.55}
-  .blob-red{left:30px;top:34px;width:74px;height:74px;border-radius:50%;background:radial-gradient(58% 58% at 45% 40%,#f6ddd8,#e7a99b);opacity:.5}
 
   .follow-grid{margin-bottom:44px}
   .section-link{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
@@ -117,9 +135,13 @@ const socials = [
   .section-link p{margin:3px 0 0;font-size:13px}
 
   @media(max-width:860px){
-    .hero{grid-template-columns:1fr;padding:30px 0 26px}
+    .hero{min-height:auto;padding:30px 0 26px}
     .hero-title{font-size:54px}
-    .hero-art{display:none}
+    .hero-text{max-width:100%}
+    .hero-carousel{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero-slide{transition:none}
   }
 </style>
 <style is:global>
