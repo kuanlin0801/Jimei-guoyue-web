@@ -56,7 +56,7 @@ describe('sanitizeRedirect', () => {
   });
 
   it('falls back to / for absolute URLs, protocol-relative URLs, or junk', () => {
-    for (const bad of ['https://evil.com', '//evil.com', 'javascript:alert(1)', '', null, undefined, 'calendar']) {
+    for (const bad of ['https://evil.com', '//evil.com', '/\\evil.com', 'javascript:alert(1)', '', null, undefined, 'calendar']) {
       expect(sanitizeRedirect(bad)).toBe('/');
     }
   });

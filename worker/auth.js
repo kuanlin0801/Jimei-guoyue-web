@@ -54,8 +54,8 @@ export function getCookie(header, name) {
   return null;
 }
 
-/** 只接受站內相對路徑（防 open redirect），其餘一律回首頁。 */
+/** 只接受站內相對路徑（防 open redirect，含 /\ 反斜線變體——瀏覽器會把 \ 正規化成 /），其餘一律回首頁。 */
 export function sanitizeRedirect(value) {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return '/';
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.startsWith('/\\')) return '/';
   return value;
 }
