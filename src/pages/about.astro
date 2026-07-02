@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import { club } from '../data/club.js';
 import { core, sections, groups } from '../data/teachers.js';
-import { officers } from '../data/officers.js';
+import { president, officerGroups } from '../data/officers.js';
 ---
 <Layout title="關於我們">
   <section class="page">
@@ -61,12 +61,19 @@ import { officers } from '../data/officers.js';
     </div>
 
     <h2 class="sec-head"><span class="sec-dot brand"></span>家長幹部</h2>
+    <article class="card officer-card officer-president">
+      <p class="label">{president.role}</p>
+      <strong class="team-name">{president.name}</strong>
+    </article>
+    <div class="officer-stub" aria-hidden="true"></div>
+    <p class="officer-caption">副會長群（兼任各組組長）</p>
     <div class="grid cols-3">
-      {officers.map((o) => (
-        <article class="card team-card">
-          <p class="label">{o.role}</p>
-          <strong class="team-name">{o.name}</strong>
-          {o.note && <p class="muted team-desc">{o.note}</p>}
+      {officerGroups.map((g) => (
+        <article class={`card officer-card${g.recruiting ? ' recruiting' : ''}`}>
+          <p class="officer-group">{g.group}</p>
+          <strong class={`team-name${g.recruiting ? ' recruit-name' : ''}`}>
+            {g.recruiting ? '熱情招募中' : g.names.join('、')}
+          </strong>
         </article>
       ))}
     </div>
@@ -99,6 +106,14 @@ import { officers } from '../data/officers.js';
   .group-name{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:18px}
   .group-teacher{margin:6px 0 8px;font-size:12.5px;color:var(--brand);font-weight:600}
   .group-focus{margin:0;font-size:13.5px;line-height:1.7}
+
+  .officer-card{padding:20px 22px;text-align:center}
+  .officer-president{max-width:230px;margin:0 auto}
+  .officer-stub{width:2px;height:18px;background:var(--line);margin:0 auto}
+  .officer-caption{text-align:center;font-size:13.5px;color:var(--muted);margin:8px 0 14px}
+  .officer-group{display:table;background:var(--chip);color:var(--brand);font-size:12.5px;font-weight:700;padding:4px 14px;border-radius:999px;margin:0 auto 10px}
+  .recruiting{box-shadow:none;background:transparent;border:1.5px dashed var(--faint)}
+  .recruit-name{color:var(--faint);font-size:15px}
 
   @media(max-width:480px){.intro-entry{flex-direction:column;align-items:flex-start}.intro-entry img{width:100%}}
 </style>
