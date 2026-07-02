@@ -37,11 +37,11 @@
 
 ## 資料流
 
-1. 未登入請求任何頁 → 401＋密碼頁（帶 OG meta、noindex）
+1. 未登入請求任何頁 → 密碼頁（HTTP **200**＋`Cache-Control: no-store`＋noindex。用 200 而非 401：LINE 等聊天 App 的預覽爬蟲對非 2xx 回應可能不解析 OG meta，會讓分享卡片變空白；兩者安全性等價，內容都只有密碼頁）
 2. 密碼頁表單 POST（如 `POST /__gate/login`，帶原始目標路徑）→ 密碼正確 → Set-Cookie（HttpOnly、Secure、SameSite=Lax、**Max-Age 30 天**（使用者定案：每月輸入一次；若日後要調整頻率，改 worker 內一個常數即可）、Path=/；值＝過期時間戳＋HMAC-SHA256 簽章）→ 302 導回原目標（深層連結不迷路）
 3. 密碼錯誤 → 密碼頁顯示「密碼不正確」
 4. 已登入 → 直接回靜態資產，30 天內免再輸入
-5. **放行清單**（免登入）：`/logo.png`（LINE 預覽要抓 og:image）、`/favicon.png`、`/favicon.ico`、`/robots.txt`；其他一律擋——特別是 JS bundle（內嵌公告 CSV 與 Apps Script 網址）
+5. **放行清單**（免登入）：`/logo.png`（LINE 預覽要抓 og:image）、`/favicon.png`、`/favicon.ico`、`/apple-touch-icon.png`、`/robots.txt`；其他一律擋——特別是 JS bundle（內嵌公告 CSV 與 Apps Script 網址）
 
 ## 錯誤處理
 
