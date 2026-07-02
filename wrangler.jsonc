@@ -1,0 +1,14 @@
+{
+  // 主站（內網）＝密碼閘 Worker＋Astro build 出的靜態資產（dist/）。
+  // Cloudflare Workers Builds：Build command = npm run build、Deploy command = npx wrangler deploy。
+  // 上線前需在 dashboard 設兩個 runtime secret：SITE_PASSWORD、COOKIE_SECRET
+  // （操作見 docs/superpowers/plans/2026-07-02-password-gate-go-live-checklist.md）。
+  "name": "jimei-guoyue-web",
+  "compatibility_date": "2026-07-02",
+  "main": "worker/index.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  }
+}
