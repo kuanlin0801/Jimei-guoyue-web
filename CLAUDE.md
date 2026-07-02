@@ -21,6 +21,7 @@
 - `src/data/*.js` — 半靜態內容資料檔：club、teachers、officers、albums、achievements、support-events
 - `src/styles/global.css` — 全站視覺 token＋共用樣式（1c「水彩雅集」風）：主色**竹綠 `--brand` #1F7A4D**＋金 `--gold`＋朱印紅 `--seal`＋墨棕 `--ink`＋米色底 `--paper` #FBF6EC＋`--faint`／`--line-soft`／`--chip`；卡片、膠囊鈕、區段輪替色圓點標題、`.page-hero` 等共用 class 也集中於此
 - `public/` — 靜態資源：`logo.png`（已去背）、`sample-*.csv`（開發範例資料）、`intro/`（樂團介紹翻頁書整頁圖＋縮圖）
+- `worker/` — 內網密碼閘 Worker：`index.js`（gate handler）、`auth.js`／`login-page.js`（純邏輯＋模板，各有 `*.test.js`）
 - `scripts/build-intro-images.mjs` — 用 `pdftocairo` 把介紹 PDF 轉成翻頁書圖片（`npm run build:intro`）；本機開發步驟，產出 commit 進站。並同步圖片＋page-flip 函式庫到 `intro-public/`、注入其 no-JS 退路清單
 - `intro-public/` — **對外公開**的獨立翻頁站（純靜態、無導覽列、無內網連結；給官方 LINE）。不被 Astro build 收錄，由**另一個 Cloudflare Worker（靜態資產）**部署成不同網址（含 `wrangler.jsonc`；見「部署」段）
 - `docs/superpowers/` — 設計 spec 與 Phase 1/2 實作計畫
@@ -35,6 +36,7 @@
 
 ## 部署
 - 已上線：**https://jimei-guoyue-web.jmes-ntpc.workers.dev**（Cloudflare，與 GitHub 連動）
+- **內網密碼閘**：主站由 `wrangler.jsonc`＋`worker/`（`run_worker_first` 密碼閘）部署——全團共用密碼（LINE 群公告）、cookie 記住 30 天、密碼頁帶 OG meta 保 LINE 預覽；放行 logo／favicon／robots.txt。兩個 runtime secret：`SITE_PASSWORD`（共用密碼）、`COOKIE_SECRET`（簽章金鑰，換掉＝全員登出）。⚠️ Deploy command 為 `npx wrangler deploy`（非預設靜態資產部署）；本機測閘：`npm run build` 後 `npx wrangler dev`（secrets 在 `.dev.vars`，不入庫）。上線步驟見 `docs/superpowers/plans/2026-07-02-password-gate-go-live-checklist.md`。
 - 流程：在 **GitHub Desktop 按 Push** → Cloudflare 自動 `npm run build` 重新部署，**不需手動操作 Cloudflare**。⚠️ 正式站從 **`main`** 部署；功能分支的修改要等併入 `main` 才會上線。
 - **對外公開版介紹**已上線 ✓ **https://jimei-guoyue-intro.jmes-ntpc.workers.dev**——**第二個 Cloudflare Worker（靜態資產）**，從同 repo 的 `intro-public/` 部署（Root directory `intro-public`、Build 留空、Deploy `npx wrangler deploy`，設定檔 `intro-public/wrangler.jsonc`）。與內網不同網址、放官方 LINE，避免曝光內網。一次 Push、兩站各自自動更新（注意：本帳號無獨立 Pages 入口，靜態站走 Workers）。設定見 `docs/superpowers/plans/2026-06-28-public-intro-go-live-checklist.md`。
 - ⚠️ **連結預覽快取**：LINE／Messenger 等聊天 App 會快取每個網址的預覽卡片（抓 `<title>`／OG meta）。改了站名／標題後，舊網址可能仍顯示舊文字；要立即看到新版就在網址後加沒貼過的參數（如 `?v=3`）或等其快取過期。`astro.config.mjs` 已設 `site`。
@@ -46,6 +48,7 @@
 
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。
+- **內網密碼閘**已實作 ✓（全團共用密碼、每月輸入一次、fail-closed、noindex 基線；設計 `docs/superpowers/specs/2026-07-02-password-gate-design.md`）。⚠️ **上線待使用者操作**：改 Deploy command、設 `SITE_PASSWORD`／`COOKIE_SECRET` 兩個 runtime secret——步驟見 `docs/superpowers/plans/2026-07-02-password-gate-go-live-checklist.md`。
 - **全站視覺改版 1c「水彩雅集」** ✓（K260630A）：依 `Reference/集美國樂團網站介面優化/design_handoff_1c_redesign/` 設計稿把視覺層全面換新——米色底（`--paper` #FBF6EC）＋書法 hero 大標（Ma Shan Zheng「童心奏古音」，僅首頁用；註：Ma Shan Zheng 是簡體字型，未收繁體「韻」「樂」會掉系統黑體，故末字選繁簡同形、字型有收的「音」）＋膠囊導覽（手機 ≤720px 漢堡下拉）＋柔和圓角白卡＋區段輪替色（竹綠→金→朱紅）圓點標題；去背 logo 仍置左上。tokens／共用樣式集中在 `global.css`，子頁頁首抽成 `PageHero.astro`。**只動視覺層**：資料流（Calendar API／published CSV／Apps Script `doGet/doPost`／輪詢與樂觀更新）與 `src/lib/` 純邏輯及 vitest 全未動。原型對照驗證見記憶 `jimei-preview-verify`（build 後 `npm run preview` 靜態截圖）。
 - **站台用詞統一「樂團」** ✓（K260629C）：訪客可見文字不再用「社團」（關於我們、行事曆、內外網翻頁書標題等）；程式碼註解仍保留「社團」描述這個家長社團組織。K260630A 再調整：首頁 hero 副標改為「集美國小國樂團後援會——把每一次練習、演出與相聚，溫柔地收藏。」；「最新公告」統一簡稱「公告」（導覽分類、首頁按鈕、公告內頁 H1 與分頁標題），首頁 hero 兩鈕為「看公告」（→/announcements）／「看行事曆」（→/calendar）。
 - **活動相簿暫時隱藏** ✓（K260629C）：目前無內容需求，已從導覽列（`Header.astro`）移除「活動相簿」項；`gallery.astro`／`albums.js` 保留不刪，恢復＝把 nav 的 `/gallery` 那行加回。
