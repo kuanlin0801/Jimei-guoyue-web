@@ -29,19 +29,24 @@ const socials = [
     </div>
   </section>
 
-  <h2 class="sec-head first"><span class="sec-dot brand"></span>最新公告</h2>
-  <div id="home-announcements" class="grid cols-2"><p class="muted">載入中…</p></div>
-
-  <h2 class="sec-head"><span class="sec-dot gold"></span>近期行程</h2>
-  <section class="card upcoming">
-    <ul class="cal-legend">
-      {calendars.map((c) => (
-        <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
-      ))}
-    </ul>
-    <div id="home-events"><p class="muted">載入中…</p></div>
-    <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
-  </section>
+  <div class="home-cols">
+    <section>
+      <h2 class="sec-head first"><span class="sec-dot brand"></span>最新公告</h2>
+      <div id="home-announcements" class="grid"><p class="muted">載入中…</p></div>
+    </section>
+    <section class="home-col-side">
+      <h2 class="sec-head first"><span class="sec-dot gold"></span>近期行程</h2>
+      <div class="card upcoming">
+        <ul class="cal-legend">
+          {calendars.map((c) => (
+            <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
+          ))}
+        </ul>
+        <div id="home-events"><p class="muted">載入中…</p></div>
+        <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
+      </div>
+    </section>
+  </div>
 
   <h2 class="sec-head"><span class="sec-dot seal"></span>追蹤我們</h2>
   <div class="grid cols-2 follow-grid">
@@ -126,6 +131,8 @@ const socials = [
   .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
   .hero-cta .btn{box-shadow:0 8px 18px -8px rgba(31,122,77,.6)}
 
+  .home-cols{display:grid;grid-template-columns:1.6fr 1fr;gap:0 28px;align-items:start}
+
   .follow-grid{margin-bottom:44px}
   .section-link{display:flex;gap:14px;align-items:center;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
   .section-link:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
@@ -141,6 +148,8 @@ const socials = [
     /* phones: keep the artwork as a faint backdrop behind the full-width text instead of hiding it */
     .hero-carousel{opacity:.2}
     .hero-scrim{display:none}   /* left-side scrim is desktop-only; unused when text is full width */
+    .home-cols{grid-template-columns:1fr}
+    .home-col-side .sec-head.first{margin-top:34px}
   }
   @media(prefers-reduced-motion:reduce){
     .hero-slide{transition:none}
