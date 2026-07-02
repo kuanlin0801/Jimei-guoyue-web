@@ -22,13 +22,14 @@ export default {
     try {
       if (PUBLIC_PATHS.has(url.pathname)) return env.ASSETS.fetch(request);
       if (url.pathname === LOGIN_PATH && request.method === 'POST') {
-        return handleLogin(request, env, url);
+        return await handleLogin(request, env, url);
       }
       const token = getCookie(request.headers.get('Cookie'), COOKIE_NAME);
       if (token && (await verifyToken(env.COOKIE_SECRET, token, Date.now()))) {
         return env.ASSETS.fetch(request);
       }
-      return gateResponse(url, url.pathname + url.search, null);
+      const target = url.pathname === LOGIN_PATH ? '/' : url.pathname + url.search;
+      return gateResponse(url, target, null);
     } catch {
       // fail-closed：任何例外（含 secrets 未設）都回密碼頁，不放行
       return gateResponse(url, '/', null);
