@@ -2,7 +2,8 @@
 
 前置：`main` 已含密碼閘程式（wrangler.jsonc＋worker/）。整個流程約 10 分鐘；
 步驟 2 push 之後到步驟 3 設好 secrets 之前，全站會顯示密碼頁且任何密碼都進不去
-（fail-closed 保護），建議選離峰時段一次做完。
+（fail-closed 保護），建議選離峰時段一次做完。併入 main 後的下一次 push 就會讓閘上線，
+請併入後盡快接著完成步驟 1–3。
 
 ## 0. 事前準備
 - [ ] 會長／幹部決定要公告給家長的「樂團密碼」
@@ -20,8 +21,9 @@
 
 ## 3. 設定 secrets（此時 runtime 區已解鎖）
 - [ ] 同 Worker → Settings → Variables and secrets（**runtime** 區，不是 Build 區）
-- [ ] 新增 `SITE_PASSWORD`（Type: Secret）＝要公告的樂團密碼
 - [ ] 新增 `COOKIE_SECRET`（Type: Secret）＝步驟 0 產生的亂碼
+      （先設簽章金鑰：這段空窗任何密碼都會被乾淨拒絕，不會出現錯誤頁）
+- [ ] 新增 `SITE_PASSWORD`（Type: Secret）＝要公告的樂團密碼
 - [ ] 儲存後即刻生效，**不需**重新部署
 
 ## 4. 驗證
@@ -40,7 +42,8 @@
 ## 回滾（若出問題）
 - [ ] revert 密碼閘的 commits → push（wrangler.jsonc 消失後 `npx wrangler deploy` 會失敗，
       需同時把 Deploy command 清回原值）；或快速止血：wrangler.jsonc 移除
-      `"main"` 與 `"run_worker_first"` 兩行 → push，即回到無閘的純靜態站
+      `"main"`、`"run_worker_first"` 與 `"binding"` **三**行（保留
+      `"assets": { "directory": "./dist" }`）→ push，即回到無閘的純靜態站
 
 ## 日常維運
 - 換密碼（建議每學年）：dashboard 改 `SITE_PASSWORD` → LINE 公告；已登入者最多 30 天後改用新密碼
