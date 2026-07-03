@@ -1,3 +1,5 @@
+export const advisors = { role: '榮譽顧問', names: ['李美燕', '邱凱圳'] };
+
 export const president = { role: '會長', name: '趙芃' };
 
 // 副會長群（兼任各組組長）；names 空陣列＋recruiting 表示該組職缺招募中

@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import { club } from '../data/club.js';
 import { core, sections, groups } from '../data/teachers.js';
-import { president, officerGroups } from '../data/officers.js';
+import { advisors, president, officerGroups } from '../data/officers.js';
 ---
 <Layout title="關於我們">
   <section class="page">
@@ -61,6 +61,10 @@ import { president, officerGroups } from '../data/officers.js';
     </div>
 
     <h2 class="sec-head"><span class="sec-dot brand"></span>後援會幹部</h2>
+    <article class="card officer-card officer-advisors">
+      <p class="label">{advisors.role}</p>
+      <strong class="team-name">{advisors.names.join('、')}</strong>
+    </article>
     <article class="card officer-card officer-president">
       <p class="label">{president.role}</p>
       <strong class="team-name">{president.name}</strong>
@@ -108,6 +112,7 @@ import { president, officerGroups } from '../data/officers.js';
   .group-focus{margin:0;font-size:13.5px;line-height:1.7}
 
   .officer-card{padding:20px 22px;text-align:center}
+  .officer-advisors{max-width:230px;margin:0 auto 14px}
   .officer-president{max-width:230px;margin:0 auto}
   .officer-stub{width:2px;height:18px;background:var(--line);margin:0 auto}
   .officer-caption{text-align:center;font-size:13.5px;color:var(--muted);margin:8px 0 14px}
