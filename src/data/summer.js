@@ -14,10 +14,10 @@ export const summer = {
     rows: [
       { part: '竹笛',              room: '107',    teacher: '吳彥志 老師' },
       { part: '二胡',              room: '音樂教室', teacher: '蔡炫沅 老師' },
-      { part: '彈撥',              room: '多元教室', teacher: '王子云 老師' },
+      { part: '彈撥',              room: '110',    teacher: '王子云 老師' },
       { part: '揚打',              room: '合奏教室', teacher: '張哲瑋 老師' },
       { part: '笙',                room: '109',    teacher: '吳欣晏 老師' },
-      { part: '古箏/大提琴',        room: '110',    teacher: '陳珮珊 老師' },
+      { part: '古箏/大提琴',        room: '多元教室', teacher: '陳珮珊 老師' },
       { part: '合奏', time: '10:30–12:00', room: '合奏教室', teacher: '蔡炫沅 老師' },
       { part: '國樂小藝星',         room: '108',    teacher: '黃子玉 老師' },
     ],
