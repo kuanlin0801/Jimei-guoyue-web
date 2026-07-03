@@ -36,7 +36,7 @@ export function renderLoginPage({ redirectTo, error, origin }) {
   *{box-sizing:border-box}
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;line-height:1.7;padding:24px}
   .gate-card{background:#fff;border-radius:16px;box-shadow:0 4px 16px -10px rgba(120,90,40,.4);padding:36px 28px;width:min(92vw,380px);text-align:center}
-  .gate-card img{width:72px;height:72px;object-fit:contain}
+  .gate-card img{width:160px;height:160px;object-fit:contain}
   h1{font-size:22px;color:var(--ink);margin:12px 0 4px}
   p{margin:0 0 20px;font-size:14px;color:var(--muted)}
   ${errorStyle}
