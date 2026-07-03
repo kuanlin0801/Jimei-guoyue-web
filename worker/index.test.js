@@ -66,7 +66,7 @@ describe('worker fetch handler', () => {
     const setCookie = res.headers.get('Set-Cookie');
     expect(setCookie).toContain('jimei_gate=');
     expect(setCookie).toContain('HttpOnly');
-    expect(setCookie).toContain('Max-Age=2592000');
+    expect(setCookie).toContain('Max-Age=5184000');
   });
 
   it('login wrong password returns the login page with an error', async () => {

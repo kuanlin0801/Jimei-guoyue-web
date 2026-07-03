@@ -48,7 +48,7 @@
 
 ## 目前狀態 / 待辦
 - Phase 1（首頁／行事曆／公告／關於我們／文件下載）＋ Phase 2（活動支援報名＋公開看板／相簿／成果）皆**完成並上線**。
-- **內網密碼閘**已上線 ✓（K260703 全流程實測通過：密碼頁→登入→cookie 進站，對外 intro 站不受影響。全團共用密碼、每月輸入一次、fail-closed、noindex 基線；設計 `docs/superpowers/specs/2026-07-02-password-gate-design.md`，日常維運——換密碼／緊急全員登出／回滾——見 `docs/superpowers/plans/2026-07-02-password-gate-go-live-checklist.md`）。
+- **內網密碼閘**已上線 ✓（K260703 全流程實測通過：密碼頁→登入→cookie 進站，對外 intro 站不受影響。全團共用密碼、每兩個月輸入一次（K260703 由 30 天調為 60 天）、fail-closed、noindex 基線；設計 `docs/superpowers/specs/2026-07-02-password-gate-design.md`，日常維運——換密碼／緊急全員登出／回滾——見 `docs/superpowers/plans/2026-07-02-password-gate-go-live-checklist.md`）。
 - **全站視覺改版 1c「水彩雅集」** ✓（K260630A）：依 `Reference/集美國樂團網站介面優化/design_handoff_1c_redesign/` 設計稿把視覺層全面換新——米色底（`--paper` #FBF6EC）＋書法 hero 大標（Ma Shan Zheng「童心奏古音」，僅首頁用；註：Ma Shan Zheng 是簡體字型，未收繁體「韻」「樂」會掉系統黑體，故末字選繁簡同形、字型有收的「音」）＋膠囊導覽（手機 ≤720px 漢堡下拉）＋柔和圓角白卡＋區段輪替色（竹綠→金→朱紅）圓點標題；去背 logo 仍置左上。tokens／共用樣式集中在 `global.css`，子頁頁首抽成 `PageHero.astro`。**只動視覺層**：資料流（Calendar API／published CSV／Apps Script `doGet/doPost`／輪詢與樂觀更新）與 `src/lib/` 純邏輯及 vitest 全未動。原型對照驗證見記憶 `jimei-preview-verify`（build 後 `npm run preview` 靜態截圖）。
 - **站台用詞統一「樂團」** ✓（K260629C）：訪客可見文字不再用「社團」（關於我們、行事曆、內外網翻頁書標題等）；程式碼註解仍保留「社團」描述這個家長社團組織。K260630A 再調整：首頁 hero 副標改為「集美國小國樂團後援會——把每一次練習、演出與相聚，溫柔地收藏。」；「最新公告」統一簡稱「公告」（導覽分類、首頁按鈕、公告內頁 H1 與分頁標題），首頁 hero 兩鈕為「看公告」（→/announcements）／「看行事曆」（→/calendar）。
 - **活動相簿暫時隱藏** ✓（K260629C）：目前無內容需求，已從導覽列（`Header.astro`）移除「活動相簿」項；`gallery.astro`／`albums.js` 保留不刪，恢復＝把 nav 的 `/gallery` 那行加回。

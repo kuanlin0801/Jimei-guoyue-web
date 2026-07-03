@@ -5,7 +5,7 @@ import { createToken, verifyToken, getCookie, sanitizeRedirect } from './auth.js
 import { renderLoginPage } from './login-page.js';
 
 const COOKIE_NAME = 'jimei_gate';
-const COOKIE_MAX_AGE_SECONDS = 30 * 24 * 60 * 60; // 30 天：使用者定案「每月輸入一次」
+const COOKIE_MAX_AGE_SECONDS = 60 * 24 * 60 * 60; // 60 天：使用者定案「每兩個月輸入一次」
 const LOGIN_PATH = '/__gate/login';
 // 免登入清單：LINE 預覽要抓的 logo、瀏覽器自動請求的 favicon 三件組、robots.txt
 const PUBLIC_PATHS = new Set([
