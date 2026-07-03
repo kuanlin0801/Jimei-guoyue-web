@@ -5,16 +5,19 @@ export const core = [
   {
     role: '藝術總監',
     name: '梁文賓 老師',
+    photo: '/teachers/liang-wen-pin.jpg',
     desc: '樂團的領航者與大後盾：指導長期發展方向、協調各校大型樂器調配、主導公用樂器採購，並在大型演出與比賽中把關品質。',
   },
   {
     role: '樂團指揮',
     name: '蔡炫沅 老師',
+    photo: '/teachers/tsai-hsuan-yuan.jpg',
     desc: '音樂表現的靈魂人物：現場音樂指導與排練、策劃演出節目、擔任舞台指揮，並負責教師群的任命與考核。',
   },
   {
     role: '團務',
     name: '黃子玉 老師',
+    photo: '/teachers/huang-tzu-yu.jpg',
     desc: '家長、學生與樂團間的溫暖橋樑：協理常態團務行政，建立溝通管道，協調學生、家長、老師與幹部之間的各項事務。',
   },
 ];

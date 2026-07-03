@@ -28,8 +28,13 @@ import { advisors, president, officerGroups } from '../data/officers.js';
     <div class="grid cols-3">
       {core.map((p) => (
         <article class="card team-card">
-          <p class="label">{p.role}</p>
-          <strong class="team-name">{p.name}</strong>
+          <div class="team-head">
+            {p.photo && <img class="team-photo" src={p.photo} alt={`${p.name}照片`} width="72" height="72" loading="lazy" />}
+            <div>
+              <p class="label">{p.role}</p>
+              <strong class="team-name">{p.name}</strong>
+            </div>
+          </div>
           <p class="muted team-desc">{p.desc}</p>
         </article>
       ))}
@@ -98,8 +103,11 @@ import { advisors, president, officerGroups } from '../data/officers.js';
   .intro-entry-text p{margin:6px 0 0;font-size:13.5px;line-height:1.7}
 
   .team-card{padding:20px 22px}
+  .team-head{display:flex;align-items:center;gap:14px}
+  .team-head .label{margin:0 0 3px}
+  .team-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;border:2.5px solid #fff;box-shadow:0 0 0 1.5px var(--gold),0 6px 14px -8px rgba(120,90,40,.55);background:var(--chip)}
   .team-name{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:17px}
-  .team-desc{margin:8px 0 0;font-size:13.5px;line-height:1.7}
+  .team-desc{margin:10px 0 0;font-size:13.5px;line-height:1.7}
 
   .part{display:flex;gap:14px;align-items:center;padding:14px 18px;border-radius:14px;box-shadow:0 4px 14px -10px rgba(120,90,40,.4)}
   .part-name{background:var(--brand);color:#fff;font-weight:700;border-radius:9px;padding:8px 10px;flex:none;min-width:84px;text-align:center;font-size:14px;font-family:"Noto Serif TC",serif}
