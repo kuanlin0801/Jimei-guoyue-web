@@ -9,7 +9,18 @@ import PageHero from '../components/PageHero.astro';
       title="活動支援"
       sub="需要家長到場支援的活動。直接在下方填稱呼送出即可報名／認領，看板會即時更新。"
     />
-    <div id="support"><p class="muted">看板載入中…</p></div>
+    <div id="support">
+      <p class="sr-only">看板載入中</p>
+      <section class="card support-event" aria-hidden="true">
+        <span class="skel skel-title"></span>
+        <span class="skel skel-chip"></span>
+        <div class="board">
+          <div class="skel-row"><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row"><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row"><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+        </div>
+      </section>
+    </div>
   </section>
 </Layout>
 <script>
@@ -154,6 +165,11 @@ import PageHero from '../components/PageHero.astro';
 
   .claim{display:flex;gap:8px;margin:8px 0 2px}
   .claim input{flex:1;min-width:0;padding:9px 12px;border:1px solid #e3d4b8;border-radius:10px;font:inherit;background:#FBF7EE}
-  .claim button{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+  .claim button{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,transform .1s}
   .claim button:hover{background:var(--brand-dark)}
+  .claim button:active{transform:translateY(1px)}
+
+  /* 載入 skeleton：仿支援活動卡（標題＋日期＋三列名額） */
+  .support-event .skel-title{margin-top:0;width:46%}
+  .support-event .skel-chip{margin-top:10px}
 </style>

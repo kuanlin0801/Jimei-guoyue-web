@@ -5,7 +5,30 @@ import PageHero from '../components/PageHero.astro';
 <Layout title="公告">
   <section class="page">
     <PageHero eyebrow="最 新 消 息" title="公告" sub="樂團的最新通知與消息，置頂者優先顯示。" />
-    <div id="announcements" class="grid"><p class="muted">載入中…</p></div>
+    <div id="announcements" class="grid">
+      <p class="sr-only">公告載入中</p>
+      <article class="card ann-card" aria-hidden="true">
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-title"></span>
+        <span class="skel skel-line"></span>
+        <span class="skel skel-line short"></span>
+      </article>
+      <article class="card ann-card" aria-hidden="true">
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-title"></span>
+        <span class="skel skel-line short"></span>
+      </article>
+      <article class="card ann-card" aria-hidden="true">
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-title"></span>
+        <span class="skel skel-line"></span>
+      </article>
+      <article class="card ann-card" aria-hidden="true">
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-title"></span>
+        <span class="skel skel-line short"></span>
+      </article>
+    </div>
   </section>
 </Layout>
 <script>

@@ -5,7 +5,13 @@ import PageHero from '../components/PageHero.astro';
 <Layout title="文件下載">
   <section class="page">
     <PageHero eyebrow="下 載 專 區" title="文件下載" sub="通知單、報名表單。點擊在 Google 雲端硬碟開啟／下載。" />
-    <div id="documents" class="grid"><p class="muted">載入中…</p></div>
+    <div id="documents" class="grid">
+      <p class="sr-only">文件載入中</p>
+      <div class="card doc" aria-hidden="true"><span class="skel doc-skel-type"></span><span class="doc-skel-body"><span class="skel skel-flex"></span><span class="skel skel-time"></span></span></div>
+      <div class="card doc" aria-hidden="true"><span class="skel doc-skel-type"></span><span class="doc-skel-body"><span class="skel skel-flex"></span><span class="skel skel-time"></span></span></div>
+      <div class="card doc" aria-hidden="true"><span class="skel doc-skel-type"></span><span class="doc-skel-body"><span class="skel skel-flex"></span><span class="skel skel-time"></span></span></div>
+      <div class="card doc" aria-hidden="true"><span class="skel doc-skel-type"></span><span class="doc-skel-body"><span class="skel skel-flex"></span><span class="skel skel-time"></span></span></div>
+    </div>
   </section>
 </Layout>
 <script>
@@ -48,4 +54,9 @@ import PageHero from '../components/PageHero.astro';
   .doc-head strong{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:15.5px}
   .doc-dot{color:var(--seal);font-size:12px;flex:none}
   .doc-meta{display:block;font-size:12.5px;color:var(--faint);margin-top:3px}
+  /* 載入 skeleton：仿文件卡（左類型塊＋右兩行） */
+  .doc-skel-type{width:38px;height:27px;border-radius:8px;flex:none}
+  .doc-skel-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+  .doc-skel-body .skel-flex{width:58%;height:15px}
+  .doc-skel-body .skel-time{width:38%;height:12px}
 </style>

@@ -13,12 +13,12 @@ const socials = [
 <Layout>
   <section class="hero">
     <div class="hero-carousel" aria-hidden="true">
-      <img class="hero-slide is-active" src="/instruments/erhu_yangqin.png" alt="" />
-      <img class="hero-slide" src="/instruments/guzheng.png" alt="" />
-      <img class="hero-slide" src="/instruments/pipa_dizi.png" alt="" />
-      <img class="hero-slide" src="/instruments/cello.png" alt="" />
-      <img class="hero-slide" src="/instruments/sheng.png" alt="" />
-      <img class="hero-slide" src="/instruments/zhongruan.png" alt="" />
+      <img class="hero-slide is-active" src="/instruments/erhu_yangqin.webp" alt="" />
+      <img class="hero-slide" data-src="/instruments/guzheng.webp" alt="" />
+      <img class="hero-slide" data-src="/instruments/pipa_dizi.webp" alt="" />
+      <img class="hero-slide" data-src="/instruments/cello.webp" alt="" />
+      <img class="hero-slide" data-src="/instruments/sheng.webp" alt="" />
+      <img class="hero-slide" data-src="/instruments/zhongruan.webp" alt="" />
     </div>
     <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-text">
@@ -34,7 +34,19 @@ const socials = [
   <div class="home-cols">
     <section>
       <h2 class="sec-head first"><span class="sec-dot brand"></span>最新公告</h2>
-      <div id="home-announcements" class="grid"><p class="muted">載入中…</p></div>
+      <div id="home-announcements" class="grid">
+        <p class="sr-only">公告載入中</p>
+        <article class="card ann-card" aria-hidden="true">
+          <span class="skel skel-chip"></span>
+          <span class="skel skel-title"></span>
+          <span class="skel skel-line"></span>
+        </article>
+        <article class="card ann-card" aria-hidden="true">
+          <span class="skel skel-chip"></span>
+          <span class="skel skel-title"></span>
+          <span class="skel skel-line short"></span>
+        </article>
+      </div>
     </section>
     <section class="home-col-side">
       <h2 class="sec-head first"><span class="sec-dot gold"></span>近期行程</h2>
@@ -44,7 +56,14 @@ const socials = [
             <li><span class="dot" style={{ background: c.color }}></span>{c.name}</li>
           ))}
         </ul>
-        <div id="home-events"><p class="muted">載入中…</p></div>
+        <div id="home-events">
+          <p class="sr-only">行程載入中</p>
+          <div class="skel-row" aria-hidden="true"><span class="skel skel-date"></span><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row" aria-hidden="true"><span class="skel skel-date"></span><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row" aria-hidden="true"><span class="skel skel-date"></span><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row" aria-hidden="true"><span class="skel skel-date"></span><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+          <div class="skel-row" aria-hidden="true"><span class="skel skel-date"></span><span class="skel skel-flex"></span><span class="skel skel-time"></span></div>
+        </div>
         <a class="upcoming-more" href="/calendar">看完整行事曆 →</a>
       </div>
     </section>
@@ -111,6 +130,11 @@ const socials = [
     var slides = document.querySelectorAll('.hero-slide');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (slides.length < 2 || reduce) return;   // reduced motion: keep only the first slide
+    // 非第一張進站不載（省流量），輪播要跑了才補 src；第一次淡入前有 6.8s 可載完
+    slides.forEach(function (s) {
+      var d = s.getAttribute('data-src');
+      if (d) s.src = d;
+    });
     var idx = 0;
     var HOLD_MS = 6800;
     setInterval(function () {

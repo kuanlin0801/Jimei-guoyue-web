@@ -39,22 +39,29 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   .brand-en{display:block;font-size:9.5px;letter-spacing:.16em;color:#b9a87f;font-weight:600}
 
   nav{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-  nav a{color:#5a4f3a;text-decoration:none;font-weight:500;font-size:14px;padding:7px 12px;border-radius:999px}
+  nav a{color:#5a4f3a;text-decoration:none;font-weight:500;font-size:14px;padding:7px 12px;border-radius:999px;transition:color .18s,background-color .18s}
   nav a:hover{color:var(--brand)}
   nav a.active{color:var(--brand);font-weight:700;background:#fff;padding:7px 14px;box-shadow:0 2px 8px -4px rgba(120,90,40,.45)}
 
   .nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:26px;height:32px;padding:0;border:0;background:none;cursor:pointer}
-  .nav-toggle span{display:block;height:2px;width:100%;background:var(--brand);border-radius:2px}
+  .nav-toggle span{display:block;height:2px;width:100%;background:var(--brand);border-radius:2px;transition:transform .25s ease,opacity .2s ease}
+  /* 開啟時三條線轉成 X（上下線各移 7px＝線高 2px＋間距 5px，正好疊到中線位置） */
+  .site-header.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .site-header.nav-open .nav-toggle span:nth-child(2){opacity:0}
+  .site-header.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
   @media(max-width:720px){
     .nav-toggle{display:flex}
     .brand-en{display:none}
     .brand-logo{height:34px}
     .brand-name{font-size:15px}
-    #site-nav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:2px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 12px 24px -16px rgba(120,90,40,.5);padding:8px 12px}
-    .site-header.nav-open #site-nav{display:flex}
+    #site-nav{position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:2px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 12px 24px -16px rgba(120,90,40,.5);padding:8px 12px;visibility:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .22s ease,transform .22s ease,visibility .22s}
+    .site-header.nav-open #site-nav{visibility:visible;opacity:1;transform:none;pointer-events:auto}
     #site-nav a{display:block;font-size:15px;padding:11px 16px;border-radius:11px}
     #site-nav a.active{background:var(--chip);box-shadow:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .nav-toggle span,#site-nav,nav a{transition:none}
   }
 </style>
 <script>

@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+---
+<Layout title="找不到頁面" description="這個網址不存在。">
+  <section class="page">
+    <PageHero
+      eyebrow="頁 面 不 存 在"
+      title="找不到這一頁"
+      sub="網址可能打錯了，或這一頁已經搬家。別擔心，樂團的資訊都還在。"
+    />
+    <div class="lost-actions">
+      <a class="btn" href="/">回首頁</a>
+      <a class="btn btn-ghost" href="/announcements">看公告</a>
+      <a class="btn btn-ghost" href="/calendar">看行事曆</a>
+    </div>
+  </section>
+</Layout>
+<style>
+  .lost-actions{display:flex;gap:12px;flex-wrap:wrap}
+</style>
