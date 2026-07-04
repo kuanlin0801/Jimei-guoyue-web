@@ -35,8 +35,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700;900&family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <a class="skip-link" href="#main">跳到主要內容</a>
     <Header />
-    <main><div class="container"><slot /></div></main>
+    <main id="main"><div class="container"><slot /></div></main>
     <Footer />
   </body>
 </html>

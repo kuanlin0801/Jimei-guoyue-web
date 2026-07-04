@@ -152,7 +152,7 @@ const socials = [
   .hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,var(--paper) 15%,rgba(251,246,236,.72) 33%,rgba(251,246,236,0) 55%)}
   .hero-text{position:relative;z-index:2;max-width:52%;padding:26px 0}
   .hero-eyebrow{font-size:12px;letter-spacing:.34em;color:var(--gold);font-weight:700;margin:0 0 20px}
-  .hero-title{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:80px;line-height:1.05;color:var(--ink);margin:0;letter-spacing:.05em}
+  .hero-title{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:clamp(54px,10.5vw,80px);line-height:1.05;color:var(--ink);margin:0;letter-spacing:.05em}
   .hero-sub{margin:24px 0 26px;font-family:"Noto Serif TC",serif;font-size:17px;line-height:1.85;color:var(--muted);max-width:430px}
   .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
   .hero-cta .btn{box-shadow:0 8px 18px -8px rgba(31,122,77,.6)}
@@ -169,7 +169,6 @@ const socials = [
 
   @media(max-width:720px){
     .hero{min-height:auto;padding:30px 0 26px}
-    .hero-title{font-size:54px}
     .hero-text{max-width:100%}
     /* phones: keep the artwork as a faint backdrop behind the full-width text instead of hiding it */
     .hero-carousel{opacity:.2}
