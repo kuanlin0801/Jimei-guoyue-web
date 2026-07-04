@@ -14,7 +14,7 @@ const embedUrl = (a) => {
     <h2 class="sec-head first"><span class="sec-dot brand"></span>暑訓行事曆</h2>
     {summer.scheduleNote && <p class="sec-note">{summer.scheduleNote}</p>}
     <a class="card schedule" href="/summer-schedule.jpg" target="_blank" rel="noopener noreferrer">
-      <img src="/summer-schedule.jpg" alt="集美國樂團 7～8 月暑訓行事曆，含各分部練習時間與錄影功課繳交期限" loading="lazy" />
+      <img src="/summer-schedule.jpg" alt="集美國樂團 7～8 月暑訓行事曆，含各分部練習時間與錄影功課繳交期限" width="1706" height="960" loading="lazy" />
       <span class="schedule-hint">點圖可放大 ↗</span>
     </a>
 
@@ -54,12 +54,14 @@ const embedUrl = (a) => {
       <div class="grid">
         {summer.assignments.map((a) => (
           <article class="card assign">
-            <div class="assign-head">
-              <strong class="assign-title">{a.title}</strong>
-              {a.badge && <span class="assign-badge">{a.badge}</span>}
+            <div class="assign-text">
+              <div class="assign-head">
+                <strong class="assign-title">{a.title}</strong>
+                {a.badge && <span class={`assign-badge${a.badge.startsWith('考核') ? ' exam' : ''}`}>{a.badge}</span>}
+              </div>
+              <p class="assign-detail">{a.detail}</p>
+              {a.tip && <p class="assign-tip">💡 {a.tip}</p>}
             </div>
-            <p class="assign-detail">{a.detail}</p>
-            {a.tip && <p class="assign-tip">💡 {a.tip}</p>}
             <div class="video-embed">
               <iframe
                 src={embedUrl(a)}
@@ -122,11 +124,19 @@ const embedUrl = (a) => {
   .assign-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .assign-title{font-family:"Noto Serif TC",serif;color:var(--ink);font-size:18px}
   .assign-badge{flex:none;background:var(--chip);color:var(--brand);font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px}
+  .assign-badge.exam{background:#FBEEEC;color:var(--seal)}
   .assign-detail{margin:12px 0 0;font-size:14.5px;color:var(--muted);line-height:1.85}
   .assign-tip{margin:8px 0 0;font-size:13px;color:var(--seal);line-height:1.7}
 
   .video-embed{position:relative;margin-top:14px;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#000;border:1px solid var(--line)}
   .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+
+  /* 寬螢幕：作業卡改左文右影，說明與影片同一視野、頁面長度減半；手機維持上下堆疊。
+     文字包成單一 .assign-text 區塊自然流動——若讓各行各佔一 grid 列，影片撐高會把列距拉開、卡片間空行不一致 */
+  @media(min-width:860px){
+    .assign{display:grid;grid-template-columns:minmax(0,1fr) 400px;column-gap:28px;align-items:center}
+    .video-embed{margin-top:0}
+  }
 
   .upload-note{margin-top:16px;padding:20px 22px}
   .upload-note strong{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px;margin-bottom:8px}
