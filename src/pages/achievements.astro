@@ -21,11 +21,13 @@ for (const p of performances) {
   <section class="page">
     <PageHero eyebrow="榮 耀 時 刻" title="成果與榮譽" sub="集美國小國樂團歷年競賽榮譽與公開演出紀錄。" />
 
-    <ul class="ach-stats">
-      <li><span class="num">{teamAwards.length}</span><span class="lbl">團體獎</span></li>
-      <li><span class="num">{soloCount}</span><span class="lbl">個人獎</span></li>
-      <li><span class="num">{performances.length}+</span><span class="lbl">場公開演出</span></li>
-    </ul>
+    <div class="ach-banner card">
+      <ul class="ach-stats">
+        <li><span class="num" data-n={teamAwards.length}>{teamAwards.length}</span><span class="lbl">團體獎</span></li>
+        <li><span class="num" data-n={soloCount}>{soloCount}</span><span class="lbl">個人獎</span></li>
+        <li><span class="num" data-n={performances.length} data-suffix="+">{performances.length}+</span><span class="lbl">場公開演出</span></li>
+      </ul>
+    </div>
 
     <section class="ach-block">
       <h2 class="ach-h2 first">競賽榮譽</h2>
@@ -86,16 +88,37 @@ for (const p of performances) {
     </section>
   </section>
 </Layout>
+<script>
+  // 榮譽橫幅數字進場滾動（reduced-motion 直接顯示最終值）
+  const nums = document.querySelectorAll('.ach-stats .num');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    nums.forEach((el) => {
+      const n = parseInt(el.getAttribute('data-n'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      if (!Number.isFinite(n)) return;
+      const DUR = 900;
+      const t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min((t - t0) / DUR, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(n * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
 <style>
-  /* 統計列：數字由資料推導 */
-  .ach-stats{list-style:none;display:flex;flex-wrap:wrap;gap:10px 34px;padding:0;margin:0 0 8px}
-  .ach-stats li{display:flex;align-items:baseline;gap:9px}
-  .ach-stats li::before{content:"";width:8px;height:8px;border-radius:50%;align-self:center;flex:none}
-  .ach-stats li:nth-child(1)::before{background:var(--brand)}
-  .ach-stats li:nth-child(2)::before{background:var(--gold)}
-  .ach-stats li:nth-child(3)::before{background:var(--seal)}
-  .ach-stats .num{font-family:"Noto Serif TC",serif;font-weight:900;font-size:26px;color:var(--ink);line-height:1}
-  .ach-stats .lbl{font-size:13.5px;color:var(--muted)}
+  /* 榮譽橫幅：淡金漸層底＋金色漸層大數字（數字由資料推導，進場滾動動畫見下方 script） */
+  .ach-banner{margin:2px 0 10px;padding:24px 16px;background:linear-gradient(135deg,#FFFCF4,#F8EFDC);border:1px solid #EADCBB;box-shadow:0 8px 24px -16px rgba(160,120,50,.6);position:relative;overflow:hidden}
+  .ach-banner::before{content:"";position:absolute;top:-60%;left:-8%;width:50%;height:220%;background:radial-gradient(closest-side,rgba(200,164,92,.16),transparent);pointer-events:none}
+  .ach-banner::after{content:"";position:absolute;bottom:-70%;right:-6%;width:44%;height:220%;background:radial-gradient(closest-side,rgba(178,58,48,.07),transparent);pointer-events:none}
+  .ach-stats{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding:0}
+  .ach-stats li{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+  .ach-stats li+li::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:1px;background:#E7D9B9}
+  .ach-stats .num{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(30px,4.5vw,42px);line-height:1;font-variant-numeric:tabular-nums;background:linear-gradient(165deg,#CBA75E 8%,#9E7434 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ach-stats .lbl{font-size:13px;color:var(--muted);letter-spacing:.14em}
 
   .ach-h2{font-family:"Noto Serif TC",serif;font-weight:700;font-size:21px;color:#4a3f2a;padding-bottom:9px;border-bottom:2px solid var(--line);margin:34px 0 4px}
   .ach-h2.first{margin-top:18px}
