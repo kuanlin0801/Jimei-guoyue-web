@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { duty } from '../data/duty.js';
+const { dutyNotes, placement } = duty;
+---
+<Layout title="值班須知" description="集美國小國樂團家長值班注意事項與樂器擺放位置說明。">
+  <section class="page">
+    <PageHero eyebrow="家 ・ 長 ・ 值 ・ 班" title="值班須知" sub={duty.intro} />
+
+    <h2 class="sec-head first"><span class="sec-dot brand"></span>值班注意事項</h2>
+    <p class="sec-note">{dutyNotes.lead}</p>
+    <section class="card notes">
+      <ol class="note-list">
+        {dutyNotes.items.map((it) => (
+          <li>
+            <strong class="note-title">{it.title}</strong>
+            <p class="note-text">{it.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="note-outro">{dutyNotes.outro}</p>
+    </section>
+    <div class="ph-grid duty-ph">
+      {dutyNotes.photos.map((p) => (
+        <figure class="ph">
+          <a href={p.src} target="_blank" rel="noopener noreferrer">
+            <img src={p.src} alt={p.alt} width={p.width} height={p.height} loading="lazy" />
+          </a>
+          <figcaption>{p.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <h2 class="sec-head"><span class="sec-dot gold"></span>樂器擺放位置</h2>
+    <p class="sec-note">{placement.lead}</p>
+    {placement.warning && <p class="warning">⚠️ {placement.warning}</p>}
+    <div class="groups">
+      {placement.groups.map((g) => (
+        <section class="card group">
+          <div class="group-head">
+            <span class="group-chip">{g.name}</span>
+            <p class="group-note">{g.note}</p>
+          </div>
+          <div class="ph-grid">
+            {g.photos.map((p) => (
+              <figure class="ph">
+                <a href={p.src} target="_blank" rel="noopener noreferrer">
+                  <img src={p.src} alt={p.alt} width={p.width} height={p.height} loading="lazy" />
+                </a>
+              </figure>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <section class="card reminder">
+      <strong>給孩子們的小叮嚀</strong>
+      <p>{placement.reminder}</p>
+    </section>
+  </section>
+</Layout>
+<style>
+  .sec-note{margin:0 0 14px;font-size:14.5px;color:var(--muted);line-height:1.9;max-width:680px}
+
+  .notes{padding:20px 22px}
+  .note-list{margin:0;padding:0;list-style:none;counter-reset:duty;display:flex;flex-direction:column;gap:16px}
+  .note-list li{counter-increment:duty;position:relative;padding-left:44px}
+  .note-list li::before{
+    content:counter(duty);position:absolute;left:0;top:1px;width:30px;height:30px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--chip);color:var(--brand);border-radius:999px;
+    font-family:"Noto Serif TC",serif;font-weight:700;font-size:15px;
+  }
+  .note-title{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px}
+  .note-text{margin:4px 0 0;font-size:14.5px;color:var(--muted);line-height:1.85}
+  .note-outro{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13.5px;color:var(--seal);line-height:1.7}
+
+  .ph-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .duty-ph{margin-top:14px;max-width:680px}
+  .ph{margin:0}
+  .ph a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line);transition:transform .15s,box-shadow .15s}
+  .ph a:hover{transform:translateY(-2px);box-shadow:0 8px 22px -12px rgba(120,90,40,.5)}
+  .ph img{display:block;width:100%;height:auto}
+  .ph figcaption{margin-top:7px;font-size:12.5px;color:var(--faint);line-height:1.6}
+
+  .warning{
+    margin:0 0 14px;max-width:680px;padding:12px 16px;border-radius:12px;
+    background:#FBEEEC;border:1px solid rgba(178,58,44,.25);
+    color:var(--seal);font-size:14.5px;font-weight:600;line-height:1.8;
+  }
+
+  .groups{display:flex;flex-direction:column;gap:14px}
+  .group{padding:18px 20px}
+  .group-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .group-chip{flex:none;background:var(--chip);color:var(--brand);font-size:13px;font-weight:700;padding:5px 14px;border-radius:999px;font-family:"Noto Serif TC",serif}
+  .group-note{margin:0;font-size:14.5px;color:var(--muted);line-height:1.8}
+  /* 直式大圖（木琴）別在單欄時無限放大 */
+  .group .ph{max-width:420px}
+
+  .reminder{margin-top:16px;padding:20px 22px;border-top:4px solid var(--seal)}
+  .reminder strong{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px;margin-bottom:8px}
+  .reminder p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.9}
+
+  @media(max-width:480px){
+    .notes,.group{padding:16px 14px}
+    .ph-grid{grid-template-columns:1fr}
+  }
+</style>
