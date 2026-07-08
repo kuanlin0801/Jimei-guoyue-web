@@ -37,8 +37,17 @@ export const summer = {
   uploadFormUrl: 'https://forms.gle/PSaXhdvYqT3rKi8z5',
 
   // 練習作業：title 曲目、badge 考核／繳交資訊、detail 說明與要求、
-  // tip 小技巧（可留空）、videoId YouTube 影片 ID、start 影片起始秒數（可留空）
+  // tip 小技巧（可留空）、videoId YouTube 影片 ID、start 影片起始秒數（可留空）、
+  // driveId Google Drive 檔案 ID（影片放 Drive 時用、取代 videoId；該檔分享須設為「知道連結的人皆可檢視」）
   assignments: [
+    {
+      title: '八度音階',
+      badge: '繳交期限：7 月底',
+      detail:
+        '總監指定每位暑訓團員都要練習八度音（八度音階）。下方為蔡老師提供的示範影片，請對照練習後錄影繳交。',
+      tip: '每位團員都需繳交兩次，請於 7 月底前完成。',
+      driveId: '1azBKxiQAN07HifUMxhcsXutnGRc-Mdno',
+    },
     {
       title: '《桃花江》— 指定曲原始素材練唱',
       badge: '考核：7/2（四）暑訓首日個別考試',

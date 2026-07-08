@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import { summer } from '../data/summer.js';
 const embedUrl = (a) => {
+  if (a.driveId) return `https://drive.google.com/file/d/${a.driveId}/preview`;
   const base = `https://www.youtube-nocookie.com/embed/${a.videoId}?rel=0`;
   return a.start ? `${base}&start=${a.start}` : base;
 };
