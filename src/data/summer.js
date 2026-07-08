@@ -45,7 +45,7 @@ export const summer = {
       badge: '繳交期限：7/31',
       detail:
         '總監指定每位暑訓團員都要練習八度音（八度音階）。下方為蔡老師提供的示範影片，請對照練習後錄影繳交。',
-      tip: '每位團員都需繳交兩次，請於 7/31 前完成。',
+      tip: '每位團員都需拉兩個八度共兩趟，請於 7/31 前完成。',
       driveId: '1azBKxiQAN07HifUMxhcsXutnGRc-Mdno',
     },
     {
