@@ -32,8 +32,9 @@ export const summer = {
   assignmentsNote:
     '蔡指揮為本次暑訓準備了指定曲與演奏作業，請各位團員依下列說明與示範影片提早練習、準時繳交。',
 
-  // 作業繳交上傳表單網址：待子玉老師建立後填入，未填則頁面顯示「準備中」。
-  uploadFormUrl: '',
+  // 作業繳交上傳表單網址：待表單建立後填入，未填則頁面顯示「準備中」。
+  // 建議用 Google 表單「檔案上傳」題型；因表單掛在個人帳號，記得把回應試算表＋影片資料夾共用給子玉老師／蔡指揮檢視。
+  uploadFormUrl: 'https://forms.gle/PSaXhdvYqT3rKi8z5',
 
   // 練習作業：title 曲目、badge 考核／繳交資訊、detail 說明與要求、
   // tip 小技巧（可留空）、videoId YouTube 影片 ID、start 影片起始秒數（可留空）
