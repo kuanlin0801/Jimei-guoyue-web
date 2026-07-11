@@ -2,9 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import { summer } from '../data/summer.js';
-const embedUrl = (a) => {
-  const base = `https://www.youtube-nocookie.com/embed/${a.videoId}?rel=0`;
-  return a.start ? `${base}&start=${a.start}` : base;
+// 一項作業可放多支影片：主影片（videoId/start）＋選填 extraVideos；合成單一清單供渲染
+const videosOf = (a) => [
+  { videoId: a.videoId, start: a.start ?? 0, label: a.videoLabel },
+  ...(a.extraVideos ?? []),
+];
+const embedUrl = (v) => {
+  const base = `https://www.youtube-nocookie.com/embed/${v.videoId}?rel=0`;
+  return v.start ? `${base}&start=${v.start}` : base;
 };
 ---
 <Layout title="暑訓專區" description="集美國小國樂團暑期練習作業與示範影片。">
@@ -52,7 +57,10 @@ const embedUrl = (a) => {
     {summer.assignmentsNote && <p class="sec-note">{summer.assignmentsNote}</p>}
     {summer.assignments.length ? (
       <div class="grid">
-        {summer.assignments.map((a) => (
+        {summer.assignments.map((a) => {
+          const videos = videosOf(a);
+          const multi = videos.length > 1;
+          return (
           <article class="card assign">
             <div class="assign-text">
               <div class="assign-head">
@@ -62,18 +70,28 @@ const embedUrl = (a) => {
               <p class="assign-detail">{a.detail}</p>
               {a.tip && <p class="assign-tip">💡 {a.tip}</p>}
             </div>
-            <div class="video-embed">
-              <iframe
-                src={embedUrl(a)}
-                title={`${a.title} 示範影片`}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
+            <div class="video-col">
+              {videos.map((v, i) => (
+                <div class="video-item">
+                  {multi && v.label && (
+                    <span class="video-cap"><span class={`vc-dot ${i === 0 ? 'brand' : 'gold'}`}></span>{v.label}</span>
+                  )}
+                  <div class="video-embed">
+                    <iframe
+                      src={embedUrl(v)}
+                      title={`${a.title}${v.label ? ' — ' + v.label : ' 示範影片'}`}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              ))}
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
     ) : (
       <p class="muted">暑訓作業準備中，敬請期待。</p>
@@ -128,14 +146,21 @@ const embedUrl = (a) => {
   .assign-detail{margin:12px 0 0;font-size:14.5px;color:var(--muted);line-height:1.85}
   .assign-tip{margin:8px 0 0;font-size:13px;color:var(--seal);line-height:1.7}
 
-  .video-embed{position:relative;margin-top:14px;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#000;border:1px solid var(--line)}
+  .video-col{margin-top:14px;display:flex;flex-direction:column;gap:16px}
+  .video-item{display:flex;flex-direction:column;gap:7px}
+  .video-cap{display:flex;align-items:center;gap:7px;font-family:"Noto Serif TC",serif;font-weight:700;font-size:13px;color:var(--ink)}
+  .vc-dot{flex:none;width:9px;height:9px;border-radius:50%}
+  .vc-dot.brand{background:var(--brand)}
+  .vc-dot.gold{background:var(--gold)}
+  .video-embed{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#000;border:1px solid var(--line)}
   .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 
   /* 寬螢幕：作業卡改左文右影，說明與影片同一視野、頁面長度減半；手機維持上下堆疊。
-     文字包成單一 .assign-text 區塊自然流動——若讓各行各佔一 grid 列，影片撐高會把列距拉開、卡片間空行不一致 */
+     文字包成單一 .assign-text 區塊自然流動——若讓各行各佔一 grid 列，影片撐高會把列距拉開、卡片間空行不一致。
+     多支影片（如桃花鄉的跟奏示範＋參考）在右欄直向堆疊、各帶小標；單支影片不顯示小標、維持原樣 */
   @media(min-width:860px){
     .assign{display:grid;grid-template-columns:minmax(0,1fr) 400px;column-gap:28px;align-items:center}
-    .video-embed{margin-top:0}
+    .video-col{margin-top:0}
   }
 
   .upload-note{margin-top:16px;padding:20px 22px}

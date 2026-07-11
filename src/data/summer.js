@@ -37,7 +37,9 @@ export const summer = {
   uploadFormUrl: 'https://forms.gle/PSaXhdvYqT3rKi8z5',
 
   // 練習作業：title 曲目、badge 考核／繳交資訊、detail 說明與要求、
-  // tip 小技巧（可留空）、videoId YouTube 影片 ID、start 影片起始秒數（可留空）
+  // tip 小技巧（可留空）、videoId YouTube 影片 ID、start 影片起始秒數（可留空）。
+  // 要放多支影片時：主影片仍用 videoId/start，另補 videoLabel（主影片小標）與
+  // extraVideos:[{videoId,start,label}]；有多支才顯示各影片小標，單支維持不變。
   assignments: [
     {
       title: '八度音階',
@@ -65,6 +67,10 @@ export const summer = {
       tip: '若影片速度太快，可利用 YouTube 的「播放速度（0.X 倍速）」功能自行調整練習。',
       videoId: 'GdjrKksgZ30',
       start: 0,
+      videoLabel: '跟奏示範',
+      extraVideos: [
+        { videoId: 'jB7rp-TX4V4', start: 0, label: '參考影片' },
+      ],
     },
     {
       title: '《黑黑天》— 跟奏錄影',
