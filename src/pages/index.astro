@@ -49,7 +49,10 @@ const socials = [
         </article>
       </div>
     </section>
-    <section class="home-col-feat" id="home-featured" hidden></section>
+    <section class="home-col-feat" id="home-featured" hidden>
+      <h2 class="sec-head first"><span class="sec-dot seal"></span>重要活動</h2>
+      <div id="home-featured-card"></div>
+    </section>
     <section class="home-col-side">
       <h2 class="sec-head first"><span class="sec-dot gold"></span>近期行程</h2>
       <div class="card upcoming">
@@ -88,17 +91,28 @@ const socials = [
 
   const el = document.getElementById('home-events');
   const featEl = document.getElementById('home-featured');
+  const featCardEl = document.getElementById('home-featured-card');
   const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
   const rowHtml = (ev) =>
     `<div class="ev-row"><div class="ev-date"><div class="md">${esc(formatMonthDay(ev.at))}</div><div class="wd">${esc(formatWeekday(ev.at))}</div></div><span class="ev-dot" style="background:${ev.color}"></span><div class="ev-title">${esc(ev.title)}</div><div class="ev-time">${esc(formatTime(ev))}</div></div>`;
 
-  // 第一筆做大卡（天數＋名稱＋日期），其餘壓成小字列。
-  const featHtml = (list, now) => {
+  // 主區塊左文右數字，與下方小字列同一套「左內容／右天數」結構。
+  // 「明天」「就是今天」沒有數字可拆，右欄容不下同級大字，改回整排大字詞——兩種狀態一次只會出現一種。
+  const headHtml = (ev, now) => {
+    const days = daysUntil(ev.at, now);
+    const info = `<div class="feat-main"><p class="feat-title">${esc(ev.title)}</p><p class="feat-when">${esc(formatMonthDay(ev.at))}（${esc(formatWeekday(ev.at))}）</p></div>`;
+    return days >= 2
+      ? `<div class="feat-head">${info}<p class="feat-count"><span class="cd-pre">還有</span><span class="cd-nums"><span class="cd-num">${esc(String(days))}</span><span class="cd-unit">天</span></span></p></div>`
+      : `<div class="feat-head feat-head-word"><p class="feat-count"><span class="cd-word">${esc(formatCountdown(days))}</span></p>${info}</div>`;
+  };
+
+  // 第一筆做大卡（名稱＋日期＋天數），其餘壓成小字列。
+  const featHtml = (list, now, isSample) => {
     const [main, ...rest] = list;
     const restHtml = rest
       .map((ev) => `<div class="feat-row"><span class="feat-row-date">${esc(formatMonthDay(ev.at))}</span><span class="feat-row-title">${esc(ev.title)}</span><span class="feat-row-days">${esc(String(daysUntil(ev.at, now)))} 天</span></div>`)
       .join('');
-    return `<div class="card feat-card"><p class="feat-eyebrow">重要活動</p><p class="feat-count">${esc(formatCountdown(daysUntil(main.at, now)))}</p><h3 class="feat-title">${esc(main.title)}</h3><p class="feat-when">${esc(formatMonthDay(main.at))}（${esc(formatWeekday(main.at))}）</p>${restHtml ? `<div class="feat-rest">${restHtml}</div>` : ''}</div>`;
+    return `<div class="card feat-card">${headHtml(main, now)}${restHtml ? `<div class="feat-rest">${restHtml}</div>` : ''}${isSample ? '<p class="upcoming-sample">（範例資料，設定 API 金鑰後顯示真實行程）</p>' : ''}</div>`;
   };
 
   if (el) {
@@ -118,8 +132,8 @@ const socials = [
         : '<p class="muted">近期暫無安排，請見完整行事曆。</p>';
 
       const featured = pickFeatured(all, 3);
-      if (featEl && featured.length) {
-        featEl.innerHTML = featHtml(featured, now);
+      if (featEl && featCardEl && featured.length) {
+        featCardEl.innerHTML = featHtml(featured, now, isSample);
         featEl.hidden = false;
       }
     } catch (e) {
@@ -176,9 +190,10 @@ const socials = [
   .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
   .hero-cta .btn{box-shadow:0 8px 18px -8px rgba(31,122,77,.6)}
 
-  .home-cols{display:grid;grid-template-columns:1.6fr 1fr;grid-template-areas:"ann feat" "ann up";gap:0 28px;align-items:start}
+  .home-cols{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:min-content 1fr;grid-template-areas:"ann feat" "ann up";gap:0 28px;align-items:start}
   .home-col-main{grid-area:ann}
-  .home-col-feat{grid-area:feat;margin:8px 0 22px}
+  /* 上方留白由內含的 .sec-head.first 提供，與左欄「最新公告」標題等高；下方 26px＋下一個標題的 8px＝站上區段間距 34px */
+  .home-col-feat{grid-area:feat;margin:0 0 26px}
   .home-col-feat[hidden]{display:none}
   .home-col-side{grid-area:up}
 
@@ -196,7 +211,7 @@ const socials = [
     /* phones: keep the artwork as a faint backdrop behind the full-width text instead of hiding it */
     .hero-carousel{opacity:.2}
     .hero-scrim{display:none}   /* left-side scrim is desktop-only; unused when text is full width */
-    .home-cols{grid-template-columns:1fr;grid-template-areas:"feat" "ann" "up"}
+    .home-cols{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"feat" "ann" "up"}
     .home-col-side .sec-head.first{margin-top:34px}
   }
   @media(prefers-reduced-motion:reduce){
@@ -220,9 +235,18 @@ const socials = [
   .upcoming-more:hover{text-decoration:underline}
   .upcoming-sample{font-size:.75rem;color:var(--faint);margin:.6rem 0 0}
   .feat-card{padding:16px 22px 18px;border-top:3px solid var(--seal)}
-  .feat-eyebrow{margin:0;font-size:11px;letter-spacing:.28em;color:var(--seal);font-weight:700}
-  .feat-count{margin:9px 0 0;font-family:"Noto Serif TC",serif;font-size:30px;font-weight:700;line-height:1.15;color:var(--seal)}
-  .feat-title{margin:6px 0 0;font-family:"Noto Serif TC",serif;font-size:17px;font-weight:600;color:var(--ink)}
+  .feat-head{display:flex;align-items:center;gap:16px}
+  .feat-main{flex:1;min-width:0}
+  .feat-count{flex:none;display:flex;flex-direction:column;align-items:flex-end;margin:0;text-align:right}
+  .cd-pre{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-bottom:-2px}
+  .cd-nums{display:flex;align-items:baseline;gap:4px}
+  .cd-num{font-family:"Noto Serif TC",serif;font-size:62px;font-weight:700;line-height:1;color:var(--seal)}
+  .cd-unit{font-family:"Noto Serif TC",serif;font-size:19px;font-weight:700;color:var(--seal)}
+  /* 「明天／就是今天」沒有數字可拆，右欄容不下同級大字，改回整排 */
+  .feat-head-word{display:block}
+  .feat-head-word .feat-count{display:block;text-align:left;margin:0 0 4px}
+  .cd-word{font-family:"Noto Serif TC",serif;font-size:40px;font-weight:700;line-height:1.1;color:var(--seal)}
+  .feat-title{margin:0;font-family:"Noto Serif TC",serif;font-size:17px;font-weight:600;color:var(--ink);line-height:1.3}
   .feat-when{margin:4px 0 0;font-size:13px;color:var(--faint)}
   .feat-rest{margin-top:13px;padding-top:10px;border-top:1px solid var(--line-soft)}
   .feat-row{display:flex;align-items:center;gap:10px;padding:4px 0;font-size:13px}
