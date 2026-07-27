@@ -22,6 +22,8 @@ export function sampleEvents(now) {
     ['低音組分部課', '大提琴分部課', { dateTime: `${d(10)}T14:00:00+08:00` }],
     ['全團常態課與展演', '期末成果彩排', { dateTime: `${d(17)}T09:00:00+08:00` }],
     ['暑期集訓', '暑訓成果發表會', { dateTime: `${d(24)}T15:00:00+08:00` }],
+    ['全團常態課與展演', '★新生體驗招生活動', { date: d(26) }],
+    ['全團常態課與展演', '★校慶音樂會', { dateTime: `${d(48)}T14:00:00+08:00` }],
   ];
   return raw.map(([name, summary, start]) => normalize({ summary, start }, cal(name)));
 }
