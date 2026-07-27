@@ -6,6 +6,7 @@ import {
   stripMarker,
   toUpcoming,
   takeNext,
+  pickFeatured,
   formatMonthDay,
   formatWeekday,
   formatTime,
@@ -124,6 +125,30 @@ describe('takeNext', () => {
   });
 });
 
+describe('pickFeatured', () => {
+  const ev = (title, featured, at) => ({ title, featured, at: new Date(at) });
+  const list = [
+    ev('常態團練', false, '2026-07-28T09:00:00+08:00'),
+    ev('新生體驗招生活動', true, '2026-08-22T00:00:00+08:00'),
+    ev('胡琴課', false, '2026-08-25T09:00:00+08:00'),
+    ev('校慶音樂會', true, '2026-09-13T00:00:00+08:00'),
+    ev('全國賽', true, '2026-10-05T00:00:00+08:00'),
+    ev('冬令營', true, '2027-01-20T00:00:00+08:00'),
+  ];
+  it('keeps only featured events, in the order given, capped at 3 by default', () => {
+    expect(pickFeatured(list).map((e) => e.title)).toEqual(['新生體驗招生活動', '校慶音樂會', '全國賽']);
+  });
+  it('returns an empty array when nothing is featured', () => {
+    expect(pickFeatured([ev('常態團練', false, '2026-07-28T09:00:00+08:00')])).toEqual([]);
+  });
+  it('honours an explicit limit', () => {
+    expect(pickFeatured(list, 1).map((e) => e.title)).toEqual(['新生體驗招生活動']);
+  });
+  it('returns an empty array for an empty list', () => {
+    expect(pickFeatured([])).toEqual([]);
+  });
+});
+
 describe('formatting (Asia/Taipei)', () => {
   it('formats month/day', () => {
     expect(formatMonthDay(new Date('2026-07-02T00:00:00+08:00'))).toBe('7/2');
@@ -192,6 +217,12 @@ describe('fetchCalendarEvents', () => {
       fetchCalendarEvents({ id: 'x' }, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch })
     ).rejects.toThrow('403');
   });
+  it('requests up to 50 events per calendar so a distant featured event is still found', async () => {
+    let calledUrl;
+    const fakeFetch = async (u) => { calledUrl = u; return { ok: true, json: async () => ({ items: [] }) }; };
+    await fetchCalendarEvents({ id: 'a', name: 'A', color: '#0' }, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch });
+    expect(calledUrl).toContain('maxResults=50');
+  });
 });
 
 describe('fetchUpcoming', () => {
@@ -211,7 +242,7 @@ describe('fetchUpcoming', () => {
       { id: 'a', name: 'A', color: '#1' },
       { id: 'b', name: 'B', color: '#2' },
     ];
-    const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, count: 5, fetchImpl: fakeFetch });
+    const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch });
     expect(items.map((e) => e.title)).toEqual(['B-soon', 'A-future']);
   });
   it('tolerates one failing calendar and still returns events from the rest', async () => {
@@ -223,12 +254,22 @@ describe('fetchUpcoming', () => {
       { id: 'bad', name: 'Bad', color: '#0' },
       { id: 'good', name: 'Good', color: '#1' },
     ];
-    const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, count: 5, fetchImpl: fakeFetch });
+    const items = await fetchUpcoming(cals, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch });
     expect(items.map((e) => e.title)).toEqual(['OK-event']);
   });
   it('throws when every calendar fails', async () => {
     const fakeFetch = async () => ({ ok: false, status: 500 });
     const cals = [{ id: 'a', name: 'A', color: '#0' }, { id: 'b', name: 'B', color: '#1' }];
     await expect(fetchUpcoming(cals, { apiKey: 'K', now: NOW, fetchImpl: fakeFetch })).rejects.toThrow();
+  });
+  it('returns the full sorted list so callers can slice it themselves', async () => {
+    const items = Array.from({ length: 8 }, (_, i) => ({
+      summary: `E${i}`,
+      start: { dateTime: `2026-07-${String(10 + i).padStart(2, '0')}T10:00:00+08:00` },
+    }));
+    const fakeFetch = async () => ({ ok: true, json: async () => ({ items }) });
+    const out = await fetchUpcoming([{ id: 'a', name: 'A', color: '#0' }], { apiKey: 'K', now: NOW, fetchImpl: fakeFetch });
+    expect(out).toHaveLength(8);
+    expect(out.map((e) => e.title)).toEqual(['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7']);
   });
 });

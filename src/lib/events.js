@@ -62,6 +62,11 @@ export function takeNext(events, n) {
   return events.slice(0, n);
 }
 
+// events 須為 toUpcoming 排序後的結果；時間最近的重要活動排最前。
+export function pickFeatured(events, limit = 3) {
+  return events.filter((ev) => ev.featured).slice(0, limit);
+}
+
 export function formatMonthDay(at) {
   const { m, d } = taipeiYMD(at);
   return `${m}/${d}`;
@@ -92,7 +97,7 @@ export function formatCountdown(days) {
   return `還有 ${days} 天`;
 }
 
-export async function fetchCalendarEvents(calendar, { apiKey, now, maxResults = 10, fetchImpl = fetch } = {}) {
+export async function fetchCalendarEvents(calendar, { apiKey, now, maxResults = 50, fetchImpl = fetch } = {}) {
   const base = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendar.id)}/events`;
   const qs = new URLSearchParams({
     key: apiKey,
@@ -108,12 +113,13 @@ export async function fetchCalendarEvents(calendar, { apiKey, now, maxResults = 
 }
 
 // 容錯：單一日曆失敗（如未設公開）只少那一個，仍回傳其餘日曆的活動；全部失敗才丟出。
-export async function fetchUpcoming(calendars, { apiKey, now, count = 5, fetchImpl = fetch } = {}) {
+// 回傳「完整」的未來活動排序清單——首頁要用同一份資料同時餵近期行程與重要活動倒數，取數交給呼叫端。
+export async function fetchUpcoming(calendars, { apiKey, now, fetchImpl = fetch } = {}) {
   const results = await Promise.allSettled(
     calendars.map((c) => fetchCalendarEvents(c, { apiKey, now, fetchImpl }))
   );
   const ok = results.filter((r) => r.status === 'fulfilled');
   if (ok.length === 0) throw results[0]?.reason ?? new Error('行事曆載入失敗');
   const events = ok.flatMap((r) => r.value);
-  return takeNext(toUpcoming(events, now), count);
+  return toUpcoming(events, now);
 }
