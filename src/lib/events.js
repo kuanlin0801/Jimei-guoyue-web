@@ -81,6 +81,17 @@ export function formatTime(ev) {
   return `${get('hour')}:${get('minute')}`;
 }
 
+// 以「台北當日 00:00」相減，同一場活動不會因為現在幾點而變天數。
+export function daysUntil(at, now) {
+  return Math.round((startOfTaipeiDay(at) - startOfTaipeiDay(now)) / 86400000);
+}
+
+export function formatCountdown(days) {
+  if (days <= 0) return '就是今天';
+  if (days === 1) return '明天';
+  return `還有 ${days} 天`;
+}
+
 export async function fetchCalendarEvents(calendar, { apiKey, now, maxResults = 10, fetchImpl = fetch } = {}) {
   const base = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendar.id)}/events`;
   const qs = new URLSearchParams({

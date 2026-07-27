@@ -9,6 +9,8 @@ import {
   formatMonthDay,
   formatWeekday,
   formatTime,
+  daysUntil,
+  formatCountdown,
   fetchCalendarEvents,
   fetchUpcoming,
 } from './events.js';
@@ -136,6 +138,37 @@ describe('formatting (Asia/Taipei)', () => {
   it('formats near-midnight times without timezone drift', () => {
     expect(formatTime({ at: new Date('2026-07-05T00:30:00+08:00'), isAllDay: false })).toBe('00:30');
     expect(formatMonthDay(new Date('2026-07-05T00:30:00+08:00'))).toBe('7/5');
+  });
+});
+
+describe('daysUntil (Asia/Taipei day boundary)', () => {
+  it('counts today as 0 no matter the time of day', () => {
+    expect(daysUntil(new Date('2026-07-27T23:30:00+08:00'), new Date('2026-07-27T00:30:00+08:00'))).toBe(0);
+  });
+  it('counts tomorrow as 1 even late tonight', () => {
+    expect(daysUntil(new Date('2026-07-28T08:00:00+08:00'), new Date('2026-07-27T23:00:00+08:00'))).toBe(1);
+  });
+  it('counts across a month boundary', () => {
+    expect(daysUntil(new Date('2026-08-22T00:00:00+08:00'), new Date('2026-07-27T12:00:00+08:00'))).toBe(26);
+  });
+  it('counts across a year boundary', () => {
+    expect(daysUntil(new Date('2027-01-03T00:00:00+08:00'), new Date('2026-12-30T12:00:00+08:00'))).toBe(4);
+  });
+  it('is negative for a past day', () => {
+    expect(daysUntil(new Date('2026-07-26T00:00:00+08:00'), new Date('2026-07-27T12:00:00+08:00'))).toBe(-1);
+  });
+});
+
+describe('formatCountdown', () => {
+  it('says 就是今天 for 0 and for anything already past', () => {
+    expect(formatCountdown(0)).toBe('就是今天');
+    expect(formatCountdown(-1)).toBe('就是今天');
+  });
+  it('says 明天 for 1', () => {
+    expect(formatCountdown(1)).toBe('明天');
+  });
+  it('says 還有 N 天 for larger gaps', () => {
+    expect(formatCountdown(26)).toBe('還有 26 天');
   });
 });
 
