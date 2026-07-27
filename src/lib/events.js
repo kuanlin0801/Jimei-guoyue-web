@@ -27,10 +27,26 @@ export function parseStart(item) {
   return { at: new Date(`${s.date}T00:00:00+08:00`), isAllDay: true };
 }
 
+// 幹部在日曆活動標題加標記＝重要活動。文件只教 ★，其餘為容錯（打成別的也不會失效）。
+export const FEATURED_MARKERS = ['★', '⭐', '【重要】'];
+
+export function isFeatured(title) {
+  const s = String(title ?? '');
+  return FEATURED_MARKERS.some((m) => s.includes(m));
+}
+
+// 標記只存在於 Google 端，畫面上一律顯示乾淨標題。
+export function stripMarker(title) {
+  let s = String(title ?? '');
+  for (const m of FEATURED_MARKERS) s = s.split(m).join('');
+  return s.trim();
+}
+
 export function normalize(item, calMeta) {
   const { at, isAllDay } = parseStart(item);
-  const title = (item.summary ?? '').trim() || '(無標題)';
-  return { title, at, isAllDay, color: calMeta.color, calName: calMeta.name };
+  const raw = (item.summary ?? '').trim();
+  const title = stripMarker(raw) || '(無標題)';
+  return { title, at, isAllDay, color: calMeta.color, calName: calMeta.name, featured: isFeatured(raw) };
 }
 
 // 全天活動當天仍顯示；計時活動須晚於此刻才算未來。

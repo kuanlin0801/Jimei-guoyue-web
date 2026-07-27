@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   parseStart,
   normalize,
+  isFeatured,
+  stripMarker,
   toUpcoming,
   takeNext,
   formatMonthDay,
@@ -37,6 +39,58 @@ describe('normalize', () => {
   it('falls back to a placeholder title when summary is missing', () => {
     const ev = normalize({ start: { date: '2026-07-02' } }, { name: 'x', color: '#000' });
     expect(ev.title).toBe('(無標題)');
+  });
+});
+
+describe('isFeatured', () => {
+  it('recognises the documented ★ marker', () => {
+    expect(isFeatured('★新生體驗招生活動')).toBe(true);
+  });
+  it('also accepts the tolerated ⭐ and 【重要】 variants', () => {
+    expect(isFeatured('⭐校慶音樂會')).toBe(true);
+    expect(isFeatured('【重要】校慶音樂會')).toBe(true);
+  });
+  it('accepts the marker typed at the end of the title', () => {
+    expect(isFeatured('校慶音樂會★')).toBe(true);
+  });
+  it('is false for a plain title, empty string, and missing input', () => {
+    expect(isFeatured('常態團練')).toBe(false);
+    expect(isFeatured('')).toBe(false);
+    expect(isFeatured(undefined)).toBe(false);
+  });
+});
+
+describe('stripMarker', () => {
+  it('removes the marker and the whitespace it leaves behind', () => {
+    expect(stripMarker('★新生體驗招生活動')).toBe('新生體驗招生活動');
+    expect(stripMarker('★ 新生體驗招生活動')).toBe('新生體驗招生活動');
+    expect(stripMarker('【重要】校慶音樂會')).toBe('校慶音樂會');
+    expect(stripMarker('校慶音樂會★')).toBe('校慶音樂會');
+  });
+  it('leaves an unmarked title untouched', () => {
+    expect(stripMarker('常態團練')).toBe('常態團練');
+  });
+  it('returns an empty string when the title is only a marker', () => {
+    expect(stripMarker('★')).toBe('');
+  });
+});
+
+describe('normalize (featured flag)', () => {
+  const cal = { name: '全團常態課與展演', color: '#e4c441' };
+  it('strips the marker from the title and flags the event as featured', () => {
+    const ev = normalize({ summary: '★新生體驗招生活動', start: { date: '2026-08-22' } }, cal);
+    expect(ev.title).toBe('新生體驗招生活動');
+    expect(ev.featured).toBe(true);
+  });
+  it('flags a plain event as not featured', () => {
+    const ev = normalize({ summary: '常態團練', start: { date: '2026-08-22' } }, cal);
+    expect(ev.title).toBe('常態團練');
+    expect(ev.featured).toBe(false);
+  });
+  it('falls back to the placeholder title when only a marker was typed', () => {
+    const ev = normalize({ summary: '★', start: { date: '2026-08-22' } }, cal);
+    expect(ev.title).toBe('(無標題)');
+    expect(ev.featured).toBe(true);
   });
 });
 
