@@ -147,6 +147,19 @@ describe('pickFeatured', () => {
   it('returns an empty array for an empty list', () => {
     expect(pickFeatured([])).toEqual([]);
   });
+  it('de-duplicates a recurring event by title, keeping only its earliest occurrence', () => {
+    // singleEvents=true 讓周期性活動（如暑期集訓）展開成多筆同標題場次，三筆都會被標記 featured。
+    const recurring = [
+      ev('暑期集訓', true, '2026-07-30T00:00:00+08:00'),
+      ev('暑期集訓', true, '2026-07-31T00:00:00+08:00'),
+      ev('暑期集訓', true, '2026-08-01T00:00:00+08:00'),
+      ev('校慶音樂會', true, '2026-09-13T00:00:00+08:00'),
+      ev('全國賽', true, '2026-10-05T00:00:00+08:00'),
+    ];
+    const result = pickFeatured(recurring);
+    expect(result.map((e) => e.title)).toEqual(['暑期集訓', '校慶音樂會', '全國賽']);
+    expect(result[0].at).toEqual(recurring[0].at);
+  });
 });
 
 describe('formatting (Asia/Taipei)', () => {
@@ -226,7 +239,7 @@ describe('fetchCalendarEvents', () => {
 });
 
 describe('fetchUpcoming', () => {
-  it('merges calendars, filters upcoming, sorts, and takes count', async () => {
+  it('merges calendars, filters upcoming, and sorts', async () => {
     const byId = {
       a: [
         { summary: 'A-future', start: { dateTime: '2026-07-10T10:00:00+08:00' } },

@@ -63,8 +63,16 @@ export function takeNext(events, n) {
 }
 
 // events 須為 toUpcoming 排序後的結果；時間最近的重要活動排最前。
+// 週期性活動經 singleEvents=true 展開為多筆同標題場次，此處依標題去重、只留最早一筆，避免同一場重複活動佔滿卡片。
 export function pickFeatured(events, limit = 3) {
-  return events.filter((ev) => ev.featured).slice(0, limit);
+  const seen = new Set();
+  const deduped = [];
+  for (const ev of events) {
+    if (!ev.featured || seen.has(ev.title)) continue;
+    seen.add(ev.title);
+    deduped.push(ev);
+  }
+  return deduped.slice(0, limit);
 }
 
 export function formatMonthDay(at) {
