@@ -52,7 +52,10 @@ const { shooting, submission, channel } = homework;
   /* 每項規範一張卡，桌機三欄並排（容器 992px 固定排得下三欄）——七項堆成單欄會太長，
      且各項彼此獨立、沒有閱讀順序。
      grid-auto-rows:1fr＋預設 stretch：讓同一區內每列等高，條列多的那張不會單獨突出，
-     四項那區落單的第四張也跟著同高。兩區之間再靠 .rule 的 min-height 對齊。 */
+     四項那區落單的第四張也跟著同高。
+     兩區之間刻意不對齊（拍攝區較矮、繳交區較高）：曾用 min-height 把七張拉成同高，
+     但落單的「替代樂器」只有兩行字，撐到最高那張的高度後底下空一大塊，比高低差更礙眼。
+     各區各自整齊即可，也省掉寫死高度、改文案就要重量的維護成本。 */
   .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;grid-auto-rows:1fr}
   .rule{padding:18px 20px;border-top:4px solid var(--brand)}
   .rule.gold{border-top-color:var(--gold)}
@@ -68,14 +71,6 @@ const { shooting, submission, channel } = homework;
   .channel .btn{margin-top:14px}
 
   .outro{margin:20px 0 0;font-size:14.5px;color:var(--seal);font-weight:600;line-height:1.8}
-
-  /* grid-auto-rows 只讓「同一區內」等高，兩區之間仍會差（拍攝區 192px、繳交區 254px）。
-     容器 max-width 1040px 有上限，所以桌機一律是三欄各 321px、欄寬不隨視窗變動，
-     最高的一張（作業繳交與修正時限）固定 254px——設成下限即可讓七張全部一致。
-     ⚠️ 改動規範文字後這個數字要重量：把 min-height 註解掉，看繳交區卡片的實際高度。 */
-  @media(min-width:1040px){
-    .rule{min-height:254px}
-  }
 
   @media(max-width:480px){
     .rule,.channel{padding:16px 14px}
