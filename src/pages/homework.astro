@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { homework } from '../data/homework.js';
+const { shooting, submission, channel } = homework;
+---
+<Layout title="作業繳交規範" description="集美國小國樂團影片作業的拍攝、繳交與審核規範。">
+  <section class="page">
+    <PageHero eyebrow="影 ・ 片 ・ 作 ・ 業" title="作業繳交規範" sub={homework.intro} />
+    <p class="lead">{homework.lead}</p>
+
+    <h2 class="sec-head first"><span class="sec-dot brand"></span>{shooting.heading}</h2>
+    <div class="rules">
+      {shooting.items.map((it) => (
+        <section class="card rule">
+          <strong class="rule-title">{it.title}</strong>
+          {it.points.length > 1 ? (
+            <ul class="rule-points">{it.points.map((p) => <li>{p}</li>)}</ul>
+          ) : (
+            <p class="rule-text">{it.points[0]}</p>
+          )}
+        </section>
+      ))}
+    </div>
+
+    <h2 class="sec-head"><span class="sec-dot gold"></span>{submission.heading}</h2>
+    <div class="rules">
+      {submission.items.map((it) => (
+        <section class="card rule gold">
+          <strong class="rule-title">{it.title}</strong>
+          {it.points.length > 1 ? (
+            <ul class="rule-points">{it.points.map((p) => <li>{p}</li>)}</ul>
+          ) : (
+            <p class="rule-text">{it.points[0]}</p>
+          )}
+        </section>
+      ))}
+    </div>
+
+    <section class="card channel">
+      <strong>{channel.title}</strong>
+      <p>{channel.text}</p>
+      <a class="btn" href="/summer">前往暑訓專區</a>
+    </section>
+
+    <p class="outro">{homework.outro}</p>
+  </section>
+</Layout>
+<style>
+  .lead{margin:0 0 6px;font-size:14.5px;color:var(--muted);line-height:1.9;max-width:680px}
+
+  /* 每項規範一張卡，桌機兩欄並排——七項堆成單欄會太長，且各項彼此獨立、沒有閱讀順序 */
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start}
+  .rule{padding:18px 20px;border-top:4px solid var(--brand)}
+  .rule.gold{border-top-color:var(--gold)}
+  .rule-title{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px}
+  .rule-text{margin:10px 0 0;font-size:14.5px;color:var(--muted);line-height:1.85}
+  .rule-points{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+  .rule-points li{font-size:14.5px;color:var(--muted);line-height:1.85}
+  .rule-points li::marker{color:var(--gold)}
+
+  .channel{margin-top:26px;padding:20px 22px;border-top:4px solid var(--seal)}
+  .channel strong{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px;margin-bottom:8px}
+  .channel p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.9}
+  .channel .btn{margin-top:14px}
+
+  .outro{margin:20px 0 0;font-size:14.5px;color:var(--seal);font-weight:600;line-height:1.8}
+
+  @media(max-width:480px){
+    .rule,.channel{padding:16px 14px}
+  }
+</style>
