@@ -99,6 +99,7 @@ const embedUrl = (v) => {
 
     <section class="card upload-note">
       <strong>作業繳交</strong>
+      <p class="rules-link">⚠️ 錄影前請先看：<a href="/homework">影片作業繳交規範 →</a></p>
       {summer.uploadFormUrl ? (
         <>
           <p class="muted">請於各曲目期限前，透過下方表單繳交演奏影片——可直接上傳影片檔，或提供你的 YouTube（不公開）連結（兩種方式皆需登入 Google 帳號）。</p>
@@ -166,4 +167,7 @@ const embedUrl = (v) => {
   .upload-note{margin-top:16px;padding:20px 22px}
   .upload-note strong{display:block;font-family:"Noto Serif TC",serif;color:var(--ink);font-size:16px;margin-bottom:8px}
   .upload-note .btn{margin-top:14px}
+  /* 規範連結放在說明之前：退件多半是拍攝方式不合規，看到上傳鈕才想到就晚了 */
+  .rules-link{margin:0 0 10px;font-size:14px;color:var(--seal);font-weight:600;line-height:1.7}
+  .rules-link a{color:var(--seal)}
 </style>
